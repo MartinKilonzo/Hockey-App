@@ -1,0 +1,20 @@
+{
+  "name": "hockey-app",
+  "version": "0.1.0",
+  "description": "Yet another amazing AngularJS app!",
+  "keywords": [
+    "angular"
+  ],
+   "licenses": [
+    {
+      "type": "none"
+    }
+  ],
+  "dependencies": {},
+  "devDependencies": {
+    "gulp": "git://github.com/gulpjs/gulp.git#4.0",
+    "ng-factory": "^1.0",
+    "undertaker-app-tasks": "^0.2",
+    "factory-angular-channels": "^0.6"
+  }
+}

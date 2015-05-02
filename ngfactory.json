@@ -1,0 +1,16 @@
+{
+  "type": "application",
+  "name": "HockeyApp",
+  "username": "",
+  "ngVersion": "~1.4.0",
+  "ngModules": [
+    "animate",
+    "cookies",
+    "route"
+  ],
+  "license": "none",
+  "htmlPreprocessor": "none",
+  "jsPreprocessor": "none",
+  "cssPreprocessor": "sass",
+  "module": "HockeyApp"
+}
