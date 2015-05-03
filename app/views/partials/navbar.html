@@ -1,5 +1,7 @@
 <nav class="navbar navbar-default navbar-top">
+
 	<div class="container-fluid">
+		<!-- Nav Header -->
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
 				<span class="sr-only">Hockey App Nav Bar</span>
@@ -8,5 +10,14 @@
 				<span class="icon-bar"></span>
 			</button>
 			<a class="navbar-brand" href="#">Hockey App {{ main.version }}{{ main.path() }}</a>
+		</div>
+		<div class="navbar-collapse collapse">
+			<ul class="nav navbar-nav navbar-right">
+				<li ng-class="{active: $path() == '/game'}"><a href="#">Game</a></li>
+				<li ng-class="{active: $path() == '/roster'}"><a href="#">Roster</a></li>
+				<li ng-class="{active: $path() == '/team'}"><a href="#">Team</a></li>
+				<li ng-class="{active: $path() == '/settings'}"><a href="#">Settings</a></li>
+				<li class="active"><a href="#">{{ main.user }}</a></li>
+			</ul>
 		</div>
 </nav>

@@ -3,6 +3,7 @@
 angular.module('HockeyApp', ['ngAnimate', 'ngCookies', 'ngRoute'])
 
   .constant('version', 'v0.0.1')
+  .constant('user', 'Martin')
 
   .config(function($locationProvider, $routeProvider) {
 

@@ -2,11 +2,11 @@
 
 angular.module('HockeyApp')
 
-.provider('config', function($provide) {
+.provider('config', function($provide, version) {
 
   var defaults = this.defaults = {
     debug: false,
-    version: '0.1.0',
+    version: version,
     locale: 'en_US',
     locales: [
       {

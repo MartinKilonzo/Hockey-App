@@ -25,6 +25,7 @@
 
 
   <!-- bower:css -->
+  <link rel="stylesheet" href="styles/libs.min.css">
   <!-- endinject -->
 
   <!-- inject:css -->
@@ -32,32 +33,61 @@
 
 </head>
 
-<body ontouchstart ng-controller="MainCtrl as main">
+<body ontouchstart="" ng-controller="MainCtrl as main">
 
   <div class="site-wrapper">
     <div class="site-wrapper-inner">
       <div class="cover-container">
         <div class="masthead clearfix">
-          <div class="inner" ng-include="'views/partials/navbar.html'"></div>
+          <div class="inner">
+<!-- ngInclude: 'views/partials/navbar.html' -->
+<nav class="navbar navbar-default navbar-top">
+
+	<div class="container-fluid">
+		<!-- Nav Header -->
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+				<span class="sr-only">Hockey App Nav Bar</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="#">Hockey App {{&#xA0;main.version }}{{ main.path() }}</a>
+		</div>
+		<div class="navbar-collapse collapse">
+			<ul class="nav navbar-nav navbar-right">
+				<li ng-class="{active: $path() == &apos;/game&apos;}"><a href="#">Game</a></li>
+				<li ng-class="{active: $path() == &apos;/roster&apos;}"><a href="#">Roster</a></li>
+				<li ng-class="{active: $path() == &apos;/team&apos;}"><a href="#">Team</a></li>
+				<li ng-class="{active: $path() == &apos;/settings&apos;}"><a href="#">Settings</a></li>
+				<li><a href="#">User: {{ main.user }}</a></li>
+			</ul>
+		</div>
+</div></nav>
+<!--/ngInclude: 'views/partials/navbar.html' -->
+</div>
         </div>
         <div class="inner cover">
-          <div class="inner" ng-view></div>
+          <div class="inner" ng-view=""></div>
         </div>
         <div class="mastfoot">
-          <div class="inner" ng-include="'views/partials/footer.html'"></div>
+          <div class="inner">
+<!-- ngInclude: 'views/partials/footer.html' -->
+<p>Cover template for <a href="http://getbootstrap.com">Bootstrap</a>, by <a href="https://twitter.com/mdo">@mdo</a>.</p>
+<!--/ngInclude: 'views/partials/footer.html' -->
+</div>
         </div>
       </div>
     </div>
   </div>
 
-  <script src="bower_components/jquery/dist/jquery.js"></script>
-  
   <!-- bower:js -->
+  <script src="scripts/libs.min.js"></script>
   <!-- endinject -->
 
   <!-- inject:js -->
+  <script src="scripts/app.min.js"></script>
   <!-- endinject -->
-
 
 </body>
 
