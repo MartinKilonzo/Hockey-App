@@ -21,19 +21,20 @@ angular.module('HockeyApp', ['ngAnimate', 'ngCookies', 'ngRoute'])
       })
       .when('/game', {
         templateUrl: 'views/game.html',
-        //controller: 'gameController'
+        controller: 'gameController',
+        animate: 'fade'
       })
       .when('/roster', {
         templateUrl: 'views/roster.html',
-        //controller: 'rosterController'
+        controller: 'rosterController'
       })
       .when('/team', {
         templateUrl: 'views/team.html',
-        //controller: 'teamController'
+        controller: 'teamController'
       })
       .when('/settings', {
         templateUrl: 'views/settings.html',
-        //controller: 'settingsController'
+        controller: 'settingsController'
       })
       .otherwise({
         redirectTo: '/'

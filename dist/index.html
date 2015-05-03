@@ -30,7 +30,7 @@
 
   <!-- inject:css -->
   <!-- endinject -->
-
+  <base href="/">
 </head>
 
 <body ontouchstart="" ng-controller="MainCtrl as main">
@@ -52,15 +52,15 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="#">Hockey App {{&#xA0;main.version }}{{ main.path() }}</a>
+			<a class="navbar-brand" href="/">Hockey App {{&#xA0;main.version }}{{ main.path() }}</a>
 		</div>
 		<div class="navbar-collapse collapse">
 			<ul class="nav navbar-nav navbar-right">
-				<li ng-class="{active: $path() == &apos;/game&apos;}"><a href="#">Game</a></li>
-				<li ng-class="{active: $path() == &apos;/roster&apos;}"><a href="#">Roster</a></li>
-				<li ng-class="{active: $path() == &apos;/team&apos;}"><a href="#">Team</a></li>
-				<li ng-class="{active: $path() == &apos;/settings&apos;}"><a href="#">Settings</a></li>
-				<li><a href="#">User: {{ main.user }}</a></li>
+				<li ng-class="{active: $path() == &apos;/game&apos;}"><a href="/game">Game</a></li>
+				<li ng-class="{active: $path() == &apos;/roster&apos;}"><a href="/roster">Roster</a></li>
+				<li ng-class="{active: $path() == &apos;/team&apos;}"><a href="/team">Team</a></li>
+				<li ng-class="{active: $path() == &apos;/settings&apos;}"><a href="/settings">Settings</a></li>
+				<li class="active"><a href="#">{{ main.user }}</a></li>
 			</ul>
 		</div>
 </div></nav>
@@ -68,6 +68,7 @@
 </div>
         </div>
         <div class="inner cover">
+        <!-- Main Application -->
           <div class="inner" ng-view=""></div>
         </div>
         <div class="mastfoot">
@@ -81,6 +82,8 @@
     </div>
   </div>
 
+  <script src="bower_components/jquery/dist/jquery.js"></script>
+  
   <!-- bower:js -->
   <script src="scripts/libs.min.js"></script>
   <!-- endinject -->
@@ -88,6 +91,7 @@
   <!-- inject:js -->
   <script src="scripts/app.min.js"></script>
   <!-- endinject -->
+
 
 </body>
 
