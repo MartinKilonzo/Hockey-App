@@ -7,7 +7,7 @@ angular.module('HockeyApp', ['ngAnimate', 'ngCookies', 'ngRoute'])
 
   .config(function($locationProvider, $routeProvider) {
 
-    $locationProvider.html5Mode(false);
+    $locationProvider.html5Mode(true);
 
     $routeProvider
       .when('/', {
@@ -18,6 +18,22 @@ angular.module('HockeyApp', ['ngAnimate', 'ngCookies', 'ngRoute'])
       })
       .when('/contact', {
         templateUrl: 'views/contact.html'
+      })
+      .when('/game', {
+        templateUrl: 'views/game.html',
+        //controller: 'gameController'
+      })
+      .when('/roster', {
+        templateUrl: 'views/roster.html',
+        //controller: 'rosterController'
+      })
+      .when('/team', {
+        templateUrl: 'views/team.html',
+        //controller: 'teamController'
+      })
+      .when('/settings', {
+        templateUrl: 'views/settings.html',
+        //controller: 'settingsController'
       })
       .otherwise({
         redirectTo: '/'

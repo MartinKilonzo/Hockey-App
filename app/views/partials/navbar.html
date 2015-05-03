@@ -9,14 +9,14 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="#">Hockey App {{ main.version }}{{ main.path() }}</a>
+			<a class="navbar-brand" href="/">Hockey App {{ main.version }}{{ main.path() }}</a>
 		</div>
 		<div class="navbar-collapse collapse">
 			<ul class="nav navbar-nav navbar-right">
-				<li ng-class="{active: $path() == '/game'}"><a href="#">Game</a></li>
-				<li ng-class="{active: $path() == '/roster'}"><a href="#">Roster</a></li>
-				<li ng-class="{active: $path() == '/team'}"><a href="#">Team</a></li>
-				<li ng-class="{active: $path() == '/settings'}"><a href="#">Settings</a></li>
+				<li ng-class="{active: $path() == '/game'}"><a href="/game">Game</a></li>
+				<li ng-class="{active: $path() == '/roster'}"><a href="/roster">Roster</a></li>
+				<li ng-class="{active: $path() == '/team'}"><a href="/team">Team</a></li>
+				<li ng-class="{active: $path() == '/settings'}"><a href="/settings">Settings</a></li>
 				<li class="active"><a href="#">{{ main.user }}</a></li>
 			</ul>
 		</div>

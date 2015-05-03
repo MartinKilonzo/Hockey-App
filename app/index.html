@@ -29,7 +29,7 @@
 
   <!-- inject:css -->
   <!-- endinject -->
-
+  <base href="/">
 </head>
 
 <body ontouchstart ng-controller="MainCtrl as main">
@@ -41,6 +41,7 @@
           <div class="inner" ng-include="'views/partials/navbar.html'"></div>
         </div>
         <div class="inner cover">
+        <!-- Main Application -->
           <div class="inner" ng-view></div>
         </div>
         <div class="mastfoot">
