@@ -29,6 +29,7 @@
   <!-- endinject -->
 
   <!-- inject:css -->
+  <link rel="stylesheet" href="styles/app.min.css">
   <!-- endinject -->
   <base href="/">
 </head>
@@ -69,7 +70,7 @@
         </div>
         <div class="inner cover">
         <!-- Main Application -->
-          <div class="inner" ng-view=""></div>
+          <div class="page {{ pageClass }}" ng-view=""></div>
         </div>
         <div class="mastfoot">
           <div class="inner">

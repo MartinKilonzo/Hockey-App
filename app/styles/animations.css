@@ -1,0 +1,66 @@
+/* Page Animations */
+.page.ng-enter
+{
+	transition: 1.5s linear all;
+	opacity: 0;
+}
+
+.page.ng-enter.ng-enter-active
+{
+	transition-delay: 0.5s;
+	opacity: 1;
+}
+
+.page.ng-leave
+{
+	transition: 0.5s linear all;
+	opacity: 1;
+}
+
+.page.ng-leave.ng-leave-active
+{
+	opacity: 0;
+}
+
+/* TODO: Page specific Animations */
+.page-game.ng-enter        
+{
+	
+}
+
+.page-game.ng-enter.ng-enter-active 
+{
+	
+}
+
+.page-game.ng-leave
+{ 
+	
+}
+
+.page-roster.ng-enter
+{
+	
+}
+.page-roster.ng-leave
+{
+
+}
+
+.page-team.ng-enter
+{
+
+}
+.page-team.ng-leave
+{
+	
+}
+
+.page-settings.ng-enter
+{
+	
+}
+.page-settings.ng-leave
+{
+	
+}

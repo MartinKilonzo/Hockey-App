@@ -10,28 +10,43 @@
       templateUrl: "views/contact.html"
     }).when("/game", {
       templateUrl: "views/game.html",
-      controller: "game"
+      controller: "gameController",
+      animate: "fade"
     }).when("/roster", {
-      templateUrl: "views/roster.html"
+      templateUrl: "views/roster.html",
+      controller: "rosterController"
     }).when("/team", {
-      templateUrl: "views/team.html"
+      templateUrl: "views/team.html",
+      controller: "teamController"
     }).when("/settings", {
-      templateUrl: "views/settings.html"
+      templateUrl: "views/settings.html",
+      controller: "settingsController"
     }).otherwise({
       redirectTo: "/"
     });
   } ]);
-  angular.module("HockeyApp").controller("game", [ "$location", "version", "user", function($location, version, user) {
-    var vm = this;
-    vm.path = $location.path.bind($location);
-    vm.version = version;
-    vm.user = user;
+  angular.module("HockeyApp").controller("gameController", [ "$scope", function($scope) {
+    console.log("Loaded Game Controller.");
+    $scope.pageClass = "page-game";
+    console.log($scope.pageClass);
   } ]);
   angular.module("HockeyApp").controller("MainCtrl", [ "$location", "version", "user", function($location, version, user) {
     var vm = this;
     vm.path = $location.path.bind($location);
     vm.version = version;
     vm.user = user;
+  } ]);
+  angular.module("HockeyApp").controller("rosterController", [ "$scope", function($scope) {
+    console.log("Loaded Roster Controller.");
+    $scope.pageClass = "page-roster";
+  } ]);
+  angular.module("HockeyApp").controller("settingsController", [ "$scope", function($scope) {
+    console.log("Loaded Settings Controller.");
+    $scope.pageClass = "page-settings";
+  } ]);
+  angular.module("HockeyApp").controller("teamController", [ "$scope", function($scope) {
+    console.log("Loaded Team Controller.");
+    $scope.pageClass = "page-team";
   } ]);
   angular.module("HockeyApp").directive("ngHelloWorld", function() {
     return {
@@ -43,6 +58,15 @@
           scope.name = "world";
         };
       }
+    };
+  });
+  angular.module("HockeyApp").filter("time", function() {
+    return function(obj) {
+      return +new Date(obj);
+    };
+  }).filter("startFrom", function() {
+    return function(obj, index) {
+      return obj && obj.slice(index);
     };
   });
   angular.module("HockeyApp").provider("config", [ "$provide", "version", function($provide, version) {
@@ -64,13 +88,4 @@
       return config;
     };
   } ]);
-  angular.module("HockeyApp").filter("time", function() {
-    return function(obj) {
-      return +new Date(obj);
-    };
-  }).filter("startFrom", function() {
-    return function(obj, index) {
-      return obj && obj.slice(index);
-    };
-  });
 })(window, document);

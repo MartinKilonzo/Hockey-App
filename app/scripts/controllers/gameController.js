@@ -8,4 +8,6 @@ angular.module('HockeyApp')
 
   	$scope.pageClass = 'page-game';
 
+  	console.log($scope.pageClass);
+
   });
