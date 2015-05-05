@@ -22,7 +22,6 @@ angular.module('HockeyApp', ['ngAnimate', 'ngCookies', 'ngRoute'])
       .when('/game', {
         templateUrl: 'views/game.html',
         controller: 'gameController',
-        animate: 'fade'
       })
       .when('/roster', {
         templateUrl: 'views/roster.html',

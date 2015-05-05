@@ -28,7 +28,6 @@
   angular.module("HockeyApp").controller("gameController", [ "$scope", function($scope) {
     console.log("Loaded Game Controller.");
     $scope.pageClass = "page-game";
-    console.log($scope.pageClass);
   } ]);
   angular.module("HockeyApp").controller("MainCtrl", [ "$location", "version", "user", function($location, version, user) {
     var vm = this;
