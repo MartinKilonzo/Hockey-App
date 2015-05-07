@@ -10,8 +10,7 @@
       templateUrl: "views/contact.html"
     }).when("/game", {
       templateUrl: "views/game.html",
-      controller: "gameController",
-      animate: "fade"
+      controller: "gameController"
     }).when("/roster", {
       templateUrl: "views/roster.html",
       controller: "rosterController"
@@ -28,6 +27,7 @@
   angular.module("HockeyApp").controller("gameController", [ "$scope", function($scope) {
     console.log("Loaded Game Controller.");
     $scope.pageClass = "page-game";
+    $scope.buttons = [ "button 1", "button 2", "button 3", "button 4", "button 5", "button 6" ];
   } ]);
   angular.module("HockeyApp").controller("MainCtrl", [ "$location", "version", "user", function($location, version, user) {
     var vm = this;

@@ -1,3 +1,10 @@
+/* Hidden horizontal scroll bar */
+body
+{
+	overflow-x: hidden;
+}
+
+/* Footer Properties */
 .mastfoot
 {
 	position: fixed;
@@ -8,4 +15,15 @@
 	border-style: solid;
 	border-width: 1px;
 	border-color: #E7E7E7;
+}
+
+/* Centered Columns */
+.row-centered 
+{
+    text-align:center;
+}
+.col-centered 
+{
+    float: none;
+    margin: 0 auto;
 }

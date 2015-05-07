@@ -1,3 +1,5 @@
+
+
 /* Page Animations */
 .page.ng-enter
 {
@@ -67,8 +69,6 @@
 {
 	
 }
-
-
 .mastfoot
 {
 	position: fixed;
@@ -79,4 +79,9 @@
 	border-style: solid;
 	border-width: 1px;
 	border-color: #E7E7E7;
+}
+
+body
+{
+	overflow-y:hidden;
 }

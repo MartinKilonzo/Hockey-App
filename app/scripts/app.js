@@ -4,6 +4,7 @@ angular.module('HockeyApp', ['ngAnimate', 'ngCookies', 'ngRoute'])
 
   .constant('version', 'v0.0.1')
   .constant('user', 'Martin')
+  .constant('linupsToDisplay', 4)
 
   .config(function($locationProvider, $routeProvider) {
 
