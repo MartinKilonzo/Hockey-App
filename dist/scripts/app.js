@@ -1,6 +1,6 @@
 (function(window, document, undefined) {
   "use strict";
-  angular.module("HockeyApp", [ "ngAnimate", "ngCookies", "ngRoute" ]).constant("version", "v0.0.1").constant("user", "Martin").config([ "$locationProvider", "$routeProvider", function($locationProvider, $routeProvider) {
+  angular.module("HockeyApp", [ "ngAnimate", "ngCookies", "ngRoute" ]).constant("version", "v0.0.1").constant("user", "Martin").constant("CLIENT_ID", "1031466315037-mri5opmcirkisus3fllv97q2oakgenfa.apps.googleusercontent.com").constant("CLIENT_SECRET", "F22W0vouWOAcKnJdL0gtgOn1").constant("REDIRECT_URL", "https://www.example.com/oauth2callback").constant("linupsToDisplay", 4).config([ "$locationProvider", "$routeProvider", function($locationProvider, $routeProvider) {
     $locationProvider.html5Mode(true);
     $routeProvider.when("/", {
       templateUrl: "views/home.html"
@@ -27,7 +27,7 @@
   angular.module("HockeyApp").controller("gameController", [ "$scope", function($scope) {
     console.log("Loaded Game Controller.");
     $scope.pageClass = "page-game";
-    $scope.buttons = [ "button 1", "button 2", "button 3", "button 4", "button 5", "button 6" ];
+    $scope.lineups = [ "lineup 1", "lineup 2", "lineup 3", "lineup 4", "lineup 5", "lineup 6" ];
   } ]);
   angular.module("HockeyApp").controller("MainCtrl", [ "$location", "version", "user", function($location, version, user) {
     var vm = this;
@@ -68,6 +68,46 @@
       return obj && obj.slice(index);
     };
   });
+  var readline = require("readline");
+  var google = require("googleapis");
+  var OAuth2 = google.auth.OAuth2;
+  var CLIENT_ID = main.CLIENT_ID, CLIENT_SECRET = main.CLIENT_SECRET, REDIRECT_URL = main.REDIRECT_URL, SCOPE = "https://www.googleapis.com/auth/drive.file";
+  var rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
+  var auth = new OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URL);
+  var url = auth.generateAuthUrl({
+    scope: SCOPE
+  });
+  var getAccessToken = function(code) {
+    auth.getToken(code, function(err, tokens) {
+      if (err) {
+        console.log("Error while trying to retrieve access token", err);
+        return;
+      }
+      auth.credentials = tokens;
+      upload();
+    });
+  };
+  var upload = function() {
+    var drive = google.drive({
+      version: "v2",
+      auth: auth
+    });
+    drive.files.insert({
+      resource: {
+        title: "My Document",
+        mimeType: "text/plain"
+      },
+      media: {
+        mimeType: "text/plain",
+        body: "Hello World!"
+      }
+    }, console.log);
+  };
+  console.log("Visit the url: ", url);
+  rl.question("Enter the code here:", getAccessToken);
   angular.module("HockeyApp").provider("config", [ "$provide", "version", function($provide, version) {
     var defaults = this.defaults = {
       debug: false,
