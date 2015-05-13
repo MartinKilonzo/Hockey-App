@@ -21,7 +21,7 @@
 			<div class="row">
 				<div class="col-xs-4" ng-repeat="player in players | filter: playerInfo | orderBy: 'playerNumber'">
 					<p class="input-group" style="margin-top: 12px">
-						<input type="text" ng-init="info = getInfo($index)" ng-model="info" class="form-control" disabled>
+						<input type="text" placeholder="#{{ player.playerNumber }} {{ player.firstName.charAt(0) }}. {{ player.lastName }}: {{ player.position }}" class="form-control" readonly>
 						<span class="input-group-btn">
 							<button class="btn btn-danger" ng-click="removePlayer($index)" aria-label="Remove">x</button>
 						</span>

@@ -45,7 +45,7 @@ $scope.players = [];
  				var newPlayer = {
  					firstName:      info[0],
  					lastName:       info[1],
- 					playerNumber:   info[2],
+ 					playerNumber:   parseInt(info[2]),
  					position:       info[3],
  				};
 
@@ -69,11 +69,7 @@ $scope.players = [];
 
  				$scope.playerInfo = '';
  				//TODO: Order by playerNumber on insert
-			
- 			/*validPlayer 	? 
- 			(playerExists 	? alert("The player already exists on the roster.") : $scope.players.push(newPlayer)) 
- 							: alert("Invalid Entry.");
- 							console.log($scope.players);*/
+ 				//TODO: Modify alerts to be less intrusive
  			}
  		};
 
@@ -100,11 +96,11 @@ $scope.players = [];
 		$('#success').show();
 		$('#warning').hide();
 
+		/* Ensure that the players can be ordered by number
 		angular.forEach($scope.players, function (player) {
 			player.playerNumber = parseFloat(player.playerNumber);
 			console.log(player.playerNumber);
-		});
-
+		});*/
 
 	}]);
 //TODO Figure out how to redefine the controller like in the Ang. Tut.
