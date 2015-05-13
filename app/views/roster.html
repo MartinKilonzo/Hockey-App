@@ -19,7 +19,7 @@
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-xs-4" ng-repeat="player in players">
+				<div class="col-xs-4" ng-repeat="player in players | filter: playerInfo | orderBy: 'playerNumber'">
 					<p class="input-group" style="margin-top: 12px">
 						<input type="text" ng-init="info = getInfo($index)" ng-model="info" class="form-control" disabled>
 						<span class="input-group-btn">

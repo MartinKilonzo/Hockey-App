@@ -68,7 +68,7 @@ $scope.players = [];
  				}
 
  				$scope.playerInfo = '';
- 				
+ 				//TODO: Order by playerNumber on insert
 			
  			/*validPlayer 	? 
  			(playerExists 	? alert("The player already exists on the roster.") : $scope.players.push(newPlayer)) 
@@ -99,6 +99,12 @@ $scope.players = [];
 		console.log('Ended controller roster');
 		$('#success').show();
 		$('#warning').hide();
+
+		angular.forEach($scope.players, function (player) {
+			player.playerNumber = parseFloat(player.playerNumber);
+			console.log(player.playerNumber);
+		});
+
 
 	}]);
 //TODO Figure out how to redefine the controller like in the Ang. Tut.
