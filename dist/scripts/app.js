@@ -35,9 +35,17 @@
     vm.version = version;
     vm.user = user;
   } ]);
-  angular.module("HockeyApp").controller("rosterController", [ "$scope", function($scope) {
+  angular.module("HockeyApp").controller("rosterPageController", [ "$scope", function($scope) {
     console.log("Loaded Roster Controller.");
     $scope.pageClass = "page-roster";
+  } ]).controller("rosterController", [ "$scope", function($scope, TeamFactory, PlayerFactory) {
+    console.log("Started controller roster");
+    $("#warning").show();
+    $("#danger").hide();
+    console.log(localStorageService.keys());
+    console.log("Ended controller roster");
+    $("#success").show();
+    $("#warning").hide();
   } ]);
   angular.module("HockeyApp").controller("settingsController", [ "$scope", function($scope) {
     console.log("Loaded Settings Controller.");
@@ -71,7 +79,7 @@
   var readline = require("readline");
   var google = require("googleapis");
   var OAuth2 = google.auth.OAuth2;
-  var CLIENT_ID = main.CLIENT_ID, CLIENT_SECRET = main.CLIENT_SECRET, REDIRECT_URL = main.REDIRECT_URL, SCOPE = "https://www.googleapis.com/auth/drive.file";
+  var CLIENT_ID = "1031466315037-mri5opmcirkisus3fllv97q2oakgenfa.apps.googleusercontent.com", CLIENT_SECRET = "7zF3DHS0Zr8b57LowYlxXYAj", REDIRECT_URL = "http://localhost:9000", SCOPE = "https://www.googleapis.com/auth/drive.file";
   var rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
