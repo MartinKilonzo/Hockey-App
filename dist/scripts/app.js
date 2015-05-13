@@ -23,6 +23,30 @@
     }).otherwise({
       redirectTo: "/"
     });
+  } ]).factory("TeamFactory", function TeamFactory() {
+    var team = [];
+    return {
+      add: function(player) {
+        this.team.push(player);
+      },
+      getPlayer: function(number) {
+        return this.team[number];
+      },
+      getTeam: function() {
+        return this.team;
+      }
+    };
+  }).factory("PlayerFactory", [ "playerInfo", function(playerInfo) {
+    console.log("NEW PLAYER");
+    var Player = function() {
+      info = playerInfo.replace(/, /g, "/").replace(/,/g, "/").split("/");
+      console.log(info);
+      this.firstName = info[0];
+      this.lastName = info[1];
+      this.playerNumber = info[2];
+      this.position = info[3];
+    };
+    return Player;
   } ]);
   angular.module("HockeyApp").controller("gameController", [ "$scope", function($scope) {
     console.log("Loaded Game Controller.");
@@ -42,7 +66,48 @@
     console.log("Started controller roster");
     $("#warning").show();
     $("#danger").hide();
-    console.log(localStorageService.keys());
+    $scope.players = [];
+    $scope.addPlayer = function() {
+      if ($scope.playerInfo) {
+        var info = $scope.playerInfo.replace(/, /g, "/").replace(/,/g, "/").split("/");
+        var validPlayer = true;
+        for (var i = 3; i >= 0; i--) {
+          if (!info[i]) {
+            validPlayer = false;
+          }
+        }
+        var newPlayer = {
+          firstName: info[0],
+          lastName: info[1],
+          playerNumber: info[2],
+          position: info[3]
+        };
+        var playerExists = false;
+        for (var i = $scope.players.length - 1; i >= 0; i--) {
+          if ($scope.players[i].lastName === newPlayer.lastName && $scope.players[i].firstName === newPlayer.firstName) {
+            playerExists = true;
+          }
+        }
+        if (!validPlayer || playerExists) {
+          !validPlayer ? alert("Invalid Entry.") : alert("The player already exists on the roster.");
+        } else {
+          $scope.players.push(newPlayer);
+          var addedMessage = "Added " + newPlayer.firstName + " " + newPlayer.lastName;
+          console.log(addedMessage);
+        }
+        $scope.playerInfo = "";
+      }
+    };
+    $scope.removePlayer = function(index) {
+      var removedPlayer = $scope.players[index];
+      var removedMessage = "Removed " + removedPlayer.firstName + " " + removedPlayer.lastName;
+      $scope.players.splice(index, 1);
+      console.log(removedMessage);
+    };
+    $scope.getInfo = function(index) {
+      var player = $scope.players[index];
+      return "#" + player.playerNumber + " " + player.firstName.charAt(0) + "." + player.lastName + ": " + player.position;
+    };
     console.log("Ended controller roster");
     $("#success").show();
     $("#warning").hide();
