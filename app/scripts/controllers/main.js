@@ -11,9 +11,10 @@ angular.module('HockeyApp')
 
 	/* Mouseover effects for navbar dropdown menus */
 	var menu;
+
 	$('.dropdown').hover(function () {
 		menu = $(this).children('.dropdown-menu');
-		menu.finish().show(400);
+		menu.finish().delay(50).show(400);
 	}, function () {
 		menu.stop().delay(200).hide(300);
 	});
