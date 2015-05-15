@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('HockeyApp', ['ngAnimate', 'ngCookies', 'ngRoute'])
+angular.module('HockeyApp', ['ngAnimate', 'ngCookies', 'ngRoute', 'LocalStorageModule'])
 
   .constant('version', 'v0.0.1')
   .constant('user', 'Martin')
@@ -18,7 +18,8 @@ angular.module('HockeyApp', ['ngAnimate', 'ngCookies', 'ngRoute'])
 
     $routeProvider
     .when('/', {
-      templateUrl: 'views/home.html'
+      templateUrl: 'views/home.html',
+      controller: 'MainCtrl'
     })
     .when('/features', {
       templateUrl: 'views/features.html'
@@ -34,6 +35,10 @@ angular.module('HockeyApp', ['ngAnimate', 'ngCookies', 'ngRoute'])
       templateUrl: 'views/roster.html',
       controller: 'rosterController'
     })
+    .when('/lineups', {
+      templateUrl: 'views/lineups.html',
+      controller: 'lineupsController'
+    })
     .when('/team', {
       templateUrl: 'views/team.html',
       controller: 'teamController'
@@ -43,13 +48,17 @@ angular.module('HockeyApp', ['ngAnimate', 'ngCookies', 'ngRoute'])
       controller: 'settingsController'
     })
     .otherwise({
-      redirectTo: '/'
+      redirectTo: '/',
     });
 
   })
 
+  .config(['localStorageServiceProvider', function (localStorageServiceProvider) {
+    localStorageServiceProvider.setPrefix('ls');
+  }])
+
   .factory('TeamFactory', function TeamFactory() {
-    //var team = localStorageService.get('players') || [];
+    var team = localStorageService.get('players') || [];
     var team = [];
 
     return {
@@ -66,17 +75,17 @@ angular.module('HockeyApp', ['ngAnimate', 'ngCookies', 'ngRoute'])
     };
   })
 
-  .factory('PlayerFactory', function (playerInfo) {
-    console.log("NEW PLAYER");
-    var Player =  function () {
-      info = playerInfo.replace(/, /g, '/').replace(/,/g, '/').split('/');
+.factory('PlayerFactory', function (playerInfo) {
+  console.log("NEW PLAYER");
+  var Player =  function () {
+    info = playerInfo.replace(/, /g, '/').replace(/,/g, '/').split('/');
 
-      console.log(info);
+    console.log(info);
 
-      this.firstName      = info[0];
-      this.lastName       = info[1];
-      this.playerNumber   = info[2];
-      this.position       = info[3];
-    };
-    return Player;
-  });
+    this.firstName      = info[0];
+    this.lastName       = info[1];
+    this.playerNumber   = info[2];
+    this.position       = info[3];
+  };
+  return Player;
+});

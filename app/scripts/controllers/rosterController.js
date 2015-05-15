@@ -9,15 +9,15 @@ angular.module('HockeyApp')
 	$scope.pageClass = 'page-roster';
 })
 
-.controller('rosterController', ['$scope',
-	function ($scope, TeamFactory, PlayerFactory) {
+.controller('rosterController', ['$scope', 'localStorageService',
+	function ($scope, localStorageService, TeamFactory, PlayerFactory) {
 
  		// Initialization
  		console.log('Started controller roster');
  		$('#warning').show();
  		$('#danger').hide();
 
- 		/*console.log(localStorageService.keys());
+ 		console.log(localStorageService.keys());
 
  		var savedPlayers = localStorageService.get('players');
 
@@ -25,13 +25,12 @@ angular.module('HockeyApp')
 
  		$scope.$watch('players', function () {
  			localStorageService.set('players', $scope.players);
- 		}, true);*/
-
-$scope.players = [];
+ 		}, true);
 
  		// Method to add new players
  		$scope.addPlayer = function() {
  			if ($scope.playerInfo) {
+ 				//TODO: NEED TO ESCAPE SEQUENCE
  				var info = $scope.playerInfo.replace(/, /g, '/').replace(/,/g, '/').split('/');
 
  				var validPlayer = true;

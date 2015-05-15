@@ -1,9 +1,10 @@
 (function(window, document, undefined) {
   "use strict";
-  angular.module("HockeyApp", [ "ngAnimate", "ngCookies", "ngRoute" ]).constant("version", "v0.0.1").constant("user", "Martin").constant("CLIENT_ID", "1031466315037-mri5opmcirkisus3fllv97q2oakgenfa.apps.googleusercontent.com").constant("CLIENT_SECRET", "F22W0vouWOAcKnJdL0gtgOn1").constant("REDIRECT_URL", "https://www.example.com/oauth2callback").constant("linupsToDisplay", 4).config([ "$locationProvider", "$routeProvider", function($locationProvider, $routeProvider) {
+  angular.module("HockeyApp", [ "ngAnimate", "ngCookies", "ngRoute", "LocalStorageModule" ]).constant("version", "v0.0.1").constant("user", "Martin").constant("CLIENT_ID", "1031466315037-mri5opmcirkisus3fllv97q2oakgenfa.apps.googleusercontent.com").constant("CLIENT_SECRET", "F22W0vouWOAcKnJdL0gtgOn1").constant("REDIRECT_URL", "https://www.example.com/oauth2callback").constant("linupsToDisplay", 4).config([ "$locationProvider", "$routeProvider", function($locationProvider, $routeProvider) {
     $locationProvider.html5Mode(true);
     $routeProvider.when("/", {
-      templateUrl: "views/home.html"
+      templateUrl: "views/home.html",
+      controller: "MainCtrl"
     }).when("/features", {
       templateUrl: "views/features.html"
     }).when("/contact", {
@@ -14,6 +15,9 @@
     }).when("/roster", {
       templateUrl: "views/roster.html",
       controller: "rosterController"
+    }).when("/lineups", {
+      templateUrl: "views/lineups.html",
+      controller: "lineupsController"
     }).when("/team", {
       templateUrl: "views/team.html",
       controller: "teamController"
@@ -23,7 +27,10 @@
     }).otherwise({
       redirectTo: "/"
     });
+  } ]).config([ "localStorageServiceProvider", function(localStorageServiceProvider) {
+    localStorageServiceProvider.setPrefix("ls");
   } ]).factory("TeamFactory", function TeamFactory() {
+    var team = localStorageService.get("players") || [];
     var team = [];
     return {
       add: function(player) {
@@ -53,20 +60,37 @@
     $scope.pageClass = "page-game";
     $scope.lineups = [ "lineup 1", "lineup 2", "lineup 3", "lineup 4", "lineup 5", "lineup 6" ];
   } ]);
+  angular.module("HockeyApp").controller("lineupsController", [ "$scope", "localStorageService", function($scope, localStorageService, TeamFactory, PlayerFactory) {
+    console.log("Started lineupsController");
+    var savedPlayers = localStorageService.get("players");
+    $scope.players = savedPlayers || [];
+    var lineup = [];
+    var linups = [];
+  } ]);
   angular.module("HockeyApp").controller("MainCtrl", [ "$location", "version", "user", function($location, version, user) {
     var vm = this;
     vm.path = $location.path.bind($location);
     vm.version = version;
     vm.user = user;
+    $(".dropdown").hover(function() {
+      $(this).children(".dropdown-menu").css("display", "block");
+    }, function() {
+      $(this).children(".dropdown-menu").css("display", "none");
+    });
   } ]);
   angular.module("HockeyApp").controller("rosterPageController", [ "$scope", function($scope) {
     console.log("Loaded Roster Controller.");
     $scope.pageClass = "page-roster";
-  } ]).controller("rosterController", [ "$scope", function($scope, TeamFactory, PlayerFactory) {
+  } ]).controller("rosterController", [ "$scope", "localStorageService", function($scope, localStorageService, TeamFactory, PlayerFactory) {
     console.log("Started controller roster");
     $("#warning").show();
     $("#danger").hide();
-    $scope.players = [];
+    console.log(localStorageService.keys());
+    var savedPlayers = localStorageService.get("players");
+    $scope.players = savedPlayers || [];
+    $scope.$watch("players", function() {
+      localStorageService.set("players", $scope.players);
+    }, true);
     $scope.addPlayer = function() {
       if ($scope.playerInfo) {
         var info = $scope.playerInfo.replace(/, /g, "/").replace(/,/g, "/").split("/");
@@ -79,7 +103,7 @@
         var newPlayer = {
           firstName: info[0],
           lastName: info[1],
-          playerNumber: info[2],
+          playerNumber: parseInt(info[2]),
           position: info[3]
         };
         var playerExists = false;
@@ -120,6 +144,15 @@
     console.log("Loaded Team Controller.");
     $scope.pageClass = "page-team";
   } ]);
+  angular.module("HockeyApp").filter("time", function() {
+    return function(obj) {
+      return +new Date(obj);
+    };
+  }).filter("startFrom", function() {
+    return function(obj, index) {
+      return obj && obj.slice(index);
+    };
+  });
   angular.module("HockeyApp").directive("ngHelloWorld", function() {
     return {
       restrict: "EAC",
@@ -130,15 +163,6 @@
           scope.name = "world";
         };
       }
-    };
-  });
-  angular.module("HockeyApp").filter("time", function() {
-    return function(obj) {
-      return +new Date(obj);
-    };
-  }).filter("startFrom", function() {
-    return function(obj, index) {
-      return obj && obj.slice(index);
     };
   });
   var readline = require("readline");
