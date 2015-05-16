@@ -11,15 +11,15 @@ angular.module('HockeyApp')
 
 
 	/* Dropdown menu interaction */
-	var myTimeout;
+	var mouseOverTimeout;
 	var menu;
 	$('.dropdown').mouseenter(function() {
 		menu = $(this).children('.dropdown-menu');
-		myTimeout = setTimeout(function() {
+		mouseOverTimeout = setTimeout(function() {
         menu.show(400);
     }, 400);
 	}).mouseleave(function() {
-		clearTimeout(myTimeout);
+		clearTimeout(mouseOverTimeout);
 
 		menu.delay(200).hide(300);
 	});
