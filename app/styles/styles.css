@@ -41,3 +41,32 @@ input[readonly].player-info
 	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(126, 239, 104, 0.6);
 	outline: 0 none;
 }
+
+/* WIP style for player pool in Linup */
+.player-pool
+{
+	max-height: 100%;
+	overflow-y: scroll;
+	overflow-x: hidden;
+}
+
+/* Deisable text selection */
+.noselect {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.lineup
+{
+	width: 100%;
+	margin-top: 4px;
+}
+
+.btn-neutral
+{
+	border-color: #B8B8B8;
+}

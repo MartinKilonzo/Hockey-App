@@ -3,6 +3,8 @@
 </div>
 
 <div class="container">
+
+	<!-- Warning Messages -->
 	<div class="alert alert-success" role="alert" style="display: none" id="success">Javascript loaded.</div>
 	<div class="alert alert-warning" role="alert" style="display: none" id="warning">Errors in Javascript.</div>
 	<div class="alert alert-danger" role="alert" id="danger">Javascript not loaded.</div>
@@ -21,7 +23,7 @@
 			<div class="row">
 				<div class="col-xs-4" ng-repeat="player in players | filter: playerInfo | orderBy: 'playerNumber'">
 					<p class="input-group" style="margin-top: 12px">
-						<input type="text" value="#{{ player.playerNumber }} {{ player.firstName.charAt(0) }}. {{ player.lastName }}: {{ player.position }}" class="form-control player-info" readonly>
+						<input type="text" value="#{{ player.playerNumber }} {{ player.firstName.charAt(0) }}. {{ player.lastName }}: {{ player.position }}" class="form-control player-info noselect" readonly>
 						<span class="input-group-btn">
 							<button class="btn btn-danger" ng-click="removePlayer($index)" aria-label="Remove">x</button>
 						</span>

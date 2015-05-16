@@ -11,7 +11,7 @@ angular.module('HockeyApp')
 
 .controller('rosterController', ['$scope', 'localStorageService',
 	function ($scope, localStorageService, TeamFactory, PlayerFactory) {
-
+		
  		// Initialization
  		console.log('Started controller roster');
  		$('#warning').show();
