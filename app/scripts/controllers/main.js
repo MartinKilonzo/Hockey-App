@@ -9,14 +9,19 @@ angular.module('HockeyApp')
 	vm.version = version;
 	vm.user = user;
 
-	/* Mouseover effects for navbar dropdown menus */
-	var menu;
 
-	$('.dropdown').hover(function () {
+	/* Dropdown menu interaction */
+	var myTimeout;
+	var menu;
+	$('.dropdown').mouseenter(function() {
 		menu = $(this).children('.dropdown-menu');
-		menu.finish().delay(50).show(400);
-	}, function () {
-		menu.stop().delay(200).hide(300);
+		myTimeout = setTimeout(function() {
+        menu.show(400);
+    }, 400);
+	}).mouseleave(function() {
+		clearTimeout(myTimeout);
+
+		menu.delay(200).hide(300);
 	});
 
 });
