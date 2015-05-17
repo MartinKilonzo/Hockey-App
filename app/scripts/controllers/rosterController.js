@@ -17,8 +17,6 @@ angular.module('HockeyApp')
  		$('#warning').show();
  		$('#danger').hide();
 
- 		console.log(localStorageService.keys());
-
  		var savedPlayers = localStorageService.get('players');
 
  		$scope.players = savedPlayers || [];
@@ -102,5 +100,6 @@ angular.module('HockeyApp')
 		});*/
 
 	}]);
+
 //TODO Figure out how to redefine the controller like in the Ang. Tut.
 //Martin, Kilonzo, 88, Defense

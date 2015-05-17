@@ -12,6 +12,7 @@
   ],
   "dependencies": {
     "jquery": "~2.1.3",
+    "jquery-ui": "~1.11",
     "express": "~4.12.3",
     "mongoose": "~4.0.2",
     "readline": "~3.46.1",

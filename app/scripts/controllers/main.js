@@ -22,7 +22,7 @@ angular.module('HockeyApp')
     }, 400);
 	}).mouseleave(function() {
 		clearTimeout(mouseOverTimeout);
-		menu.delay(200).hide(300);
+		menu.delay(400).hide(300);
 	});
 
 });

@@ -14,16 +14,16 @@
 		<form role="form" ng-submit="addPlayer()">
 			<div class="row" style="margin-bottom: 36px">
 				<div class="input-group">
-				<input type="text" ng-model="playerInfo" placeholder="First Name, Last Name, Number, Position" class="form-control">
+				<input class="form-control" type="text" ng-model="playerInfo" placeholder="First Name, Last Name, Number, Position"></input>
 					<span class="input-group-btn">
-						<input type="submit" class="btn btn-success" value="Add Player">
+						<input class="btn btn-success" type="submit" value="Add Player"></input>
 					</span>
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-xs-4" ng-repeat="player in players | filter: playerInfo | orderBy: 'playerNumber'">
 					<p class="input-group" style="margin-top: 12px">
-						<input type="text" value="#{{ player.playerNumber }} {{ player.firstName.charAt(0) }}. {{ player.lastName }}: {{ player.position }}" class="form-control player-info noselect" readonly>
+						<input class="form-control player-info noselect" type="text" value="#{{ player.playerNumber }} {{ player.firstName.charAt(0) }}. {{ player.lastName }}: {{ player.position }}" readonly></input>
 						<span class="input-group-btn">
 							<button class="btn btn-danger" ng-click="removePlayer($index)" aria-label="Remove">x</button>
 						</span>
