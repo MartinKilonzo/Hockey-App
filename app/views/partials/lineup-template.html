@@ -1,0 +1,25 @@
+<div class="row" ng-init="editing = false">
+	<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+		<h4 class="lineup-title" ng-click="editing = true" ng-show="!editing">{{ lineup.name }}</h4>
+		<form role="form" ng-submit="editing = false; rename($index)" ng-show="editing" style="margin-bottom: 4px">
+			<input class="form-control" type="text" ng-model="newTitle" placeholder="New Title"></input>
+		</form>
+	</div>
+</div>
+<div class="row">
+	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 player-lineup noselect" data-drop="true" ng-model="lineup" jqyoui-droppable>
+		{{ lineup.leftWing }}
+	</div>
+	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 player-lineup noselect" data-drop="true" ng-model="lineup" jqyoui-droppable>
+		{{ lineup.center }}
+	</div>
+	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 player-lineup noselect" data-drop="true" ng-model="lineup" jqyoui-droppable>
+		{{ lineup.rightWing }}
+	</div>
+	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 player-lineup noselect" data-drop="true" ng-model="lineup" jqyoui-droppable>
+		{{ lineup.defence1 }}
+	</div>
+	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 player-lineup noselect" data-drop="true" ng-model="lineup" jqyoui-droppable>
+		{{ lineup.defence2 }}
+	</div>
+</div>
