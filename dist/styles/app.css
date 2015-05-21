@@ -114,6 +114,12 @@ input[readonly].player-info
 	outline: 0 none;
 }
 
+/* Style for player in the roster listing */
+.player-card
+{
+
+}
+
 /* WIP style for player pool in Linup */
 .player-pool
 {
@@ -122,8 +128,38 @@ input[readonly].player-info
 	overflow-x: hidden;
 }
 
-/* Deisable text selection */
-.noselect {
+/* Style for player in lineups */
+.player-lineup
+{
+	height: 90px;
+	width: 90px;
+	line-height: 86px;
+	margin-top: 2px;
+	margin-left: 6px;
+	margin-right: 6px;
+	margin-bottom: 12px;
+
+	text-align: center;
+	color: white;
+	font-weight: bold;
+	font-size: 20pt;
+
+	border: 2px solid #1F1F1F;
+	background-color: #343434;
+	border-radius: 10px;
+
+	overflow: hidden;
+}
+
+.text-vertical-centered
+{
+	line-height: normal;
+	vertical-align: middle;
+}
+
+/* Disable text selection */
+.noselect 
+{
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
