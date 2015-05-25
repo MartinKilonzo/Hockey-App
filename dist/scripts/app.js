@@ -79,6 +79,33 @@
       };
       $scope.lineups.push(newLineup);
     };
+    var newLinemember;
+    $scope.newPlayer = function(playerIndex) {
+      console.log(playerIndex);
+      newLinemember = $scope.players[playerIndex];
+      console.log(newLinemember.firstName);
+    };
+    $scope.addLeftWing = function(index) {
+      console.log($scope.lineups[index].leftWing);
+      $scope.lineups[index].leftWing = newLinemember;
+      newLinemember = "";
+    };
+    $scope.addRightWing = function(index) {
+      $scope.lineups[index].rightWing = newLinemember;
+      newLinemember = "";
+    };
+    $scope.addCenter = function(index) {
+      $scope.lineups[index].center = newLinemember;
+      newLinemember = "";
+    };
+    $scope.addDefence1 = function(index) {
+      $scope.lineups[index].defence1 = newLinemember;
+      newLinemember = "";
+    };
+    $scope.addDefence2 = function(index) {
+      $scope.lineups[index].defence2 = newLinemember;
+      newLinemember = "";
+    };
     $scope.rename = function(index) {
       console.log($scope.newTitle);
       if ($scope.newTitle) {

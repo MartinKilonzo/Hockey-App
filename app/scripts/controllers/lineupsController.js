@@ -14,7 +14,9 @@ angular.module('HockeyApp')
 		$scope.players = savedPlayers || [];
 		$scope.lineups = savedLineups || [];
 
-		
+		$scope.$watch('lineups', function () {
+ 			localStorageService.set('lineups', $scope.lineups);
+ 		}, true);
 
 		$scope.newEmptyLineup = function () {;
 			var newLineup = {
@@ -26,6 +28,44 @@ angular.module('HockeyApp')
 				defence2: "D"
 			};
 			$scope.lineups.push(newLineup);
+		};
+
+		var newLinemember;
+
+		$scope.newPlayer = function (event, ui, player) {			
+			newLinemember = player;
+			console.log(newLinemember);
+		};
+
+		$scope.addLeftWing = function (event, ui, lineup) {
+			lineup.leftWing = '#' + newLinemember.playerNumber.toString();
+			console.log(lineup.leftWing);
+			newLinemember = '';
+			console.log($scope.lineups);
+		};
+
+		$scope.addCenter = function (event, ui, lineup) {
+			lineup.center = '#' + newLinemember.playerNumber.toString();
+			console.log(lineup.center);
+			newLinemember = '';
+		};
+
+		$scope.addRightWing = function (event, ui, lineup) {
+			lineup.rightWing = '#' + newLinemember.playerNumber.toString();
+			console.log(lineup.rightWing);
+			newLinemember = '';
+		};
+
+		$scope.addDefence1 = function (event, ui, lineup) {
+			lineup.defence1 = '#' + newLinemember.playerNumber.toString();
+			console.log(lineup.defence1);
+			newLinemember = '';
+		};
+
+		$scope.addDefence2 = function (event, ui, lineup) {
+			lineup.defence2 = '#' + newLinemember.playerNumber.toString();
+			console.log(lineup.defence2);
+			newLinemember = '';
 		};
 
 		// list of linups

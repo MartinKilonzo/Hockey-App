@@ -7,19 +7,19 @@
 	</div>
 </div>
 <div class="row">
-	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 player-lineup noselect" data-drop="true" ng-model="lineup" jqyoui-droppable>
+	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 player-lineup noselect" data-drop="true" ng-model="lineup" jqyoui-droppable="{onDrop: 'addLeftWing(lineup.leftWing, $index)'}">
 		{{ lineup.leftWing }}
 	</div>
-	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 player-lineup noselect" data-drop="true" ng-model="lineup" jqyoui-droppable>
+	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 player-lineup noselect" data-drop="true" ng-model="lineup" jqyoui-droppable="{onDrop: 'addCenter(lineup, $index)'}">
 		{{ lineup.center }}
 	</div>
-	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 player-lineup noselect" data-drop="true" ng-model="lineup" jqyoui-droppable>
+	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 player-lineup noselect" data-drop="true" ng-model="lineup" jqyoui-droppable="{onDrop: 'addRightWing(lineup, $index)'}">
 		{{ lineup.rightWing }}
 	</div>
-	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 player-lineup noselect" data-drop="true" ng-model="lineup" jqyoui-droppable>
+	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 player-lineup noselect" data-drop="true" ng-model="lineup" jqyoui-droppable="{onDrop: 'addDefence1(lineup, $index)'}">
 		{{ lineup.defence1 }}
 	</div>
-	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 player-lineup noselect" data-drop="true" ng-model="lineup" jqyoui-droppable>
+	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 player-lineup noselect" data-drop="true" ng-model="lineup" jqyoui-droppable="{onDrop: 'addDefence2(lineup, $index)'}">
 		{{ lineup.defence2 }}
 	</div>
 </div>
