@@ -22,7 +22,7 @@ angular.module('HockeyApp')
 
 		$scope.createNewLineup = function () {
 
-			var newLineupModalInstance = $modal.open({
+			var modalInstance = $modal.open({
 
 				animation: true,
 				templateUrl: 'views/partials/lineup-create.html',
@@ -35,13 +35,13 @@ angular.module('HockeyApp')
 				}
 			});
 
-			newLineupModalInstance.result.then(function (value) {
+			modalInstance.result.then(function (value) {
 				console.log(value);
 				//the assignment of the new lineup ie pushing it into lineups
 			}, function () {
 				console.log('Modal Closed.');
 			})['finally'](function() {
-   				 $scope.newLineupModalInstance = undefined  // <--- This fixes
+   				 $scope.modalInstance = undefined  // <--- This fixes
 			});
 		};
 
@@ -78,11 +78,25 @@ angular.module('HockeyApp')
 	}])
 
 	.controller('createLineupController', ['$scope', 'players',
-		function ($scope, $newLineupModalInstance, players) {
+		function ($scope, $modalInstance, players) {
 		
+		// Lineup Creation //
+
+		// Footer Page Handling //
+		$scope.pages = ['Right Wing', 'Left Wing', 'Center', 'Defence','Title'];
+
+		$scope.totalItems = $scope.pages.length * 10;
+		console.log($scope.totalItems);
+
+		$scope.currentPage = 1;
+
 		$scope.createNew = function () {
 			console.log('Create new lineup');
-			$newLineupModalInstance.dismiss('cancel');
+			$modalInstance.close('cancel');
+		};
+
+		$scope.setPage = function (index) {
+			$scope.currentPage = index;
 		};
 
 	}]);
