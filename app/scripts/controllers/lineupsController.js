@@ -84,19 +84,21 @@ angular.module('HockeyApp')
 
 		// Footer Page Handling //
 		$scope.pages = ['Right Wing', 'Left Wing', 'Center', 'Defence','Title'];
+		$scope.lastPage = $scope.currentPage === $scope.pages.length - 1;
 
 		$scope.totalItems = $scope.pages.length * 10;
 		console.log($scope.totalItems);
 
-		$scope.currentPage = 1;
+		$scope.currentPage = 0;
 
-		$scope.createNew = function () {
+		$scope.saveNew = function () {
 			console.log('Create new lineup');
-			$modalInstance.close('cancel');
+			$modalInstance.close(/*newCompleteLineup*/);
 		};
 
 		$scope.setPage = function (index) {
 			$scope.currentPage = index;
+			$scope.lastPage = $scope.currentPage === $scope.pages.length - 1;
 		};
 
 	}]);
