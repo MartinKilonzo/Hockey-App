@@ -15,7 +15,7 @@
 			</div>
 
 			<div class="col-lg-1-offset-0">
-				<h2 ng-click="newEmptyLineup()"><button type="button" class="btn btn-success" >Add New Lineup</button></h2>
+				<h2 ng-click="createNewLineup()"><button type="button" class="btn btn-success" >Add New Lineup</button></h2>
 			</div>
 		</div>
 
@@ -49,7 +49,7 @@
 			</div>
 		</div>
 		<!-- Players -->
-		<div class="row" ng-repeat="player in players | filter: position | orderBy: 'position'">
+		<div class="row" ng-repeat="player in players | filter: position | orderBy: ['position', '-playerNumber']">
 			<lineup-player-pool></lineup-player-pool>
 		</div>
 	</div>

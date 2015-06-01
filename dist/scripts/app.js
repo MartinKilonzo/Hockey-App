@@ -1,6 +1,6 @@
 (function(window, document, undefined) {
   "use strict";
-  angular.module("HockeyApp", [ "ngAnimate", "ngCookies", "ngRoute", "ngDragDrop", "LocalStorageModule" ]).constant("version", "v0.0.1").constant("user", "Martin").constant("CLIENT_ID", "1031466315037-mri5opmcirkisus3fllv97q2oakgenfa.apps.googleusercontent.com").constant("CLIENT_SECRET", "F22W0vouWOAcKnJdL0gtgOn1").constant("REDIRECT_URL", "https://www.example.com/oauth2callback").constant("linupsToDisplay", 4).config([ "$locationProvider", "$routeProvider", function($locationProvider, $routeProvider) {
+  angular.module("HockeyApp", [ "ngAnimate", "ngCookies", "ngRoute", "ui.bootstrap", "ngDragDrop", "LocalStorageModule" ]).constant("version", "v0.0.1").constant("user", "Martin").constant("CLIENT_ID", "1031466315037-mri5opmcirkisus3fllv97q2oakgenfa.apps.googleusercontent.com").constant("CLIENT_SECRET", "F22W0vouWOAcKnJdL0gtgOn1").constant("REDIRECT_URL", "https://www.example.com/oauth2callback").constant("linupsToDisplay", 4).config([ "$locationProvider", "$routeProvider", function($locationProvider, $routeProvider) {
     $locationProvider.html5Mode(true);
     $routeProvider.when("/", {
       templateUrl: "views/home.html",
@@ -60,14 +60,36 @@
     $scope.pageClass = "page-game";
     $scope.lineups = [ "lineup 1", "lineup 2", "lineup 3", "lineup 4", "lineup 5", "lineup 6" ];
   } ]);
-  angular.module("HockeyApp").controller("lineupsController", [ "$scope", "localStorageService", function($scope, localStorageService, TeamFactory, PlayerFactory) {
+  angular.module("HockeyApp").controller("lineupsController", [ "$scope", "localStorageService", "$modal", function($scope, localStorageService, $modal, TeamFactory, PlayerFactory) {
     console.log("Started lineupsController");
     $("#warning").show();
     $("#danger").hide();
+    $scope.dropToggle = false;
     var savedPlayers = localStorageService.get("players");
     var savedLineups = localStorageService.get("lineups");
     $scope.players = savedPlayers || [];
     $scope.lineups = savedLineups || [];
+    $scope.$watch("lineups", function() {
+      localStorageService.set("lineups", $scope.lineups);
+    }, true);
+    $scope.createNewLineup = function() {
+      var newLineupModalInstance = $modal.open({
+        animation: true,
+        templateUrl: "views/partials/lineup-create.html",
+        controller: "createLineupController",
+        size: "lg",
+        resolve: {
+          players: function() {
+            return $scope.players;
+          }
+        }
+      });
+      newLineupModalInstance.result.then(function(value) {
+        console.log(value);
+      }, function() {
+        console.log("Modal Closed.");
+      });
+    };
     $scope.newEmptyLineup = function() {
       var newLineup = {
         name: "New Lineup",
@@ -78,33 +100,6 @@
         defence2: "D"
       };
       $scope.lineups.push(newLineup);
-    };
-    var newLinemember;
-    $scope.newPlayer = function(playerIndex) {
-      console.log(playerIndex);
-      newLinemember = $scope.players[playerIndex];
-      console.log(newLinemember.firstName);
-    };
-    $scope.addLeftWing = function(index) {
-      console.log($scope.lineups[index].leftWing);
-      $scope.lineups[index].leftWing = newLinemember;
-      newLinemember = "";
-    };
-    $scope.addRightWing = function(index) {
-      $scope.lineups[index].rightWing = newLinemember;
-      newLinemember = "";
-    };
-    $scope.addCenter = function(index) {
-      $scope.lineups[index].center = newLinemember;
-      newLinemember = "";
-    };
-    $scope.addDefence1 = function(index) {
-      $scope.lineups[index].defence1 = newLinemember;
-      newLinemember = "";
-    };
-    $scope.addDefence2 = function(index) {
-      $scope.lineups[index].defence2 = newLinemember;
-      newLinemember = "";
     };
     $scope.rename = function(index) {
       console.log($scope.newTitle);
@@ -117,6 +112,11 @@
     console.log("Ended lineupsController");
     $("#success").show();
     $("#warning").hide();
+  } ]).controller("createLineupController", [ "$scope", "players", function($scope, $newLineupModalInstance, players) {
+    $scope.createNew = function() {
+      console.log("Create new lineup");
+      $newLineupModalInstance.$close();
+    };
   } ]);
   angular.module("HockeyApp").controller("MainCtrl", [ "$location", "version", "user", function($location, version, user) {
     var vm = this;
@@ -215,6 +215,11 @@
     return {
       restrict: "E",
       templateUrl: "views/partials/lineup-player-pool.html"
+    };
+  }).directive("lineupCreate", function() {
+    return {
+      restrict: "E",
+      templateUrl: "views/partials/lineup-create.html"
     };
   });
   angular.module("HockeyApp").directive("ngHelloWorld", function() {
