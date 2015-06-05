@@ -77,17 +77,14 @@ angular.module('HockeyApp')
 
 	}])
 
-	.controller('createLineupController', ['$scope', 'players',
+	.controller('createLineupController', ['$scope', '$modalInstance', 'players',
 		function ($scope, $modalInstance, players) {
-		
-		// Lineup Creation //
 
-		// Footer Page Handling //
+		// Page Handling //
 		$scope.pages = ['Right Wing', 'Left Wing', 'Center', 'Defence','Title'];
 		$scope.lastPage = $scope.currentPage === $scope.pages.length - 1;
 
 		$scope.totalItems = $scope.pages.length * 10;
-		console.log($scope.totalItems);
 
 		$scope.currentPage = 0;
 
@@ -98,7 +95,32 @@ angular.module('HockeyApp')
 
 		$scope.setPage = function (index) {
 			$scope.currentPage = index;
+			$scope.selectionMade = $scope.newLineup[index];
 			$scope.lastPage = $scope.currentPage === $scope.pages.length - 1;
+		};
+
+		// Lineup Creation //
+		$scope.players = players;
+		$scope.newLineup = [];
+		/*var newLineup = {
+			name: "New Lineup",
+			leftWing: "LW",
+			center: "C",
+			rightWing: "RW",
+			defence1: "D",
+			defence2: "D"
+		 };*/
+
+		 // Confirm the lineup validty at each page
+		$scope.playerSelection = function(player) {
+			$scope.selectionMade = player;
+			$scope.newLineup[$scope.currentPage] = player;
+			console.log(player);
+		};
+
+		$scope.setTitle = function() {
+			$scope.newLineup.push($scope.newTitle);
+			// RUN CHECK FOR VALIDITY AND SET VALID FLAG
 		};
 
 	}]);

@@ -73,7 +73,7 @@
       localStorageService.set("lineups", $scope.lineups);
     }, true);
     $scope.createNewLineup = function() {
-      var newLineupModalInstance = $modal.open({
+      var modalInstance = $modal.open({
         animation: true,
         templateUrl: "views/partials/lineup-create.html",
         controller: "createLineupController",
@@ -84,10 +84,12 @@
           }
         }
       });
-      newLineupModalInstance.result.then(function(value) {
+      modalInstance.result.then(function(value) {
         console.log(value);
       }, function() {
         console.log("Modal Closed.");
+      })["finally"](function() {
+        $scope.modalInstance = undefined;
       });
     };
     $scope.newEmptyLineup = function() {
@@ -112,10 +114,19 @@
     console.log("Ended lineupsController");
     $("#success").show();
     $("#warning").hide();
-  } ]).controller("createLineupController", [ "$scope", "players", function($scope, $newLineupModalInstance, players) {
-    $scope.createNew = function() {
+  } ]).controller("createLineupController", [ "$scope", "players", function($scope, $modalInstance, players) {
+    $scope.pages = [ "Right Wing", "Left Wing", "Center", "Defence", "Title" ];
+    $scope.lastPage = $scope.currentPage === $scope.pages.length - 1;
+    $scope.totalItems = $scope.pages.length * 10;
+    console.log($scope.totalItems);
+    $scope.currentPage = 0;
+    $scope.saveNew = function() {
       console.log("Create new lineup");
-      $newLineupModalInstance.$close();
+      $modalInstance.close();
+    };
+    $scope.setPage = function(index) {
+      $scope.currentPage = index;
+      $scope.lastPage = $scope.currentPage === $scope.pages.length - 1;
     };
   } ]);
   angular.module("HockeyApp").controller("MainCtrl", [ "$location", "version", "user", function($location, version, user) {
@@ -200,6 +211,15 @@
     console.log("Loaded Team Controller.");
     $scope.pageClass = "page-team";
   } ]);
+  angular.module("HockeyApp").filter("time", function() {
+    return function(obj) {
+      return +new Date(obj);
+    };
+  }).filter("startFrom", function() {
+    return function(obj, index) {
+      return obj && obj.slice(index);
+    };
+  });
   angular.module("HockeyApp").directive("showDropdown", function() {
     return {
       restrict: "EAC",
@@ -243,15 +263,6 @@
     return {
       restrict: "E",
       templateUrl: "views/partials/roster-input.html"
-    };
-  });
-  angular.module("HockeyApp").filter("time", function() {
-    return function(obj) {
-      return +new Date(obj);
-    };
-  }).filter("startFrom", function() {
-    return function(obj, index) {
-      return obj && obj.slice(index);
     };
   });
   var readline = require("readline");

@@ -32,25 +32,8 @@
 
 		<!-- Header -->
 		<div class="row">
-			<h2>Player Pool</h2>
-		</div>
-		<!-- Consider adding a search bar for quicker selection here -->
-		<div class="row">
-			<div class="btn-group btn-group-justified" style="margin-bottom: 8px" role="group" aria-label="...">
-				<div class="btn-group" role="group">
-					<button type="button" class="btn btn-danger" ng-click="position = 'For'">Forward</button>
-				</div>
-				<div class="btn-group" role="group">
-					<button type="button" class="btn btn-primary" ng-click="position = 'Def'">Defence</button>
-				</div>
-				<div class="btn-group" role="group">
-					<button type="button" class="btn btn-default"  ng-click="position = ''">All</button>
-				</div>
-			</div>
-		</div>
-		<!-- Players -->
-		<div class="row" ng-repeat="player in players | filter: position | orderBy: ['position', '-playerNumber']">
-			<lineup-player-pool></lineup-player-pool>
+			<h2>Top Players</h2>
+			-SIMPLE PLAYER STATISTICS-
 		</div>
 	</div>
 

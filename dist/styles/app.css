@@ -160,13 +160,13 @@ input[readonly].player-info
 /* Disable text selection */
 .noselect 
 {
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    cursor: default;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	cursor: default;
 }
 
 /* Lineup specific styles */
@@ -185,3 +185,44 @@ input[readonly].player-info
 {
 	border-color: #B8B8B8;
 }
+
+/** Create lineup modal styles **/
+/* Styles for the cancel button */
+.modal .modal-header .btn 
+{
+	position: absolute;
+	top: 0;
+	right: 0;
+	margin-top: 0;
+	border-top-left-radius: 0;
+	border-bottom-right-radius: 0;
+}
+.slideLeft
+{
+	margin-right: 39px;
+	border-top-right-radius: 0;
+}
+
+/* Styles for the confirm button */
+.modal .modal-header .btn-save
+{
+	position: absolute;
+	top: 0;
+	right: 0;
+	margin-top: 0;
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+	border-bottom-right-radius: 0;
+}
+
+/* Styles for the navigation buttons */
+.modal-footer.center
+{
+	text-align: center;
+}
+
+.modal-footer .btn-group .btn
+{
+	width: 95px;
+}
+

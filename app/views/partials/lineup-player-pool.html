@@ -1,3 +1,3 @@
 <p class="input-group noselect" style="margin-top: 4px; width: 100%">
-	<span class="form-control player-info" ng-model="players" applyFilter="['position', '-playerNumber']" data-drag="dropToggle" data-jqyoui-options="{revert: 'invalid', helper: 'clone'}" jqyoui-draggable="{index: {{$index}}, placeholder: 'keep', animate: true, onStart: 'newPlayer(player)'}">#{{ player.playerNumber }} {{ player.firstName.charAt(0) }}. {{ player.lastName }}: {{ player.position }}</span>
+	<span class="form-control player-info" ng-model="players" ng-click="playerSelection(player)">#{{ player.playerNumber }} {{ player.firstName.charAt(0) }}. {{ player.lastName }}</span>
 </p>
