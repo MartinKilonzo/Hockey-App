@@ -184,6 +184,11 @@ input[readonly].player-info
 	overflow: hidden;
 }
 
+.player-selected
+{
+	border: 2px solid #FFE03C;
+}
+
 .player-lineup-new p
 {
 	position: absolute;

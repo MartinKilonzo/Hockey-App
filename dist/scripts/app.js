@@ -114,11 +114,10 @@
     console.log("Ended lineupsController");
     $("#success").show();
     $("#warning").hide();
-  } ]).controller("createLineupController", [ "$scope", "players", function($scope, $modalInstance, players) {
+  } ]).controller("createLineupController", [ "$scope", "$modalInstance", "players", function($scope, $modalInstance, players) {
     $scope.pages = [ "Right Wing", "Left Wing", "Center", "Defence", "Title" ];
     $scope.lastPage = $scope.currentPage === $scope.pages.length - 1;
     $scope.totalItems = $scope.pages.length * 10;
-    console.log($scope.totalItems);
     $scope.currentPage = 0;
     $scope.saveNew = function() {
       console.log("Create new lineup");
@@ -126,7 +125,26 @@
     };
     $scope.setPage = function(index) {
       $scope.currentPage = index;
+      $scope.selectionMade = $scope.newLineup[index];
       $scope.lastPage = $scope.currentPage === $scope.pages.length - 1;
+    };
+    $scope.players = players;
+    $scope.newLineup = [];
+    var setPosition = function() {
+      if ($scope.currentPage === 3) {
+        return null;
+      } else {
+        return $scope.currentPage;
+      }
+    };
+    $scope.playerSelection = function(player) {
+      $scope.selectionMade = player;
+      var position = setPosition();
+      $scope.newLineup[position] = player;
+      console.log(player);
+    };
+    $scope.setTitle = function() {
+      $scope.newLineup[$scope.currentPage + 1] = $scope.newTitle;
     };
   } ]);
   angular.module("HockeyApp").controller("MainCtrl", [ "$location", "version", "user", function($location, version, user) {

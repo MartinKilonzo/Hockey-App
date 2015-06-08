@@ -81,7 +81,7 @@ angular.module('HockeyApp')
 		function ($scope, $modalInstance, players) {
 
 		// Page Handling //
-		$scope.pages = ['Right Wing', 'Left Wing', 'Center', 'Defence','Title'];
+		$scope.pages = ['Left Wing', 'Center', 'Right Wing', 'Defence','Title'];
 		$scope.lastPage = $scope.currentPage === $scope.pages.length - 1;
 
 		$scope.totalItems = $scope.pages.length * 10;
@@ -95,6 +95,15 @@ angular.module('HockeyApp')
 
 		$scope.setPage = function (index) {
 			$scope.currentPage = index;
+
+			if (index === 3) {
+				$scope.defenceSelected = 1;
+			}
+
+			else {
+				$scope.defenceSelected = 0;
+			}
+
 			$scope.selectionMade = $scope.newLineup[index];
 			$scope.lastPage = $scope.currentPage === $scope.pages.length - 1;
 		};
@@ -103,25 +112,62 @@ angular.module('HockeyApp')
 		$scope.players = players;
 		$scope.newLineup = [];
 		/*var newLineup = {
-			name: "New Lineup",
 			leftWing: "LW",
 			center: "C",
 			rightWing: "RW",
 			defence1: "D",
 			defence2: "D"
-		 };*/
+			name: "New Lineup",
+		};*/
+
+		var setPosition = function ()
+		{
+			if ($scope.currentPage === 3)
+			{
+				return null;
+				//Handle defence 1 and 2
+
+				//return $scope.currentPage;
+
+				//return $scope.currentPage + 1;
+			}
+
+			else
+			{
+				return $scope.currentPage;
+			}
+		};
 
 		 // Confirm the lineup validty at each page
 		$scope.playerSelection = function(player) {
 			$scope.selectionMade = player;
-			$scope.newLineup[$scope.currentPage] = player;
+
+			var position = setPosition();
+
+			$scope.newLineup[position] = player;
 			console.log(player);
 		};
 
+		$scope.setDefenceSelection = function(mode) {
+			if (mode === 1 && $scope.currentPage === 3)
+			{
+				$scope.defenceSelected = 1;
+				console.log(mode);
+			}
+
+			if (mode === 2 && $scope.currentPage === 4)
+			{
+				$scope.defenceSelected = 2;
+				console.log(mode);
+			}
+		};
+
 		$scope.setTitle = function() {
-			$scope.newLineup.push($scope.newTitle);
+			$scope.newLineup[$scope.currentPage + 1] = $scope.newTitle; //Title is stored after both defence
 			// RUN CHECK FOR VALIDITY AND SET VALID FLAG
 		};
+
+
 
 	}]);
 
