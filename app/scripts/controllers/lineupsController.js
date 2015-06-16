@@ -20,7 +20,9 @@ angular.module('HockeyApp')
  			localStorageService.set('lineups', $scope.lineups);
  		}, true);
 
-		$scope.createNewLineup = function () {
+
+		// ** CREATE LINEUP FUNCTIONS ** //
+		$scope.createNewLineup = function (index) {
 
 			var modalInstance = $modal.open({
 
@@ -31,6 +33,10 @@ angular.module('HockeyApp')
 				resolve: {
 					players: function () {
 						return $scope.players;
+						if (index)
+						{
+							return $scope.lineups[index];
+						}
 					}
 				}
 			});
@@ -58,6 +64,11 @@ angular.module('HockeyApp')
 			};
 
 			$scope.lineups.push(newLineup);
+		};
+
+		// ** EDIT LINEUP FUNCTIONS ** //
+		$scope.editLineup = function (index) {
+
 		};
 
 		console.log('Ended lineupsController');
