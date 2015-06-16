@@ -8,19 +8,18 @@
 </div>
 <div class="row">
 	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 player-lineup noselect" data-drop="dropToggle" ng-model="lineup.leftWing" jqyoui-droppable="{onDrop: 'addLeftWing(lineup, $index)'}">
-		<span ng-show="lineup.placeholder" > LW </span>
-		<span ng-show="!lineup.placeholder" >#{{ lineup.leftWing.playerNumber }}</span>
+		#{{ lineup.leftWing.playerNumber }}
 	</div>
 	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 player-lineup noselect" data-drop="dropToggle" ng-model="lineup.center" jqyoui-droppable="{onDrop: 'addCenter(lineup, $index)'}">
-		{{ lineup.center.playerNumber }}
+		#{{ lineup.center.playerNumber }}
 	</div>
 	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 player-lineup noselect" data-drop="dropToggle" ng-model="lineup" jqyoui-droppable="{onDrop: 'addRightWing(lineup, $index)'}">
-		{{ lineup.rightWing.playerNumber }}
+		#{{ lineup.rightWing.playerNumber }}
 	</div>
 	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 player-lineup noselect" data-drop="dropToggle" ng-model="lineup" jqyoui-droppable="{onDrop: 'addDefence1(lineup, $index)'}">
-		{{ lineup.defence1.playerNumber }}
+		#{{ lineup.defence1.playerNumber }}
 	</div>
 	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 player-lineup noselect" data-drop="dropToggle" ng-model="lineup" jqyoui-droppable="{onDrop: 'addDefence2(lineup, $index)'}">
-		{{ lineup.defence2.playerNumber }}
+		#{{ lineup.defence2.playerNumber }}
 	</div>
 </div>

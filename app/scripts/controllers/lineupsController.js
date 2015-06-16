@@ -35,14 +35,29 @@ angular.module('HockeyApp')
 				}
 			});
 
-			modalInstance.result.then(function (value) {
-				console.log(value);
-				//the assignment of the new lineup ie pushing it into lineups
+			modalInstance.result.then(function (newLineup) {
+				console.log(newLineup);
+				saveNewLineup(newLineup);
 			}, function () {
 				console.log('Modal Closed.');
 			})['finally'](function() {
    				 $scope.modalInstance = undefined  // <--- This fixes
 			});
+		};
+
+		var saveNewLineup = function(newLineup)
+		{
+			var newLineup =
+			{
+				leftWing: newLineup[0],
+				center: newLineup[1],
+				rightWing: newLineup[2],
+				defence1: newLineup[3],
+				defence2: newLineup[4],
+				title: newLineup[5]
+			};
+
+			$scope.lineups.push(newLineup);
 		};
 
 		console.log('Ended lineupsController');
