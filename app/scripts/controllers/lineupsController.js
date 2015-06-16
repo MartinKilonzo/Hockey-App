@@ -56,27 +56,34 @@ angular.module('HockeyApp')
 
 		// Page Handling //
 		$scope.pages = ['Left Wing', 'Center', 'Right Wing', 'Defence','Title'];
-		$scope.lastPage = $scope.currentPage === $scope.pages.length - 1;
 
 		$scope.totalItems = $scope.pages.length * 10;
 
-		$scope.currentPage = 0;
+		$scope.currentPage = 0; // Same as ng-init="currentPage = 0"
 
-		 $scope.validateLineup = function() {
+		/*
+		 * Function which validates the lineup, setting a flag which indicates that the lineup is okay to save
+		 */
+		$scope.validateLineup = function() {
 			$scope.validLineup = true;
 
+			// If the new lineup contains fewer than six elements, it contains empty slots, and is therefore invalid
 			if ($scope.newLineup.length < 6)
 			{
 				$scope.validLineup = false;
 				return;
 			}
 
+			// Check for duplicate entries, which are invalid as a player cannot hold more than one position on ice at a time
 			for (var i = 0; i < $scope.newLineup.length; i++) {
-				// NULL check
+
+				// NULL check for safety
 				if ($scope.newLineup[i]) {
+
 					// Check for duplicity
 					var uniquePlayer = $scope.newLineup[i];
 
+					// Scans the remaining entries for a duplicate, if one exists then the new lineup is invalid
 					for (var j = i + 1; j < $scope.newLineup.length - 1; j++)
 					{
 						if ($scope.newLineup[j] === uniquePlayer) {
@@ -86,6 +93,7 @@ angular.module('HockeyApp')
 					}
 				}
 
+				// If the entry is a NULL entry, then the lineup is invalid
 				else {
 					$scope.validLineup = false;
 					return;
@@ -93,11 +101,17 @@ angular.module('HockeyApp')
 			}
 		};
 
+		/*
+		 * Function which saves the new lineup and passes the changes to the linuep page
+		 */
 		$scope.saveNew = function () {
 			console.log('Create new lineup');
 			$modalInstance.close($scope.newLineup);
 		};
 
+		/*
+		 * Function which handles page navigation within the modal
+		 */
 		$scope.setPage = function (index) {
 			$scope.currentPage = index;
 
@@ -112,7 +126,6 @@ angular.module('HockeyApp')
 			}
 
 			$scope.selectionMade = $scope.newLineup[index];
-			$scope.lastPage = $scope.currentPage === $scope.pages.length - 1;
 		};
 
 		// Lineup Creation //
@@ -127,6 +140,10 @@ angular.module('HockeyApp')
 			name: "New Lineup",
 		};*/
 
+		/* 
+		 * Function which handles the page-to-lineup-array-index conversion; 
+		 * Converts the page number and appropriate selections to the appropriate index
+		 */
 		var setPosition = function ()
 		{
 			if ($scope.currentPage === 3)
@@ -145,7 +162,9 @@ angular.module('HockeyApp')
 			}
 		};
 
-		 // Confirm the lineup validty at each page
+		 /* 
+		 * Fucntion which confirms the lineup validty at each page
+		 */
 		$scope.playerSelection = function(player) {
 			$scope.selectionMade = player;
 
@@ -156,6 +175,9 @@ angular.module('HockeyApp')
 			console.log(player);
 		};
 
+		/*
+		 * Function which sets the appropriate defence selection for adding defencemen to the lineup
+		 */
 		$scope.setDefenceSelection = function(mode) {
 			if (mode === 1 && $scope.currentPage === 3) {
 				$scope.defenceSelected = 1;
@@ -166,6 +188,9 @@ angular.module('HockeyApp')
 			}
 		};
 
+		/*
+		 * Function which saves the new title for the new lineup
+		 */
 		$scope.setTitle = function() {
 			$scope.newLineup[$scope.currentPage + 1] = $scope.newTitle; //Title is stored after both defence
 			$scope.validateLineup();
