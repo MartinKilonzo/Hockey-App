@@ -45,32 +45,6 @@ angular.module('HockeyApp')
 			});
 		};
 
-		$scope.newEmptyLineup = function () {
-			var newLineup = {
-				name: "New Lineup",
-				leftWing: "LW",
-				center: "C",
-				rightWing: "RW",
-				defence1: "D",
-				defence2: "D"
-			};
-			$scope.lineups.push(newLineup);
-		};
-
-		/* WIP */
-		$scope.rename = function(index) {
-			console.log($scope.newTitle);
-
-			if ($scope.newTitle)
-			{
-				$scope.lineups[index].name = $scope.newTitle;
-
-				console.log($scope.lineups[index].name);
-			}
-
-			$scope.newTitle = '';
-		};
-
 		console.log('Ended lineupsController');
 		$('#success').show();
 		$('#warning').hide();
@@ -89,7 +63,6 @@ angular.module('HockeyApp')
 		$scope.currentPage = 0;
 
 		 $scope.validateLineup = function() {
-			console.log($scope.newLineup);
 			$scope.validLineup = true;
 
 			if ($scope.newLineup.length < 6)
@@ -122,7 +95,7 @@ angular.module('HockeyApp')
 
 		$scope.saveNew = function () {
 			console.log('Create new lineup');
-			$modalInstance.close(/*newCompleteLineup*/);
+			$modalInstance.close($scope.newLineup);
 		};
 
 		$scope.setPage = function (index) {
@@ -196,7 +169,6 @@ angular.module('HockeyApp')
 		$scope.setTitle = function() {
 			$scope.newLineup[$scope.currentPage + 1] = $scope.newTitle; //Title is stored after both defence
 			$scope.validateLineup();
-			console.log('TITLE SET');
 			// RUN CHECK FOR VALIDITY AND SET VALID FLAG
 		};
 	}]);
