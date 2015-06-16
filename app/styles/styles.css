@@ -184,11 +184,13 @@ input[readonly].player-info
 	overflow: hidden;
 }
 
-.player-selected
+/* Styles highlighting the position currently being modified */
+.position-selected
 {
 	border: 2px solid #FFE03C;
 }
 
+/* Styles for players added to the new lineup */
 .player-lineup-new p
 {
 	position: absolute;
@@ -198,10 +200,14 @@ input[readonly].player-info
 	transform: translate(-50%,-50%);
 }
 
+.modal .modal-body .container-roster
+{
+	margin-top: 40px;
+}
+
 /* Styles for the navigation buttons */
 .modal-footer.center
 {
-	margin-top: 140px;
 	text-align: center;
 }
 

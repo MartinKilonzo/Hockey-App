@@ -88,6 +88,38 @@ angular.module('HockeyApp')
 
 		$scope.currentPage = 0;
 
+		 $scope.validateLineup = function() {
+			console.log($scope.newLineup);
+			$scope.validLineup = true;
+
+			if ($scope.newLineup.length < 6)
+			{
+				$scope.validLineup = false;
+				return;
+			}
+
+			for (var i = 0; i < $scope.newLineup.length; i++) {
+				// NULL check
+				if ($scope.newLineup[i]) {
+					// Check for duplicity
+					var uniquePlayer = $scope.newLineup[i];
+
+					for (var j = i + 1; j < $scope.newLineup.length - 1; j++)
+					{
+						if ($scope.newLineup[j] === uniquePlayer) {
+							$scope.validLineup = false;
+							return;
+						}
+					}
+				}
+
+				else {
+					$scope.validLineup = false;
+					return;
+				}
+			}
+		};
+
 		$scope.saveNew = function () {
 			console.log('Create new lineup');
 			$modalInstance.close(/*newCompleteLineup*/);
@@ -96,6 +128,8 @@ angular.module('HockeyApp')
 		$scope.setPage = function (index) {
 			$scope.currentPage = index;
 
+			// Flag which indicates whether or not to treat the page as a Defence page or another page
+			// (The defence page is treated as two pages in one, unlike the rest)
 			if (index === 3) {
 				$scope.defenceSelected = 1;
 			}
@@ -124,16 +158,16 @@ angular.module('HockeyApp')
 		{
 			if ($scope.currentPage === 3)
 			{
-				return null;
-				//Handle defence 1 and 2
+				if ($scope.defenceSelected === 1) {
+					return $scope.currentPage;
+				}
 
-				//return $scope.currentPage;
-
-				//return $scope.currentPage + 1;
+				else {
+					return $scope.currentPage + 1;
+				}
 			}
 
-			else
-			{
+			else {
 				return $scope.currentPage;
 			}
 		};
@@ -145,30 +179,26 @@ angular.module('HockeyApp')
 			var position = setPosition();
 
 			$scope.newLineup[position] = player;
+			$scope.validateLineup();
 			console.log(player);
 		};
 
 		$scope.setDefenceSelection = function(mode) {
-			if (mode === 1 && $scope.currentPage === 3)
-			{
+			if (mode === 1 && $scope.currentPage === 3) {
 				$scope.defenceSelected = 1;
-				console.log(mode);
 			}
 
-			if (mode === 2 && $scope.currentPage === 4)
-			{
+			if (mode === 2 && $scope.currentPage === 3) {
 				$scope.defenceSelected = 2;
-				console.log(mode);
 			}
 		};
 
 		$scope.setTitle = function() {
 			$scope.newLineup[$scope.currentPage + 1] = $scope.newTitle; //Title is stored after both defence
+			$scope.validateLineup();
+			console.log('TITLE SET');
 			// RUN CHECK FOR VALIDITY AND SET VALID FLAG
 		};
-
-
-
 	}]);
 
 		// list of linups
