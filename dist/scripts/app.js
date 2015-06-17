@@ -55,51 +55,6 @@
     };
     return Player;
   } ]);
-  angular.module("HockeyApp").directive("showDropdown", function() {
-    return {
-      restrict: "EAC",
-      link: function(scope, elemeent, attrs) {}
-    };
-  });
-  angular.module("HockeyApp").directive("lineupTemplate", function() {
-    return {
-      restrict: "E",
-      templateUrl: "views/partials/lineup-template.html"
-    };
-  }).directive("lineupPlayerPool", function() {
-    return {
-      restrict: "E",
-      templateUrl: "views/partials/lineup-player-pool.html"
-    };
-  }).directive("lineupCreate", function() {
-    return {
-      restrict: "E",
-      templateUrl: "views/partials/lineup-create.html"
-    };
-  });
-  angular.module("HockeyApp").directive("ngHelloWorld", function() {
-    return {
-      restrict: "EAC",
-      scope: true,
-      compile: function compile(tElement, tAttrs) {
-        tElement.html("<span>hello {{name}}</span>");
-        return function postLink(scope, element, attrs, controller) {
-          scope.name = "world";
-        };
-      }
-    };
-  });
-  angular.module("HockeyApp").directive("rosterPlayer", function() {
-    return {
-      restrict: "E",
-      templateUrl: "views/partials/roster-player.html"
-    };
-  }).directive("rosterInput", function() {
-    return {
-      restrict: "E",
-      templateUrl: "views/partials/roster-input.html"
-    };
-  });
   angular.module("HockeyApp").controller("gameController", [ "$scope", function($scope) {
     console.log("Loaded Game Controller.");
     $scope.pageClass = "page-game";
@@ -117,7 +72,7 @@
     $scope.$watch("lineups", function() {
       localStorageService.set("lineups", $scope.lineups);
     }, true);
-    $scope.createNewLineup = function() {
+    $scope.createNewLineup = function(index) {
       var modalInstance = $modal.open({
         animation: true,
         templateUrl: "views/partials/lineup-create.html",
@@ -126,47 +81,64 @@
         resolve: {
           players: function() {
             return $scope.players;
+            if (index) {
+              return $scope.lineups[index];
+            }
           }
         }
       });
-      modalInstance.result.then(function(value) {
-        console.log(value);
+      modalInstance.result.then(function(newLineup) {
+        console.log(newLineup);
+        saveNewLineup(newLineup);
       }, function() {
         console.log("Modal Closed.");
       })["finally"](function() {
         $scope.modalInstance = undefined;
       });
     };
-    $scope.newEmptyLineup = function() {
+    var saveNewLineup = function(newLineup) {
       var newLineup = {
-        name: "New Lineup",
-        leftWing: "LW",
-        center: "C",
-        rightWing: "RW",
-        defence1: "D",
-        defence2: "D"
+        leftWing: newLineup[0],
+        center: newLineup[1],
+        rightWing: newLineup[2],
+        defence1: newLineup[3],
+        defence2: newLineup[4],
+        title: newLineup[5]
       };
       $scope.lineups.push(newLineup);
     };
-    $scope.rename = function(index) {
-      console.log($scope.newTitle);
-      if ($scope.newTitle) {
-        $scope.lineups[index].name = $scope.newTitle;
-        console.log($scope.lineups[index].name);
-      }
-      $scope.newTitle = "";
-    };
+    $scope.editLineup = function(index) {};
     console.log("Ended lineupsController");
     $("#success").show();
     $("#warning").hide();
   } ]).controller("createLineupController", [ "$scope", "$modalInstance", "players", function($scope, $modalInstance, players) {
     $scope.pages = [ "Left Wing", "Center", "Right Wing", "Defence", "Title" ];
-    $scope.lastPage = $scope.currentPage === $scope.pages.length - 1;
     $scope.totalItems = $scope.pages.length * 10;
     $scope.currentPage = 0;
+    $scope.validateLineup = function() {
+      $scope.validLineup = true;
+      if ($scope.newLineup.length < 6) {
+        $scope.validLineup = false;
+        return;
+      }
+      for (var i = 0; i < $scope.newLineup.length; i++) {
+        if ($scope.newLineup[i]) {
+          var uniquePlayer = $scope.newLineup[i];
+          for (var j = i + 1; j < $scope.newLineup.length - 1; j++) {
+            if ($scope.newLineup[j] === uniquePlayer) {
+              $scope.validLineup = false;
+              return;
+            }
+          }
+        } else {
+          $scope.validLineup = false;
+          return;
+        }
+      }
+    };
     $scope.saveNew = function() {
       console.log("Create new lineup");
-      $modalInstance.close();
+      $modalInstance.close($scope.newLineup);
     };
     $scope.setPage = function(index) {
       $scope.currentPage = index;
@@ -176,13 +148,16 @@
         $scope.defenceSelected = 0;
       }
       $scope.selectionMade = $scope.newLineup[index];
-      $scope.lastPage = $scope.currentPage === $scope.pages.length - 1;
     };
     $scope.players = players;
     $scope.newLineup = [];
     var setPosition = function() {
       if ($scope.currentPage === 3) {
-        return null;
+        if ($scope.defenceSelected === 1) {
+          return $scope.currentPage;
+        } else {
+          return $scope.currentPage + 1;
+        }
       } else {
         return $scope.currentPage;
       }
@@ -191,20 +166,20 @@
       $scope.selectionMade = player;
       var position = setPosition();
       $scope.newLineup[position] = player;
+      $scope.validateLineup();
       console.log(player);
     };
     $scope.setDefenceSelection = function(mode) {
       if (mode === 1 && $scope.currentPage === 3) {
         $scope.defenceSelected = 1;
-        console.log(mode);
       }
-      if (mode === 2 && $scope.currentPage === 4) {
+      if (mode === 2 && $scope.currentPage === 3) {
         $scope.defenceSelected = 2;
-        console.log(mode);
       }
     };
     $scope.setTitle = function() {
       $scope.newLineup[$scope.currentPage + 1] = $scope.newTitle;
+      $scope.validateLineup();
     };
   } ]);
   angular.module("HockeyApp").controller("MainCtrl", [ "$location", "version", "user", function($location, version, user) {
@@ -296,6 +271,51 @@
   }).filter("startFrom", function() {
     return function(obj, index) {
       return obj && obj.slice(index);
+    };
+  });
+  angular.module("HockeyApp").directive("showDropdown", function() {
+    return {
+      restrict: "EAC",
+      link: function(scope, elemeent, attrs) {}
+    };
+  });
+  angular.module("HockeyApp").directive("lineupTemplate", function() {
+    return {
+      restrict: "E",
+      templateUrl: "views/partials/lineup-template.html"
+    };
+  }).directive("lineupPlayerPool", function() {
+    return {
+      restrict: "E",
+      templateUrl: "views/partials/lineup-player-pool.html"
+    };
+  }).directive("lineupCreate", function() {
+    return {
+      restrict: "E",
+      templateUrl: "views/partials/lineup-create.html"
+    };
+  });
+  angular.module("HockeyApp").directive("ngHelloWorld", function() {
+    return {
+      restrict: "EAC",
+      scope: true,
+      compile: function compile(tElement, tAttrs) {
+        tElement.html("<span>hello {{name}}</span>");
+        return function postLink(scope, element, attrs, controller) {
+          scope.name = "world";
+        };
+      }
+    };
+  });
+  angular.module("HockeyApp").directive("rosterPlayer", function() {
+    return {
+      restrict: "E",
+      templateUrl: "views/partials/roster-player.html"
+    };
+  }).directive("rosterInput", function() {
+    return {
+      restrict: "E",
+      templateUrl: "views/partials/roster-input.html"
     };
   });
   var readline = require("readline");

@@ -1,9 +1,9 @@
 <div class="row">
 	<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
-		<h4 class="lineup-title">{{ lineup.title }}</h4>
+		<h4 class="lineup-title">{{ lineup.lineupTitle }}</h4>
 	</div>
 </div>
-<div class="row lineup-template" ng-mouseenter="showLineupTools = true" ng-mouseleave="showLineupTools = false">
+<div class="row lineup-template" ng-mouseenter="showLineupTools = true" ng-mouseleave="showLineupTools = true">
 	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 player-lineup noselect" data-drop="dropToggle" ng-model="lineup.leftWing" jqyoui-droppable="{onDrop: 'addLeftWing(lineup, $index)'}">
 		#{{ lineup.leftWing.playerNumber }}
 	</div>
