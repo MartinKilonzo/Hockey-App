@@ -35,7 +35,6 @@ angular.module('HockeyApp')
 						return $scope.players;
 					},
 					lineup: function () {
-						console.log('editLineupIndex = ' + $scope.editLineupIndex);
 						if ($scope.editLineupIndex >= 0) {
 
 							return $scope.lineups[$scope.editLineupIndex];
@@ -60,7 +59,6 @@ angular.module('HockeyApp')
 		};
 
 		$scope.editLineup = function (index) {
-			console.log(index);
 			$scope.editLineupIndex = index;
 			$scope.createNewLineup();
 		};
@@ -77,7 +75,7 @@ angular.module('HockeyApp')
 				lineupTitle: newLineup[5]
 			};
 
-			// If an index has been set, then the user is editing a lineup, so be sure to overwrite the existing one
+			// If an index has been set (ie. not undefined), then the user is editing a lineup, so be sure to overwrite the existing one
 			if (index >= 0) {
 				$scope.lineups[index] = newLineup;
 			}
@@ -121,28 +119,20 @@ angular.module('HockeyApp')
 			}
 
 			// Check for duplicate entries, which are invalid as a player cannot hold more than one position on ice at a time
-			for (var i = 0; i < $scope.newLineup.length; i++) {
+			// For: each player in the lineup
+			for (var i = 0; i < $scope.newLineup.length - 1; i++) {
 
-				// NULL check for safety
-				if ($scope.newLineup[i]) {
+				// Check for duplicity
+				var uniquePlayerNumber = $scope.newLineup[i].playerNumber;
 
-					// Check for duplicity
-					var uniquePlayer = $scope.newLineup[i];
-
-					// Scans the remaining entries for a duplicate, if one exists then the new lineup is invalid
-					for (var j = i + 1; j < $scope.newLineup.length - 1; j++)
-					{
-						if ($scope.newLineup[j] === uniquePlayer) {
-							$scope.validLineup = false;
-							return;
-						}
+				// Scans the array of entries for a duplicate, if one exists then the new lineup is invalid
+				// For: each other player in the lineup
+				for (var j = 0; j < $scope.newLineup.length - 1; j++)
+				{
+					if (i != j &&  $scope.newLineup[j].playerNumber === uniquePlayerNumber) {
+						$scope.validLineup = false;
+						return;
 					}
-				}
-
-				// If the entry is a NULL entry, then the lineup is invalid
-				else {
-					$scope.validLineup = false;
-					return;
 				}
 			}
 		};
@@ -152,7 +142,7 @@ angular.module('HockeyApp')
 		 */
 		 $scope.saveNew = function () {
 		 	console.log('Create new lineup');
-		 	$modalInstance.close($scope.newLineup, editingFlag);
+		 	$modalInstance.close($scope.newLineup);
 		 };
 
 		/*
@@ -177,7 +167,6 @@ angular.module('HockeyApp')
 		// Lineup Creation //
 		$scope.players = players;
 		$scope.newLineup = [];
-		var editingFlag = false;
 
 		if (lineup) {	
 			$scope.newLineup[0] = lineup.leftWing;
@@ -186,8 +175,7 @@ angular.module('HockeyApp')
 			$scope.newLineup[3] = lineup.defence1;
 			$scope.newLineup[4] = lineup.defence2;
 			$scope.newLineup[5] = lineup.lineupTitle;
-			console.log($scope.newLineup[0]);
-			editingFlag = true;
+			$scope.validateLineup();
 		}
 
 		/*var newLineup = {
@@ -231,7 +219,6 @@ angular.module('HockeyApp')
 
 		 	$scope.newLineup[position] = player;
 		 	$scope.validateLineup();
-		 	console.log(player);
 		 };
 
 		/*
