@@ -142,6 +142,7 @@ angular.module('HockeyApp')
 		 */
 		 $scope.saveNew = function () {
 		 	console.log('Create new lineup');
+		 	$scope.newLineup[5] = $scope.newTitle;
 		 	$modalInstance.close($scope.newLineup);
 		 };
 
