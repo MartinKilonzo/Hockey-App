@@ -27,6 +27,20 @@ body
 	float: none;
 	margin: 0 auto;
 }
+/** GAME STYLES **/
+
+/* potential game board styles */
+@media (min-width: 768px)
+.game-board {
+  margin-right: 0;
+  margin-left: 0;
+  background-color: #fff;
+  border-color: #ddd;
+  border-width: 1px;
+  border-radius: 4px 4px 0 0;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
 
 /* Override colour for player info panels */
 input[readonly].player-info

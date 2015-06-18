@@ -2,12 +2,16 @@
 
 angular.module('HockeyApp')
 
-.controller('gameController', function($scope) {
+.controller('gameController', ['$scope','localStorageService', function($scope, localStorageService) {
 
 	console.log("Loaded Game Controller.");
 
 	$scope.pageClass = 'page-game';
 
-	$scope.lineups = ['lineup 1','lineup 2','lineup 3','lineup 4','lineup 5','lineup 6'];
+	var savedPlayers = localStorageService.get('players');
+	var savedLineups = localStorageService.get('lineups');
 
-  });
+	$scope.players = savedPlayers || [];
+	$scope.lineups = savedLineups || [];
+
+  }]);

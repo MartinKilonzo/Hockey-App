@@ -59,7 +59,6 @@ angular.module('HockeyApp', ['ngAnimate', 'ngCookies', 'ngRoute', 'ui.bootstrap'
 
   .factory('TeamFactory', function TeamFactory() {
     var team = localStorageService.get('players') || [];
-    var team = [];
 
     return {
       add: function (player) {

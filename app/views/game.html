@@ -29,7 +29,7 @@
 	<div class="col-sm-2">
 		<div class="row">
 			<!-- Placeholder For History-->
-			<p style="text-align: right" ng-repeat="action in lineups.slice().reverse()"> {{ action }} </p>
+			<p style="text-align: right" ng-repeat="action in actions"> {{ action }} </p>
 		</div>
 	</div>
 	<div class="col-sm-6 col-sm-offset-1"><div class="jumbotron text-center"></div></div>
@@ -67,7 +67,14 @@
 <!-- Player Lineups -->
 
 <div class="container">
-	<div class="container text-center" ng-repeat="lineup in lineups"> <!-- consider using linup in lineups( {{ main.linupsToDisplay }} ) to restrict the number of repeats -->
+	<ul class="nav nav-tabs" ng-init="showLineup = true">
+		<li ng-class="{active: showLineup}" ng-click="showLineup = true"><a href="#">Lineups</a></li>
+		<li ng-class="{active: !showLineup}" ng-click="showLineup = false"><a href="#">Players</a></li>
+	</ul>
+	<div class="container text-center" ng-if="showLineup" ng-repeat="lineup in lineups"> <!-- consider using linup in lineups( {{ main.linupsToDisplay }} ) to restrict the number of repeats -->
 		<span>{{ lineup }}</span>
+	</div>
+	<div class="container text-center" ng-if="!showLineup" ng-repeat="player in players"> <!-- consider using linup in lineups( {{ main.linupsToDisplay }} ) to restrict the number of repeats -->
+		<span>{{ player }}</span>
 	</div>
 </div>
