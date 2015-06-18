@@ -169,13 +169,14 @@ angular.module('HockeyApp')
 		$scope.players = players;
 		$scope.newLineup = [];
 
+		// If editing, pass along the existing data
 		if (lineup) {	
 			$scope.newLineup[0] = lineup.leftWing;
 			$scope.newLineup[1] = lineup.center;
 			$scope.newLineup[2] = lineup.rightWing;
 			$scope.newLineup[3] = lineup.defence1;
 			$scope.newLineup[4] = lineup.defence2;
-			$scope.newLineup[5] = lineup.lineupTitle;
+			$scope.newLineup[5] = $scope.newTitle = lineup.lineupTitle;
 			$scope.validateLineup();
 		}
 
