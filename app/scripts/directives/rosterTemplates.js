@@ -13,5 +13,5 @@ angular.module('HockeyApp')
 		return {
 			restrict: 'E',
 			templateUrl: 'views/partials/roster-input.html'
-		}
+		};
 	});

@@ -6,75 +6,30 @@
 <div class="container-fluid">
 
 	<!-- Game Flags -->
-	<div class="row row-centered" style="padding-bottom: 12px">
-		<div class="col-xs-4 col-xs-offset-4">
-			<div class="btn-group btn-group-justified" role="group" aria-label="...">
-				<div class="btn-group" role="group">
-					<button type="button" class="btn btn-default">1st</button>
-				</div>
-				<div class="btn-group" role="group">
-					<button type="button" class="btn btn-default">2nd</button>
-				</div>
-				<div class="btn-group" role="group">
-					<button type="button" class="btn btn-default">3rd</button>
-				</div>
-				<div class="btn-group" role="group">
-					<button type="button" class="btn btn-default">OT</button>
-				</div>
-			</div>
-		</div>
-	</div>
+	<game-toggles></game-toggles>
 
 	<!-- Functional Components -->
-	<div class="col-sm-2">
-		<div class="row">
-			<!-- Placeholder For History-->
-			<p style="text-align: right" ng-repeat="action in actions"> {{ action }} </p>
-		</div>
-	</div>
-	<div class="col-sm-6 col-sm-offset-1"><div class="jumbotron text-center"></div></div>
+	<game-history></game-history>
+
+	<game-board></game-board>
+
 	<!-- Game Buttons -->
-	<div class="col-sm-3">
-		<div class="row">
-			<div class="btn-group btn-group-justified" role="group">
-				<div class="btn-group" role="group">
-					<button type="button" class="btn btn-default" aria-label="...">SO+</button>
-				</div>
-				<div class="btn-group" role="group">
-					<button type="button" class="btn btn-default" aria-label="...">SA+</button>
-				</div>
-				<div class="btn-group" role="group">
-					<button type="button" class="btn btn-default" aria-label="...">G+</button>
-				</div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="btn-group btn-group-justified" role="group">
-				<div class="btn-group" role="group">
-					<button type="button" class="btn btn-default" aria-label="...">SO-</button>
-				</div>
-				<div class="btn-group" role="group">
-					<button type="button" class="btn btn-default" aria-label="...">SA-</button>
-				</div>
-				<div class="btn-group" role="group">
-					<button type="button" class="btn btn-default" aria-label="...">G-</button>
-				</div>
-			</div>
-		</div>
-	</div>
+	<game-buttons></game-buttons>
 </div>
 
 <!-- Player Lineups -->
 
 <div class="container">
-	<ul class="nav nav-tabs" ng-init="showLineup = true">
+	<ul class="nav nav-tabs" style="border-bottom: none" ng-init="showLineup = true">
 		<li ng-class="{active: showLineup}" ng-click="showLineup = true"><a href="#">Lineups</a></li>
 		<li ng-class="{active: !showLineup}" ng-click="showLineup = false"><a href="#">Players</a></li>
 	</ul>
-	<div class="container text-center" ng-if="showLineup" ng-repeat="lineup in lineups"> <!-- consider using linup in lineups( {{ main.linupsToDisplay }} ) to restrict the number of repeats -->
-		<span>{{ lineup }}</span>
-	</div>
-	<div class="container text-center" ng-if="!showLineup" ng-repeat="player in players"> <!-- consider using linup in lineups( {{ main.linupsToDisplay }} ) to restrict the number of repeats -->
-		<span>{{ player }}</span>
+	<div class="container text-center pool"> <!-- consider using linup in lineups( {{ main.linupsToDisplay }} ) to restrict the number of repeats -->
+		<div ng-if="showLineup" ng-repeat="lineup in lineups">
+			<game-lineup></game-lineup>
+		</div>
+		<div ng-if="!showLineup" ng-repeat="player in players">
+			<game-player></game-player>
+		</div>
 	</div>
 </div>

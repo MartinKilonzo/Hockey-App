@@ -31,7 +31,6 @@
     localStorageServiceProvider.setPrefix("ls");
   } ]).factory("TeamFactory", function TeamFactory() {
     var team = localStorageService.get("players") || [];
-    var team = [];
     return {
       add: function(player) {
         this.team.push(player);
@@ -55,10 +54,13 @@
     };
     return Player;
   } ]);
-  angular.module("HockeyApp").controller("gameController", [ "$scope", function($scope) {
+  angular.module("HockeyApp").controller("gameController", [ "$scope", "localStorageService", function($scope, localStorageService) {
     console.log("Loaded Game Controller.");
     $scope.pageClass = "page-game";
-    $scope.lineups = [ "lineup 1", "lineup 2", "lineup 3", "lineup 4", "lineup 5", "lineup 6" ];
+    var savedPlayers = localStorageService.get("players");
+    var savedLineups = localStorageService.get("lineups");
+    $scope.players = savedPlayers || [];
+    $scope.lineups = savedLineups || [];
   } ]);
   angular.module("HockeyApp").controller("lineupsController", [ "$scope", "localStorageService", "$modal", function($scope, localStorageService, $modal, TeamFactory, PlayerFactory) {
     console.log("Started lineupsController");
@@ -165,7 +167,7 @@
       $scope.newLineup[2] = lineup.rightWing;
       $scope.newLineup[3] = lineup.defence1;
       $scope.newLineup[4] = lineup.defence2;
-      $scope.newLineup[5] = lineup.lineupTitle;
+      $scope.newLineup[5] = $scope.newTitle = lineup.lineupTitle;
       $scope.validateLineup();
     }
     var setPosition = function() {
@@ -284,6 +286,38 @@
     return {
       restrict: "EAC",
       link: function(scope, elemeent, attrs) {}
+    };
+  });
+  "use-strict";
+  angular.module("HockeyApp").directive("gameButtons", function() {
+    return {
+      restrict: "E",
+      templateUrl: "views/partials/game/game-buttons.html"
+    };
+  }).directive("gameToggles", function() {
+    return {
+      restrict: "E",
+      templateUrl: "views/partials/game/game-toggles.html"
+    };
+  }).directive("gameBoard", function() {
+    return {
+      restrict: "E",
+      templateUrl: "views/partials/game/game-board.html"
+    };
+  }).directive("gameHistory", function() {
+    return {
+      restrict: "E",
+      templateUrl: "views/partials/game/game-history.html"
+    };
+  }).directive("gamePlayer", function() {
+    return {
+      restrict: "E",
+      templateUrl: "views/partials/game/game-player.html"
+    };
+  }).directive("gameLineup", function() {
+    return {
+      restrict: "E",
+      templateUrl: "views/partials/game/game-template.html"
     };
   });
   angular.module("HockeyApp").directive("lineupTemplate", function() {
