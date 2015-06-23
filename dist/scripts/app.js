@@ -359,15 +359,6 @@
       templateUrl: "views/partials/roster-input.html"
     };
   });
-  angular.module("HockeyApp").filter("time", function() {
-    return function(obj) {
-      return +new Date(obj);
-    };
-  }).filter("startFrom", function() {
-    return function(obj, index) {
-      return obj && obj.slice(index);
-    };
-  });
   var readline = require("readline");
   var google = require("googleapis");
   var OAuth2 = google.auth.OAuth2;
@@ -427,4 +418,13 @@
       return config;
     };
   } ]);
+  angular.module("HockeyApp").filter("time", function() {
+    return function(obj) {
+      return +new Date(obj);
+    };
+  }).filter("startFrom", function() {
+    return function(obj, index) {
+      return obj && obj.slice(index);
+    };
+  });
 })(window, document);
