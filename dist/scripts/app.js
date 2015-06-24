@@ -54,13 +54,23 @@
     };
     return Player;
   } ]);
-  angular.module("HockeyApp").controller("gameController", [ "$scope", "localStorageService", function($scope, localStorageService) {
+  angular.module("HockeyApp").controller("gameController", [ "$scope", "$log", "localStorageService", function($scope, $log, localStorageService) {
     console.log("Loaded Game Controller.");
     $scope.pageClass = "page-game";
     var savedPlayers = localStorageService.get("players");
     var savedLineups = localStorageService.get("lineups");
+    var savedActivePlayers = localStorageService.get("activePlayers");
     $scope.players = savedPlayers || [];
     $scope.lineups = savedLineups || [];
+    $scope.activePlayers = savedActivePlayers || [];
+    $scope.setSelection = function(selection) {
+      $scope.currentSelection = selection;
+    };
+    $log.info($scope.activePlayers[1] === true);
+    $scope.hover = function(index) {
+      $scope.hoverVar = index;
+      $log.info($scope.hoverVar);
+    };
   } ]);
   angular.module("HockeyApp").controller("lineupsController", [ "$scope", "localStorageService", "$modal", function($scope, localStorageService, $modal, TeamFactory, PlayerFactory) {
     console.log("Started lineupsController");
@@ -317,7 +327,7 @@
   }).directive("gameLineup", function() {
     return {
       restrict: "E",
-      templateUrl: "views/partials/game/game-template.html"
+      templateUrl: "views/partials/game/game-lineup.html"
     };
   });
   angular.module("HockeyApp").directive("lineupTemplate", function() {
@@ -357,6 +367,15 @@
     return {
       restrict: "E",
       templateUrl: "views/partials/roster-input.html"
+    };
+  });
+  angular.module("HockeyApp").filter("time", function() {
+    return function(obj) {
+      return +new Date(obj);
+    };
+  }).filter("startFrom", function() {
+    return function(obj, index) {
+      return obj && obj.slice(index);
     };
   });
   var readline = require("readline");
@@ -418,13 +437,4 @@
       return config;
     };
   } ]);
-  angular.module("HockeyApp").filter("time", function() {
-    return function(obj) {
-      return +new Date(obj);
-    };
-  }).filter("startFrom", function() {
-    return function(obj, index) {
-      return obj && obj.slice(index);
-    };
-  });
 })(window, document);

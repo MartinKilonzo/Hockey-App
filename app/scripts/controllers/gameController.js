@@ -22,5 +22,11 @@ angular.module('HockeyApp')
 
 	$log.info($scope.activePlayers[1] === true);
 
+	$scope.hover = function (index)
+	{
+		$scope.hoverVar = index;
+		$log.info($scope.hoverVar);
+	};
+
 
   }]);
