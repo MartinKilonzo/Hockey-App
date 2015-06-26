@@ -87,7 +87,7 @@ angular.module('HockeyApp')
 	{
 		var newValue = value + 3;
 
-		var actionTest = new action(value, newValue, function(value) {
+		var actionTest = new action(value, newValue, function (value) {
 			$scope.testVal = value;
 		});
 		execuStack.push(actionTest);
@@ -132,11 +132,20 @@ angular.module('HockeyApp')
 	 * Function which swaps the current active lineup with the selected one.
 	 */
 	 $scope.swapLineup = function (index) {
-	 	$scope.activePlayers[0] = $scope.lineups[index].leftWing;
-	 	$scope.activePlayers[1] = $scope.lineups[index].center;
-	 	$scope.activePlayers[2] = $scope.lineups[index].rightWing;
-	 	$scope.activePlayers[3] = $scope.lineups[index].defence1;
-	 	$scope.activePlayers[4] = $scope.lineups[index].defence2;
+	 	var newActivePlayers = [];
+
+	 	newActivePlayers[0] = $scope.lineups[index].leftWing;
+	 	newActivePlayers[1] = $scope.lineups[index].center;
+	 	newActivePlayers[2] = $scope.lineups[index].rightWing;
+	 	newActivePlayers[3] = $scope.lineups[index].defence1;
+	 	newActivePlayers[4] = $scope.lineups[index].defence2;
+
+	 	var newAction = new action($scope.activePlayers, newActivePlayers, function (newLineup) {
+	 		$scope.activePlayers = newLineup;
+	 	});
+
+	 	execuStack.push(newAction);
+	 	newAction.execute();
 	 };
 
 	 /*
@@ -172,7 +181,24 @@ angular.module('HockeyApp')
 	 * Function which swaps the current selected position with the selected player.
 	 */
 	 $scope.swapPlayer = function (index) {
-	 	$scope.activePlayers[$scope.positionSelection] = $scope.players[index];
+
+		var oldPlayerSwap = {
+			player: $scope.activePlayers[$scope.positionSelection],
+			index: $scope.positionSelection
+		};
+
+		var newPlayerSwap = {
+			player: $scope.players[index],
+			index: $scope.positionSelection
+		};
+
+		var newAction = new action(oldPlayerSwap, newPlayerSwap, function (playerSwap) {
+			$scope.activePlayers[playerSwap.index] = playerSwap.player;
+		});
+
+		$log.info(newAction);
+		execuStack.push(newAction);
+		newAction.execute();
 	 };
 
 	 /*
