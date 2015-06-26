@@ -63,13 +63,74 @@
     $scope.players = savedPlayers || [];
     $scope.lineups = savedLineups || [];
     $scope.activePlayers = savedActivePlayers || [];
-    $scope.setSelection = function(selection) {
-      $scope.currentSelection = selection;
+    $scope.resetSelection = function() {};
+    $scope.setSelectedPosition = function(selection) {
+      $scope.positionSelection = selection;
     };
-    $log.info($scope.activePlayers[1] === true);
-    $scope.hover = function(index) {
-      $scope.hoverVar = index;
-      $log.info($scope.hoverVar);
+    $scope.test = function(value) {
+      action(value, function(value) {
+        $scope.testVal = value;
+      });
+    };
+    var action = function(oldVal, applier) {
+      this.oldval = oldVal;
+      this.newVal = function(oldVal) {
+        return oldVal + 1;
+      };
+      this.applier = applier;
+    };
+    action.prototype.execute = function() {
+      this.applier(this.newVal);
+      $log.info($scope.testVal);
+    };
+    action.prototype.unExecute = function() {
+      this.applier(this.oldval);
+      $log.info($scope.testVal);
+    };
+    $scope.setHover = function(index) {
+      $scope.hover = index;
+    };
+    $scope.setLineupSelection = function(selection) {
+      $scope.lineupSelection = selection;
+    };
+    $scope.swapLineup = function(index) {
+      $scope.activePlayers[0] = $scope.lineups[index].leftWing;
+      $scope.activePlayers[1] = $scope.lineups[index].center;
+      $scope.activePlayers[2] = $scope.lineups[index].rightWing;
+      $scope.activePlayers[3] = $scope.lineups[index].defence1;
+      $scope.activePlayers[4] = $scope.lineups[index].defence2;
+    };
+    $scope.lineupSelected = function(index) {
+      var selectedLineup = true;
+      var lineup = [];
+      lineup[0] = $scope.lineups[index].leftWing;
+      lineup[1] = $scope.lineups[index].center;
+      lineup[2] = $scope.lineups[index].rightWing;
+      lineup[3] = $scope.lineups[index].defence1;
+      lineup[4] = $scope.lineups[index].defence2;
+      if (!$scope.activePlayers[0]) selectedLineup = false;
+      for (var j = 0; j < $scope.activePlayers.length; j++) {
+        if (!$scope.activePlayers[j] || lineup[j].playerNumber !== $scope.activePlayers[j].playerNumber) {
+          selectedLineup = false;
+          break;
+        }
+      }
+      return selectedLineup;
+    };
+    $scope.swapPlayer = function(index) {
+      $scope.activePlayers[$scope.positionSelection] = $scope.players[index];
+    };
+    $scope.playerSelected = function(index) {
+      var player = $scope.players[index];
+      var playerSelected = false;
+      for (var i = 0; i < $scope.activePlayers.length; i++) {
+        var activePlayer = $scope.activePlayers[i];
+        if (activePlayer && player.playerNumber === activePlayer.playerNumber) {
+          playerSelected = true;
+          break;
+        }
+      }
+      return playerSelected;
     };
   } ]);
   angular.module("HockeyApp").controller("lineupsController", [ "$scope", "localStorageService", "$modal", function($scope, localStorageService, $modal, TeamFactory, PlayerFactory) {
