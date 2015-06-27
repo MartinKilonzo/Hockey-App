@@ -17,11 +17,47 @@ angular.module('HockeyApp')
 	$scope.activePlayers = savedActivePlayers || [];
 
 	$scope.resetSelection = function () {
-		// Resets all set selections on clicks elsewhere
+		
+	// Resets all set selections on clicks elsewhere
 	};
 
 	var execuStack = [];
 	var execuPointer = 0;
+
+	
+	// Undo and Redo Functionality //
+
+	//Regular Actions
+	var action = function (oldVal, newVal, applier) {
+		this.oldVal = oldVal;
+		this.newVal = newVal;
+		this.applier = applier;
+		console.log(this);
+	};
+
+	action.prototype.execute = function () {
+		this.applier(this.newVal);
+	};
+
+	action.prototype.unExecute = function () {
+		this.applier(this.oldVal);
+	};
+
+	//Game Button Actions
+	var gameAction = function (newVal, applier, unApplier) {
+		this.newVal = newVal;
+		this.applier = applier;
+		this.unApplier = unApplier;
+		console.log(this);
+	};
+
+	gameAction.prototype.execute = function () {
+		this.applier(this.newVal);
+	};
+
+	gameAction.prototype.unExecute = function () {
+		this.unApplier(this.oldVal);
+	};
 
 	execuStack.push = function(action) {
 		execuStack[execuPointer] = action;
@@ -55,6 +91,7 @@ angular.module('HockeyApp')
 	$scope.undoable = false;
 	$scope.redoable = false;
 
+	
 	// Watch to see if undoing is possible
 	$scope.$watch( function () { 
 		return execuStack.length > 0 && execuPointer > 0;
@@ -62,6 +99,7 @@ angular.module('HockeyApp')
 		$scope.undoable = undoable;
 	});
 
+	
 	// Watch to see if redoing is possible
 	$scope.$watch( function () {
 		return execuStack.length > 0 && execuPointer <= execuStack.length - 1;
@@ -69,10 +107,200 @@ angular.module('HockeyApp')
 		$scope.redoable = redoable;
 	});
 
-	// Game Toggle functions //
-	// Game History functions //
+	
+	// Game Toggle Functions //
+	/*
+	 * Constructor for game event objects that records the game number (ID), period, 
+	 * time within a game and the change of an attribute.
+	 */
+	var gameEvent = function (gameNumber, period, time, count) {
+		this.game = gameNumber;
+		this.period = period;
+		this.time = time;
+		this.count = count;
+	};
+	
+	/*
+	 *	Function which increments the Shots On statistic for each player involved in the play (active player).
+	 */
+	$scope.addShotsOn = function () {
+		//applier
+		//For each active player:
+		var applier = function (gameEvent) {
+			for (var i = 0; i < $scope.activePlayers.length; i++) {
+				$log.info(getTime());
+				$scope.activePlayers[i].shotsOn.push(gameEvent);
+			}
+		}
 
-	// Game Board functions //
+		//unApplier
+		//For each active player:
+		var unApplier = function () {
+			for (var i = 0; i < $scope.activePlayers.length; i++) {
+				$log.info(getTime());
+				$scope.activePlayers[i].shotsOn.splice($scope.activePlayers[i].shotsOn.length - 1, 1);
+			}
+		}
+
+		var newGameEvent = new gameEvent($scope.gameNumber, $scope.period, getTime(), 1);
+		var newGameAction = new gameAction(newGameEvent, applier, unApplier);
+
+		execuStack.push(newGameAction);
+		newGameAction.execute();
+	};
+
+	/*
+	 *	Function which decrements the Shots On statistic for each player involved in the play (active player).
+	 */
+	$scope.subtShotsOn = function () {
+		//applier
+		//For each active player:
+		var applier = function (gameEvent) {
+			for (var i = 0; i < $scope.activePlayers.length; i++) {
+				$log.info(getTime());
+				$scope.activePlayers[i].shotsOn.push(gameEvent);
+			}
+		}
+
+		//unApplier
+		//For each active player:
+		var unApplier = function () {
+			for (var i = 0; i < $scope.activePlayers.length; i++) {
+				$log.info(getTime());
+				$scope.activePlayers[i].shotsOn.splice($scope.activePlayers[i].shotsOn.length - 1, -1);
+			}
+		}
+
+		var newGameEvent = new gameEvent($scope.gameNumber, $scope.period, getTime(), 1);
+		var newGameAction = new gameAction(newGameEvent, applier, unApplier);
+
+		execuStack.push(newGameAction);
+		newGameAction.execute();
+	};
+
+	/*
+	 *	Function which increments the Shots Against statistic for each player involved in the play (active player).
+	 */
+	$scope.addShotsAgainst = function () {
+		//applier
+		//For each active player:
+		var applier = function (gameEvent) {
+			for (var i = 0; i < $scope.activePlayers.length; i++) {
+				$log.info(getTime());
+				$scope.activePlayers[i].shotsAgainst.push(gameEvent);
+			}
+		}
+
+		//unApplier
+		//For each active player:
+		var unApplier = function () {
+			for (var i = 0; i < $scope.activePlayers.length; i++) {
+				$log.info(getTime());
+				$scope.activePlayers[i].shotsAgainst.splice($scope.activePlayers[i].shotsAgainst.length - 1, 1);
+			}
+		}
+
+		var newGameEvent = new gameEvent($scope.gameNumber, $scope.period, getTime(), 1);
+		var newGameAction = new gameAction(newGameEvent, applier, unApplier);
+
+		execuStack.push(newGameAction);
+		newGameAction.execute();
+	};
+
+	/*
+	 *	Function which decrements the Shots Against statistic for each player involved in the play (active player).
+	 */
+	$scope.subtShotsAgainst = function () {
+		//applier
+		//For each active player:
+		var applier = function (gameEvent) {
+			for (var i = 0; i < $scope.activePlayers.length; i++) {
+				$log.info(getTime());
+				$scope.activePlayers[i].shotsAgainst.push(gameEvent);
+			}
+		}
+
+		//unApplier
+		//For each active player:
+		var unApplier = function () {
+			for (var i = 0; i < $scope.activePlayers.length; i++) {
+				$log.info(getTime());
+				$scope.activePlayers[i].shotsAgainst.splice($scope.activePlayers[i].shotsAgainst.length - 1, -1);
+			}
+		}
+
+		var newGameEvent = new gameEvent($scope.gameNumber, $scope.period, getTime(), 1);
+		var newGameAction = new gameAction(newGameEvent, applier, unApplier);
+
+		execuStack.push(newGameAction);
+		newGameAction.execute();
+	};
+
+	/*
+	 *	Function which increments the Team Goal statistic for each player involved in the play (active player).
+	 */
+	$scope.addTeamGoal = function () {
+		//applier
+		//For each active player:
+		var applier = function (gameEvent) {
+			for (var i = 0; i < $scope.activePlayers.length; i++) {
+				$log.info(getTime());
+				$scope.activePlayers[i].teamGoals.push(gameEvent);
+			}
+		}
+
+		//unApplier
+		//For each active player:
+		var unApplier = function () {
+			for (var i = 0; i < $scope.activePlayers.length; i++) {
+				$log.info(getTime());
+				$scope.activePlayers[i].teamGoals.splice($scope.activePlayers[i].teamGoals.length - 1, 1);
+			}
+		}
+
+		var newGameEvent = new gameEvent($scope.gameNumber, $scope.period, getTime(), 1);
+		var newGameAction = new gameAction(newGameEvent, applier, unApplier);
+
+		execuStack.push(newGameAction);
+		newGameAction.execute();
+	};
+
+	/*
+	 *	Function which increments the Opponent Goal statistic for each player involved in the play (active player).
+	 */
+	$scope.addOpponentGoal = function () {
+		//applier
+		//For each active player:
+		var applier = function (gameEvent) {
+			for (var i = 0; i < $scope.activePlayers.length; i++) {
+				$log.info(getTime());
+				$scope.activePlayers[i].opponentGoals.push(gameEvent);
+			}
+		}
+
+		//unApplier
+		//For each active player:
+		var unApplier = function () {
+			for (var i = 0; i < $scope.activePlayers.length; i++) {
+				$log.info(getTime());
+				$scope.activePlayers[i].opponentGoals.splice($scope.activePlayers[i].opponentGoals.length - 1, 1);
+			}
+		}
+
+		var newGameEvent = new gameEvent($scope.gameNumber, $scope.period, getTime(), 1);
+		var newGameAction = new gameAction(newGameEvent, applier, unApplier);
+
+		execuStack.push(newGameAction);
+		newGameAction.execute();
+	};
+
+
+	// Game History Functions //
+
+
+	
+	// Game Board Functions //
+
 
 	/*
 	 * Function which sets the position where a player substitution is supposed to occur.
@@ -81,37 +309,19 @@ angular.module('HockeyApp')
 	 	$scope.positionSelection = selection;
 	 };
 
-	// Game button functions //
+	
+	// Game button Functions //
 
-	$scope.test = function (value)
-	{
-		var newValue = value + 3;
 
-		var actionTest = new action(value, newValue, function (value) {
-			$scope.testVal = value;
-		});
-		execuStack.push(actionTest);
-		actionTest.execute();
-	};
+	
 
-	var action = function (oldVal, newVal, applier) {
-		this.oldVal = oldVal;
-		this.newVal = newVal;
-		this.applier = applier;
-		console.log(this);
-	};
 
-	action.prototype.execute = function () {
-		this.applier(this.newVal);
-	};
+	
+	// Lineup and Player Pool Functions //
 
-	action.prototype.unExecute = function () {
-		this.applier(this.oldVal);
-	};
 
-	// Lineup and Player Pool functions //
-
-	// Lineup functions
+	
+	// Lineup Functions
 	/*
 	 * Function which sets the hover scope variable to be used with ng-class in 
 	 * game-lineup for mouseover effects.
@@ -175,7 +385,8 @@ angular.module('HockeyApp')
 	  	return selectedLineup;
 	  };
 
-	 // Player Pool functions
+
+	 //Player Pool Functions
 
 	/*
 	 * Function which swaps the current selected position with the selected player.
