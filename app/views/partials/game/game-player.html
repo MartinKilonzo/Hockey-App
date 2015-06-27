@@ -1,0 +1,5 @@
+<div class="col-xs-4 game-player" ng-class="{'mouseover': hover === $index || lineupSelection === $index || playerSelected($index)}" ng-dblclick="swapPlayer($index)" ng-mouseenter="setHover($index)" ng-mouseleave="setHover(undefined)">
+	<p class="input-group noselect" style="margin-top: 12px">
+		<span class="form-control game-playerpool">#{{ player.playerNumber }} {{ player.firstName.charAt(0) }}. {{ player.lastName }}: {{ player.position }}</span>
+	</p>
+</div>

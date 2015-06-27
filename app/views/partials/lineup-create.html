@@ -1,0 +1,82 @@
+<div class="modal-header">
+	<a class="btn btn-danger" ng-class="{slideLeft: validLineup}" ng-click="$dismiss('cancel')"><span class="glyphicon glyphicon-remove"></span></a>
+	<a class="btn btn-success btn-save" ng-show="validLineup" ng-click="saveNew()"><i class="glyphicon glyphicon-ok"></i></a>
+	<h3 class="modal-title">Create a New Lineup</h3>
+	<h4>{{ pages[currentPage] }}</h4>
+</div>
+
+<div class="modal-body">
+	<div class="container-fluid">
+		<h4 class="text-center">{{ newTitle }}</h4>
+
+		<div class="col-xs-2 col-xs-offset-3 noselect">
+			<div class="player-lineup-new" ng-class="{'position-selected': currentPage === 0}" ng-click="setPage(0)">
+				<p class="placeholder" ng-show="!newLineup[0]">LW</p>
+				<p ng-show="newLineup[0]">#{{ newLineup[0].playerNumber }}</p>
+			</div>
+		</div>
+		<div class="col-xs-2 noselect">
+			<div class="player-lineup-new" ng-class="{'position-selected': currentPage === 1}" ng-click="setPage(1)">
+				<p class="placeholder" ng-show="!newLineup[1]">C</p>
+				<p ng-show="newLineup[1]">#{{ newLineup[1].playerNumber }}</p>
+			</div>
+		</div>
+		<div class="col-xs-2 noselect">
+			<div class="player-lineup-new" ng-class="{'position-selected': currentPage === 2}" ng-click="setPage(2)">
+				<p class="placeholder" ng-show="!newLineup[2]">RW</p>
+				<p ng-show="newLineup[2]">#{{ newLineup[2].playerNumber }}</p>
+			</div>
+		</div>
+		<div class="col-xs-2 col-xs-offset-4 noselect">
+			<div class="player-lineup-new" ng-class="{'position-selected': defenceSelected === 1}" ng-click="setPage(3); setDefenceSelection(1)">
+				<p class="placeholder" ng-show="!newLineup[3]">D</p>
+				<p ng-show="newLineup[3]">#{{ newLineup[3].playerNumber }}</p>
+			</div>
+		</div>
+		<div class="col-xs-2 noselect">
+			<div class="player-lineup-new" ng-class="{'position-selected': defenceSelected === 2}" ng-click="setPage(3); setDefenceSelection(2)">
+				<p class="placeholder" ng-show="!newLineup[4]">D</p>
+				<p ng-show="newLineup[4]">#{{ newLineup[4].playerNumber }}</p>
+			</div>
+		</div>
+	</div>
+
+	<hr ng-show="currentPage != 4"></hr>
+
+	<div class="container-fluid container-roster" ng-show="currentPage != 4">
+		<!-- Consider adding a search bar for quicker selection here -->
+		<div class="btn-group btn-group-justified" style="margin-bottom: 8px" role="group" aria-label="...">
+			<div class="btn-group" role="group">
+				<button type="button" class="btn btn-danger" ng-click="position = 'For'">Forward</button>
+			</div>
+			<div class="btn-group" role="group">
+				<button type="button" class="btn btn-primary" ng-click="position = 'Def'">Defence</button>
+			</div>
+			<div class="btn-group" role="group">
+				<button type="button" class="btn btn-default"  ng-click="position = ''">All</button>
+			</div>
+		</div>
+		<!-- Players -->
+		<div class="col-xs-4" ng-repeat="player in players | filter: position | orderBy: ['position', '-playerNumber']">
+			<lineup-player-pool></lineup-player-pool>
+		</div>
+	</div>
+</div>
+
+<div class="modal-body" ng-show="currentPage === 4">
+	<!-- Change set title to method that confirms the lineup -->
+	<form role="form" ng-submit="setTitle(); validateLineup()">
+		<!-- TODO: Implement ng-pattern for validation and has-warning for invalid characters -->
+		<div class="input-group" ng-class="{'has-success': newTitle,'has-error': !newTitle}">
+			<span class="input-group-addon"><span class="glyphicon glyphicon-pencil"></span></span>
+			<input class="form-control" type="text" ng-model="newTitle" placeholder="Title"></input>
+			<span class="input-group-addon" ng-show="newTitle"><span class="glyphicon glyphicon-ok"></span></span>
+		</div>
+	</form>
+</div>
+
+<div class="modal-footer center">
+	<div class="btn-group" role="group">
+		<button ng-repeat="page in pages" ng-class="{active: currentPage === $index}" ng-click="setPage($index)" type="button" class="btn btn-default">{{ page }}</button>
+	</div>
+</div>
