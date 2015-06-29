@@ -53,5 +53,3 @@ angular.module('HockeyApp')
 			}
 		};
 	})
-
-	.directive('undoAble', )

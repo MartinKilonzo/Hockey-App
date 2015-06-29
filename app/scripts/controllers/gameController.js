@@ -2,7 +2,7 @@
 
 angular.module('HockeyApp')
 
-.controller('gameController', ['$scope', '$log', 'localStorageService', function($scope, $log, localStorageService) {
+.controller('gameController', ['$scope', '$log', '$timeout', 'localStorageService', function($scope, $log, $timeout, localStorageService) {
 
 	console.log("Loaded Game Controller.");
 
@@ -19,12 +19,12 @@ angular.module('HockeyApp')
 	$scope.resetSelection = function () {
 		
 	// Resets all set selections on clicks elsewhere
-	};
+};
 
-	var execuStack = [];
-	var execuPointer = 0;
+var execuStack = [];
+var execuPointer = 0;
 
-	
+
 	// Undo and Redo Functionality //
 
 	//Regular Actions
@@ -109,21 +109,86 @@ angular.module('HockeyApp')
 
 	
 	// Game Toggle Functions //
+
+	var nextCall;
+	var timerUnit = 10;
+	var timers = [];
+
+	$scope.startTimer = function () {
+		if (!$scope.startTime) {
+			$scope.startTime = new Date().getTime();
+			$scope.gameSeconds = $scope.gameMinutes = $scope.gameHours = 0;
+			nextCall = $scope.startTime;
+		}
+
+		nextCall += timerUnit;
+
+		var drift = (new Date().getTime() - $scope.startTime) % timerUnit;
+
+		updateClock(drift);
+
+		timers.push($timeout($scope.startTimer, nextCall - new Date().getTime(), $scope.gameInPlay));
+	};
+
+	$scope.stopTimer = function () {
+		// Cancel the $timeout timers
+		for (var i = 0; i < timers.length; i++) {
+			$timeout.cancel(timers[i]);
+		}
+		timers = [];
+		$scope.startTime = undefined;
+	};
+
+	var updateClock = function (drift) {
+		var newTime;
+
+		// Update seconds
+		newTime = Math.floor(($scope.gameSeconds + (timerUnit + drift) / 1000) * 1000) / 1000;
+		$scope.gameSeconds = Math.floor((newTime % 60) * 1000) / 1000;
+
+		// Update minutes
+		newTime = ($scope.gameMinutes + (newTime / 60) | 0);
+		$scope.gameMinutes = newTime % 60;
+
+		// Update hours
+		$scope.gameHours += (newTime / 60) | 0;
+	};
+
+	$scope.addPadding = function (object) {
+		var str = object.toString().split(".");
+
+		// NULL case ie. no decimal
+		if (!str[1])
+			str[1] = '000';
+
+		// While the whole portion has less than two digits, add padding
+		while (str[0].length < 2)
+			str[0] = '0' + str[0];
+
+		// While the fractional portion has less than three digits, add padding
+		while (str[1].length < 3)
+			str[1] += '0';
+		var str = str[0] + '.' + str[1];
+		// Return the padded string
+		return str;
+	};
+
+	// Game Flag Functions
 	/*
 	 * Constructor for game event objects that records the game number (ID), period, 
 	 * time within a game and the change of an attribute.
 	 */
-	var gameEvent = function (gameNumber, period, time, count) {
-		this.game = gameNumber;
-		this.period = period;
-		this.time = time;
-		this.count = count;
-	};
-	
+	 var gameEvent = function (gameNumber, period, time, count) {
+	 	this.game = gameNumber;
+	 	this.period = period;
+	 	this.time = time;
+	 	this.count = count;
+	 };
+
 	/*
 	 *	Function which increments the Shots On statistic for each player involved in the play (active player).
 	 */
-	$scope.addShotsOn = function () {
+	 $scope.addShotsOn = function () {
 		//applier
 		//For each active player:
 		var applier = function (gameEvent) {
@@ -152,7 +217,7 @@ angular.module('HockeyApp')
 	/*
 	 *	Function which decrements the Shots On statistic for each player involved in the play (active player).
 	 */
-	$scope.subtShotsOn = function () {
+	 $scope.subtShotsOn = function () {
 		//applier
 		//For each active player:
 		var applier = function (gameEvent) {
@@ -181,7 +246,7 @@ angular.module('HockeyApp')
 	/*
 	 *	Function which increments the Shots Against statistic for each player involved in the play (active player).
 	 */
-	$scope.addShotsAgainst = function () {
+	 $scope.addShotsAgainst = function () {
 		//applier
 		//For each active player:
 		var applier = function (gameEvent) {
@@ -210,7 +275,7 @@ angular.module('HockeyApp')
 	/*
 	 *	Function which decrements the Shots Against statistic for each player involved in the play (active player).
 	 */
-	$scope.subtShotsAgainst = function () {
+	 $scope.subtShotsAgainst = function () {
 		//applier
 		//For each active player:
 		var applier = function (gameEvent) {
@@ -239,7 +304,7 @@ angular.module('HockeyApp')
 	/*
 	 *	Function which increments the Team Goal statistic for each player involved in the play (active player).
 	 */
-	$scope.addTeamGoal = function () {
+	 $scope.addTeamGoal = function () {
 		//applier
 		//For each active player:
 		var applier = function (gameEvent) {
@@ -268,7 +333,7 @@ angular.module('HockeyApp')
 	/*
 	 *	Function which increments the Opponent Goal statistic for each player involved in the play (active player).
 	 */
-	$scope.addOpponentGoal = function () {
+	 $scope.addOpponentGoal = function () {
 		//applier
 		//For each active player:
 		var applier = function (gameEvent) {
@@ -309,7 +374,7 @@ angular.module('HockeyApp')
 	 	$scope.positionSelection = selection;
 	 };
 
-	
+
 	// Game button Functions //
 
 
@@ -393,23 +458,23 @@ angular.module('HockeyApp')
 	 */
 	 $scope.swapPlayer = function (index) {
 
-		var oldPlayerSwap = {
-			player: $scope.activePlayers[$scope.positionSelection],
-			index: $scope.positionSelection
-		};
+	 	var oldPlayerSwap = {
+	 		player: $scope.activePlayers[$scope.positionSelection],
+	 		index: $scope.positionSelection
+	 	};
 
-		var newPlayerSwap = {
-			player: $scope.players[index],
-			index: $scope.positionSelection
-		};
+	 	var newPlayerSwap = {
+	 		player: $scope.players[index],
+	 		index: $scope.positionSelection
+	 	};
 
-		var newAction = new action(oldPlayerSwap, newPlayerSwap, function (playerSwap) {
-			$scope.activePlayers[playerSwap.index] = playerSwap.player;
-		});
+	 	var newAction = new action(oldPlayerSwap, newPlayerSwap, function (playerSwap) {
+	 		$scope.activePlayers[playerSwap.index] = playerSwap.player;
+	 	});
 
-		$log.info(newAction);
-		execuStack.push(newAction);
-		newAction.execute();
+	 	$log.info(newAction);
+	 	execuStack.push(newAction);
+	 	newAction.execute();
 	 };
 
 	 /*

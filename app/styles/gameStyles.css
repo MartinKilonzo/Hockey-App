@@ -1,7 +1,18 @@
 /** GAME STYLES **/
 
+/* Game Toggle styles */
+
+.clock 
+{
+	border: 1px solid #DDD;
+	width: 100%;
+	font-family
+}
+
+
 /* Temporary game board styles */
-.game-board {
+.game-board 
+{
 	margin-right: 0;
 	margin-left: 0;
 	background-color: #FAFAFA;
