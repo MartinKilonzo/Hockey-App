@@ -110,6 +110,7 @@ var execuPointer = 0;
 	
 	// Game Toggle Functions //
 
+	// Game Timer Functions
 	var nextCall;
 	var timerUnit = 10;
 	var timers = [];
