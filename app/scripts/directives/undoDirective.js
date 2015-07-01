@@ -2,7 +2,7 @@
 
 angular.module('HockeyApp')
 
-	.directive('undoSupport', function () {
+	.directive('undoSupport', function () { 
 		return {
 			controller: function($scope) {
 				var execuStack = [];
@@ -41,7 +41,7 @@ angular.module('HockeyApp')
 				$scope.$watch( function () { 
 					return execuStack.length > 0 && execuPointer >= 0;
 				}, function (undoable) { 
-					$scope.undoable = undoable
+					$scope.undoable = undoable;
 				});
 
 				// Watch to see if redoing is possible
@@ -52,4 +52,4 @@ angular.module('HockeyApp')
 				});
 			}
 		};
-	})
+	});

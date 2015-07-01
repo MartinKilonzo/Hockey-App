@@ -23,6 +23,6 @@
   "eqnull": false,
   "expr": true,
   "globals": {
-    "angular": true
+    "angular": false
   }
 }

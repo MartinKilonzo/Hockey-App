@@ -4,10 +4,10 @@
 	<div class="col-xs-2 col-xs-offset-1">
 		<div class="btn-group btn-group-justified" role="group" aria-label="...">
 			<div class="btn-group" role="group">
-				<button type="button" class="btn btn-default" ng-click="undo()"><i class="fa fa-undo"></i></button>
+				<button type="button" class="btn btn-default" ng-click="undo()" ng-class="disabled: !undoable"><i class="fa fa-undo"></i></button>
 			</div>
 			<div class="btn-group" role="group">
-				<button type="button" class="btn btn-default" ng-click="redo()"><i class="fa fa-repeat"></i></button>
+				<button type="button" class="btn btn-default" ng-click="redo()" ng-class="disabled: !redoable"><i class="fa fa-repeat"></i></button>
 			</div>
 		</div>
 	</div>

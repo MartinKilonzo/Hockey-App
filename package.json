@@ -5,16 +5,27 @@
   "keywords": [
     "angular"
   ],
+  "homepage": "https://github.com/MartinKilonzo/hockey-app",
+  "bugs": "https://github.com/MartinKilonzo/hockey-app/issues",
+  "author": {
+    "name": "MartinKilonzo",
+    "email": "martinkilonzo2@gmail.com",
+    "url": "https://github.com/MartinKilonzo"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MartinKilonzo/hockey-app.git"
+  },
    "licenses": [
     {
-      "type": "none"
+      "type": "None"
     }
   ],
   "dependencies": {},
   "devDependencies": {
     "gulp": "git://github.com/gulpjs/gulp.git#4.0",
     "ng-factory": "^1.0",
-    "undertaker-app-tasks": "^0.2",
-    "factory-angular-channels": "^0.6"
+    "undertaker-app-tasks": "^0.2.6",
+    "factory-angular-channels": "^0.7.1"
   }
 }
