@@ -146,6 +146,15 @@ var execuPointer = 0;
 		stopped = true;
 	};
 
+	$scope.resetTimer = function () {
+		$scope.stopTimer();
+		stopped = false;
+
+		$scope.startTime = 0;
+		$scope.showMinutes = false;
+		$scope.gameInPlay = false;
+	};
+
 	var updateClock = function () {
 		var newTime;
 
@@ -156,6 +165,9 @@ var execuPointer = 0;
 		// Update minutes
 		newTime = ($scope.gameMinutes + (newTime / 60) | 0);
 		$scope.gameMinutes = newTime % 60;
+
+		if ($scope.gameMinutes > 0 && !$scope.showMinutes)
+			$scope.showMinutes = true;
 
 		// Update hours
 		$scope.gameHours += (newTime / 60) | 0;
@@ -180,6 +192,15 @@ var execuPointer = 0;
 			str[1] += '0';
 		var str = str[0] + '.' + str[1];
 		// Return the padded string
+		return str;
+	};
+
+	$scope.formatMinutes = function () {
+		var str = $scope.gameMinutes.toString();
+
+		while (str.length < 2)
+			str = '0' + str;
+
 		return str;
 	};
 
