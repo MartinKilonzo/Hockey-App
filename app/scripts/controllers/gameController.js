@@ -112,7 +112,7 @@ var execuPointer = 0;
 
 	// Game Timer Functions
 	var nextCall;
-	var timerUnit = 10;
+	var timerUnit = 47;
 	var timers = [];
 
 	$scope.startTimer = function () {
@@ -126,7 +126,7 @@ var execuPointer = 0;
 
 		var drift = (new Date().getTime() - $scope.startTime) % timerUnit;
 
-		updateClock(drift);
+		updateClock();
 
 		timers.push($timeout($scope.startTimer, nextCall - new Date().getTime(), $scope.gameInPlay));
 	};
@@ -137,14 +137,13 @@ var execuPointer = 0;
 			$timeout.cancel(timers[i]);
 		}
 		timers = [];
-		$scope.startTime = undefined;
 	};
 
-	var updateClock = function (drift) {
+	var updateClock = function () {
 		var newTime;
 
 		// Update seconds
-		newTime = Math.floor(($scope.gameSeconds + (timerUnit + drift) / 1000) * 1000) / 1000;
+		newTime = Math.floor(($scope.gameSeconds + (timerUnit) / 1000) * 1000) / 1000;
 		$scope.gameSeconds = Math.floor((newTime % 60) * 1000) / 1000;
 
 		// Update minutes
@@ -155,8 +154,8 @@ var execuPointer = 0;
 		$scope.gameHours += (newTime / 60) | 0;
 	};
 
-	$scope.addPadding = function (object) {
-		var str = object.toString().split(".");
+	$scope.formatSeconds = function () {
+		var str = $scope.gameSeconds.toString().split(".");
 
 		// NULL case ie. no decimal
 		if (!str[1])
@@ -165,6 +164,9 @@ var execuPointer = 0;
 		// While the whole portion has less than two digits, add padding
 		while (str[0].length < 2)
 			str[0] = '0' + str[0];
+
+		//Truncate
+		str[1] = str[1].slice(0, 3);
 
 		// While the fractional portion has less than three digits, add padding
 		while (str[1].length < 3)
