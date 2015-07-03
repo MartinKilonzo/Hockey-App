@@ -114,12 +114,18 @@ var execuPointer = 0;
 	var nextCall;
 	var timerUnit = 47; // 47 chosen as it is a prime near 50 ms that is large enough to change the ms value frequently
 	var timers = [];
+	var stopped = false;
 
 	$scope.startTimer = function () {
 		if (!$scope.startTime) {
 			$scope.startTime = new Date().getTime();
 			$scope.gameSeconds = $scope.gameMinutes = $scope.gameHours = 0;
 			nextCall = $scope.startTime;
+		}
+
+		if (stopped) {
+			nextCall = new Date().getTime();
+			stopped = false;
 		}
 
 		nextCall += timerUnit;
@@ -137,6 +143,7 @@ var execuPointer = 0;
 			$timeout.cancel(timers[i]);
 		}
 		timers = [];
+		stopped = true;
 	};
 
 	var updateClock = function () {
