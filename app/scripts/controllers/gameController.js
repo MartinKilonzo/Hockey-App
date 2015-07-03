@@ -143,8 +143,8 @@ var execuPointer = 0;
 		var newTime;
 
 		// Update seconds
-		newTime = Math.floor(($scope.gameSeconds + (timerUnit) / 1000) * 1000) / 1000;
-		$scope.gameSeconds = Math.floor((newTime % 60) * 1000) / 1000;
+		newTime = $scope.gameSeconds + timerUnit / 1000;
+		$scope.gameSeconds = newTime % 60;
 
 		// Update minutes
 		newTime = ($scope.gameMinutes + (newTime / 60) | 0);
