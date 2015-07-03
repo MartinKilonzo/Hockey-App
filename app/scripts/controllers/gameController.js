@@ -112,7 +112,7 @@ var execuPointer = 0;
 
 	// Game Timer Functions
 	var nextCall;
-	var timerUnit = 47;
+	var timerUnit = 47; // 47 chosen as it is a prime near 50 ms that is large enough to change the ms value frequently
 	var timers = [];
 
 	$scope.startTimer = function () {
