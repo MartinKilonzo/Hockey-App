@@ -2,6 +2,11 @@
 
 /* Game Toggle styles */
 
+#undo.disabled, #redo.disabled 
+{
+	cursor: default;
+}
+
 .clock 
 {
 	border: 1px solid #DDD;
