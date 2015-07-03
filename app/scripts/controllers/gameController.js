@@ -19,10 +19,10 @@ angular.module('HockeyApp')
 	$scope.resetSelection = function () {
 		
 	// Resets all set selections on clicks elsewhere
-};
+	};
 
-var execuStack = [];
-var execuPointer = 0;
+	var execuStack = [];
+	var execuPointer = 0;
 
 
 	// Undo and Redo Functionality //
@@ -106,103 +106,8 @@ var execuPointer = 0;
 	}, function (redoable) {
 		$scope.redoable = redoable;
 	});
-
 	
 	// Game Toggle Functions //
-
-	// Game Timer Functions
-	var nextCall;
-	var timerUnit = 47; // 47 chosen as it is a prime near 50 ms that is large enough to change the ms value frequently
-	var timers = [];
-	var stopped = false;
-
-	$scope.startTimer = function () {
-		if (!$scope.startTime) {
-			$scope.startTime = new Date().getTime();
-			$scope.gameSeconds = $scope.gameMinutes = $scope.gameHours = 0;
-			nextCall = $scope.startTime;
-		}
-
-		if (stopped) {
-			nextCall = new Date().getTime();
-			stopped = false;
-		}
-
-		nextCall += timerUnit;
-
-		var drift = (new Date().getTime() - $scope.startTime) % timerUnit;
-
-		updateClock();
-
-		timers.push($timeout($scope.startTimer, nextCall - new Date().getTime(), $scope.gameInPlay));
-	};
-
-	$scope.stopTimer = function () {
-		// Cancel the $timeout timers
-		for (var i = 0; i < timers.length; i++) {
-			$timeout.cancel(timers[i]);
-		}
-		timers = [];
-		stopped = true;
-	};
-
-	$scope.resetTimer = function () {
-		$scope.stopTimer();
-		stopped = false;
-
-		$scope.startTime = 0;
-		$scope.showMinutes = false;
-		$scope.gameInPlay = false;
-	};
-
-	var updateClock = function () {
-		var newTime;
-
-		// Update seconds
-		newTime = $scope.gameSeconds + timerUnit / 1000;
-		$scope.gameSeconds = newTime % 60;
-
-		// Update minutes
-		newTime = ($scope.gameMinutes + (newTime / 60) | 0);
-		$scope.gameMinutes = newTime % 60;
-
-		if ($scope.gameMinutes > 0 && !$scope.showMinutes)
-			$scope.showMinutes = true;
-
-		// Update hours
-		$scope.gameHours += (newTime / 60) | 0;
-	};
-
-	$scope.formatSeconds = function () {
-		var str = $scope.gameSeconds.toString().split(".");
-
-		// NULL case ie. no decimal
-		if (!str[1])
-			str[1] = '000';
-
-		// While the whole portion has less than two digits, add padding
-		while (str[0].length < 2)
-			str[0] = '0' + str[0];
-
-		//Truncate
-		str[1] = str[1].slice(0, 3);
-
-		// While the fractional portion has less than three digits, add padding
-		while (str[1].length < 3)
-			str[1] += '0';
-		var str = str[0] + '.' + str[1];
-		// Return the padded string
-		return str;
-	};
-
-	$scope.formatMinutes = function () {
-		var str = $scope.gameMinutes.toString();
-
-		while (str.length < 2)
-			str = '0' + str;
-
-		return str;
-	};
 
 	// Game Flag Functions
 	/*
@@ -528,4 +433,117 @@ var execuPointer = 0;
 	  	return playerSelected;
 	  };
 
+	}])
+
+	.controller('timerController', ['$scope', '$log', '$timeout', function($scope, $log, $timeout) {
+		var nextCall;
+		var timerUnit = 47; // 47 chosen as it is a prime near 50 ms that is large enough to change the ms value frequently
+		var timers = [];
+		var stopped = false;
+
+		/*
+		 * Function which starts the timer
+		 */
+		$scope.startTimer = function () {
+			if (!$scope.startTime) {
+				$scope.startTime = new Date().getTime();
+				$scope.gameSeconds = $scope.gameMinutes = $scope.gameHours = 0;
+				nextCall = $scope.startTime;
+			}
+
+			if (stopped) {
+				nextCall = new Date().getTime();
+				stopped = false;
+			}
+
+			nextCall += timerUnit;
+
+			var drift = (new Date().getTime() - $scope.startTime) % timerUnit;
+
+			updateClock();
+
+			timers.push($timeout($scope.startTimer, nextCall - new Date().getTime(), $scope.gameInPlay));
+		};
+
+		/*
+		 * Function which stops the timer
+		 */
+		$scope.stopTimer = function () {
+			// Cancel the $timeout timers
+			for (var i = 0; i < timers.length; i++) {
+				$timeout.cancel(timers[i]);
+			}
+			timers = [];
+			stopped = true;
+		};
+
+		/*
+		 * Function which resets the timer
+		 */
+		$scope.resetTimer = function () {
+			$scope.stopTimer();
+			stopped = false;
+
+			$scope.startTime = 0;
+			$scope.showMinutes = false;
+			$scope.gameInPlay = false;
+		};
+
+		/*
+		 * Function which updates the scope variables related to time keeping
+		 */
+		var updateClock = function () {
+			var newTime;
+
+			// Update seconds
+			newTime = $scope.gameSeconds + timerUnit / 1000;
+			$scope.gameSeconds = newTime % 60;
+
+			// Update minutes
+			newTime = ($scope.gameMinutes + (newTime / 60) | 0);
+			$scope.gameMinutes = newTime % 60;
+
+			if ($scope.gameMinutes > 0 && !$scope.showMinutes)
+				$scope.showMinutes = true;
+
+			// Update hours
+			$scope.gameHours += (newTime / 60) | 0;
+		};
+
+		/*
+		 * Function which formats the $scope.gameSeconds variable to be displayed in the game clock
+		 */
+		$scope.formatSeconds = function () {
+			var str = $scope.gameSeconds.toString().split(".");
+
+			// NULL case ie. no decimal
+			if (!str[1])
+				str[1] = '000';
+
+			// While the whole portion has less than two digits, add padding
+			while (str[0].length < 2)
+				str[0] = '0' + str[0];
+
+			//Truncate
+			str[1] = str[1].slice(0, 3);
+
+			// While the fractional portion has less than three digits, add padding
+			while (str[1].length < 3)
+				str[1] += '0';
+			var str = str[0] + '.' + str[1];
+			// Return the padded string
+			return str;
+		};
+
+		/*
+		 * Function which formats the $scope.gameMinutes variable to be displayed in the game clock
+		 */
+		$scope.formatMinutes = function () {
+			var str = $scope.gameMinutes.toString();
+
+			while (str.length < 2)
+				str = '0' + str;
+
+			return str;
+		};
 	}]);

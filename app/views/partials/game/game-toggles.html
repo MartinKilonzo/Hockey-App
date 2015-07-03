@@ -31,12 +31,5 @@
 	</div>
 
 	<!-- Game Timer -->
-	<div class="col-xs-2 col-xs-offset-1" ng-init="startTime = false">
-		<p class="clock" ng-if="startTime" ng-dblclick="resetTimer()"><span id="hours" ng-show="gameHours">{{ gameHours }} :</span><span id="minutes" ng-show="showMinutes"> {{ formatMinutes() }} :</span><span id="seconds"> {{ formatSeconds() }}</span></p>
-		<p class="clock noselect" ng-if="!startTime">00.000</p>
-	</div>
-	<div class="col-xs-1" ng-init="gameInPlay = false">
-		<button type="button" class="btn btn-success" ng-show="!gameInPlay" ng-click="gameInPlay = !gameInPlay; startTimer()">Start</button>
-		<button type="button" class="btn btn-danger" ng-show="gameInPlay" ng-click="gameInPlay = !gameInPlay; stopTimer()">Stop</button>
-	</div>
+	<game-timer></game-timer>
 </div>

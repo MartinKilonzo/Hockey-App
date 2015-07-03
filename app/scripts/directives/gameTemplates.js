@@ -42,4 +42,12 @@ angular.module('HockeyApp')
 			restrict: 'E',
 			templateUrl: 'views/partials/game/game-lineup.html'
 		};
+	})
+
+	.directive('gameTimer', function () {
+		return {
+			restrict: 'E',
+			templateUrl: 'views/partials/game/game-timer.html',
+			controller: 'timerController'
+		};
 	});
