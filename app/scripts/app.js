@@ -12,7 +12,7 @@ angular.module('HockeyApp', ['ngAnimate', 'ngCookies', 'ngRoute', 'ui.bootstrap'
 
   .constant('linupsToDisplay', 4)
 
-  .config(function($locationProvider, $routeProvider) {
+  .config(['$locationProvider', '$routeProvider', 'localStorageServiceProvider', function ($locationProvider, $routeProvider, localStorageServiceProvider) {
 
     $locationProvider.html5Mode(true);
 
@@ -29,7 +29,7 @@ angular.module('HockeyApp', ['ngAnimate', 'ngCookies', 'ngRoute', 'ui.bootstrap'
     })
     .when('/game', {
       templateUrl: 'views/game.html',
-      controller: 'gameController',
+      controller: 'gameController'
     })
     .when('/roster', {
       templateUrl: 'views/roster.html',
@@ -48,16 +48,13 @@ angular.module('HockeyApp', ['ngAnimate', 'ngCookies', 'ngRoute', 'ui.bootstrap'
       controller: 'settingsController'
     })
     .otherwise({
-      redirectTo: '/',
+      redirectTo: '/'
     });
 
-  })
-
-  .config(['localStorageServiceProvider', function (localStorageServiceProvider) {
     localStorageServiceProvider.setPrefix('ls');
   }])
 
-  .factory('TeamFactory', function TeamFactory() {
+  .factory('TeamFactory',['localStorageService', function (localStorageService) {
     var team = localStorageService.get('players') || [];
 
     return {
@@ -72,12 +69,12 @@ angular.module('HockeyApp', ['ngAnimate', 'ngCookies', 'ngRoute', 'ui.bootstrap'
         return this.team;
       }
     };
-  })
+  }])
 
 .factory('PlayerFactory', function (playerInfo) {
-  console.log("NEW PLAYER");
+  console.log('NEW PLAYER');
   var Player =  function () {
-    info = playerInfo.replace(/, /g, '/').replace(/,/g, '/').split('/');
+  var info = playerInfo.replace(/, /g, '/').replace(/,/g, '/').split('/');
 
     console.log(info);
 

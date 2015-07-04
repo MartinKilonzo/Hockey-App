@@ -63,16 +63,16 @@ angular.module('HockeyApp')
 			$scope.createNewLineup();
 		};
 
-		var saveLineup = function(newLineup, index)
+		var saveLineup = function(lineup, index)
 		{
 			var newLineup =
 			{
-				leftWing: newLineup[0],
-				center: newLineup[1],
-				rightWing: newLineup[2],
-				defence1: newLineup[3],
-				defence2: newLineup[4],
-				lineupTitle: newLineup[5]
+				leftWing: lineup[0],
+				center: lineup[1],
+				rightWing: lineup[2],
+				defence1: lineup[3],
+				defence2: lineup[4],
+				lineupTitle: lineup[5]
 			};
 
 			// If an index has been set (ie. not undefined), then the user is editing a lineup, so be sure to overwrite the existing one
@@ -129,7 +129,7 @@ angular.module('HockeyApp')
 				// For: each other player in the lineup
 				for (var j = 0; j < $scope.newLineup.length - 1; j++)
 				{
-					if (i != j &&  $scope.newLineup[j].playerNumber === uniquePlayerNumber) {
+					if (i !== j &&  $scope.newLineup[j].playerNumber === uniquePlayerNumber) {
 						$scope.validLineup = false;
 						return;
 					}

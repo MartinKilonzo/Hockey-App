@@ -4,7 +4,7 @@ angular.module('HockeyApp')
 
   .controller('settingsController', function($scope) {
 
-  	console.log("Loaded Settings Controller.");
+  	console.log('Loaded Settings Controller.');
 
   	$scope.pageClass = 'page-settings';
 

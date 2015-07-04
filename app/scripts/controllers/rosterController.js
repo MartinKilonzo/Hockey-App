@@ -4,7 +4,7 @@ angular.module('HockeyApp')
 
 .controller('rosterPageController', function($scope) {
 
-	console.log("Loaded Roster Controller.");
+	console.log('Loaded Roster Controller.');
 
 	$scope.pageClass = 'page-roster';
 })
@@ -14,8 +14,6 @@ angular.module('HockeyApp')
 		
  		// Initialization
  		console.log('Started controller roster');
- 		$('#warning').show();
- 		$('#danger').hide();
 
  		var savedPlayers = localStorageService.get('players');
 
@@ -48,14 +46,14 @@ angular.module('HockeyApp')
 
  				var playerExists = false;
 
- 				for (var i = $scope.players.length - 1; i >= 0; i--) {
+ 				for (i = $scope.players.length - 1; i >= 0; i--) {
  					if ($scope.players[i].lastName === newPlayer.lastName && $scope.players[i].firstName === newPlayer.firstName) {
  						playerExists = true;
  					}
  				}
 
  				if (!validPlayer || playerExists) {
- 					!validPlayer ? alert("Invalid Entry.") : alert("The player already exists on the roster.");
+ 					!validPlayer ? alert('Invalid Entry.') : alert('The player already exists on the roster.');
  				} 
 
  				else {
@@ -86,12 +84,10 @@ angular.module('HockeyApp')
 
 		$scope.getInfo = function (index) {
 			var player = $scope.players[index];
-			return "#" + player.playerNumber + " " + player.firstName.charAt(0) + "." + player.lastName + ": " + player.position;
+			return '#' + player.playerNumber + ' ' + player.firstName.charAt(0) + '.' + player.lastName + ': ' + player.position;
 		};
 
 		console.log('Ended controller roster');
-		$('#success').show();
-		$('#warning').hide();
 
 		/* Ensure that the players can be ordered by number
 		angular.forEach($scope.players, function (player) {
