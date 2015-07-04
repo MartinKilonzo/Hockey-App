@@ -1,4 +1,6 @@
-vr readline = require('readline');
+'use strict';
+
+var readline = require('readline');
 var google = require('googleapis');
 var OAuth2 = google.auth.OAuth2;
 
