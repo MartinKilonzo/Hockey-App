@@ -1,33 +1,36 @@
+<meta name="viewport" content="width=device-width" />
 <div class="col-sm-6 col-sm-offset-1">
 	<div class="game-board">
-		<div class="col-xs-2 col-xs-offset-3 noselect">
-			<div class="player-game" ng-class="{'position-selected': positionSelection === 0, 'empty': !activePlayers[0]}" ng-click="setSelectedPosition(0)">
-				<p class="placeholder" ng-show="!activePlayers[0]">LW</p>
-				<p ng-show="activePlayers[0]">#{{ activePlayers[0].playerNumber }}</p>
+		<div class="container-fluid">
+			<div class="col-xs-2 col-xs-offset-3 noselect">
+				<div class="player-game" ng-class="{'position-selected': positionSelection === 0, 'empty': !activePlayers[0]}" ng-click="setSelectedPosition(0)">
+					<p class="placeholder" ng-show="!activePlayers[0]">LW</p>
+					<p ng-show="activePlayers[0]">#{{ activePlayers[0].playerNumber }}</p>
+				</div>
 			</div>
-		</div>
-		<div class="col-xs-2 noselect">
-			<div class="player-game" ng-class="{'position-selected': positionSelection === 1, 'empty': !activePlayers[1]}" ng-click="setSelectedPosition(1)">
-				<p class="placeholder" ng-show="!activePlayers[1]">C</p>
-				<p ng-show="activePlayers[1]">#{{ activePlayers[1].playerNumber }}</p>
+			<div class="col-xs-2 noselect">
+				<div class="player-game" ng-class="{'position-selected': positionSelection === 1, 'empty': !activePlayers[1]}" ng-click="setSelectedPosition(1)">
+					<p class="placeholder" ng-show="!activePlayers[1]">C</p>
+					<p ng-show="activePlayers[1]">#{{ activePlayers[1].playerNumber }}</p>
+				</div>
 			</div>
-		</div>
-		<div class="col-xs-2 noselect">
-			<div class="player-game" ng-class="{'position-selected': positionSelection === 2, 'empty': !activePlayers[2]}" ng-click="setSelectedPosition(2)">
-				<p class="placeholder" ng-show="!activePlayers[2]">RW</p>
-				<p ng-show="activePlayers[2]">#{{ activePlayers[2].playerNumber }}</p>
+			<div class="col-xs-2 noselect">
+				<div class="player-game" ng-class="{'position-selected': positionSelection === 2, 'empty': !activePlayers[2]}" ng-click="setSelectedPosition(2)">
+					<p class="placeholder" ng-show="!activePlayers[2]">RW</p>
+					<p ng-show="activePlayers[2]">#{{ activePlayers[2].playerNumber }}</p>
+				</div>
 			</div>
-		</div>
-		<div class="col-xs-2 col-xs-offset-4 noselect">
-			<div class="player-game" ng-class="{'position-selected': positionSelection === 3, 'empty': !activePlayers[3]}" ng-click="setSelectedPosition(3); setDefenceSelection(1)">
-				<p class="placeholder" ng-show="!activePlayers[3]">D</p>
-				<p ng-show="activePlayers[3]">#{{ activePlayers[3].playerNumber }}</p>
+			<div class="col-xs-2 col-xs-offset-4 noselect">
+				<div class="player-game" ng-class="{'position-selected': positionSelection === 3, 'empty': !activePlayers[3]}" ng-click="setSelectedPosition(3); setDefenceSelection(1)">
+					<p class="placeholder" ng-show="!activePlayers[3]">D</p>
+					<p ng-show="activePlayers[3]">#{{ activePlayers[3].playerNumber }}</p>
+				</div>
 			</div>
-		</div>
-		<div class="col-xs-2 noselect">
-			<div class="player-game" ng-class="{'position-selected': positionSelection === 4, 'empty': !activePlayers[4]}" ng-click="setSelectedPosition(4); setDefenceSelection(2)">
-				<p class="placeholder" ng-show="!activePlayers[4]">D</p>
-				<p ng-show="activePlayers[4]">#{{ activePlayers[4].playerNumber }}</p>
+			<div class="col-xs-2 noselect">
+				<div class="player-game" ng-class="{'position-selected': positionSelection === 4, 'empty': !activePlayers[4]}" ng-click="setSelectedPosition(4); setDefenceSelection(2)">
+					<p class="placeholder" ng-show="!activePlayers[4]">D</p>
+					<p ng-show="activePlayers[4]">#{{ activePlayers[4].playerNumber }}</p>
+				</div>
 			</div>
 		</div>
 	</div>
