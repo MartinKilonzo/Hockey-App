@@ -90,55 +90,6 @@ angular.module('HockeyApp')
 		else 
 			this.applier(this.oldVal);
 	};
-
-	execuStack.push = function(action) {
-		execuStack[execuPointer] = action;
-		execuPointer++;
-
-		//Empty the older actions in the stack ie. the redo portion of the stack
-		execuStack.length = execuPointer;
-		console.log(this);
-	};
-
-	$scope.undo = function () {
-		if ($scope.undoable) {
-			execuPointer--;
-			var undoAction = execuStack[execuPointer];
-			undoAction.unExecute();
-			console.log(execuStack);
-			$log.info(execuPointer);
-		}
-	};
-
-	$scope.redo = function () {
-		if ($scope.redoable) {
-			var redoAction = execuStack[execuPointer];
-			redoAction.execute();
-			execuPointer++;
-			console.log(execuStack);
-			$log.info(execuPointer);
-		}
-	};
-
-	$scope.undoable = false;
-	$scope.redoable = false;
-
-	
-	// Watch to see if undoing is possible
-	$scope.$watch( function () { 
-		return execuStack.length > 0 && execuPointer > 0;
-	}, function (undoable) { 
-		$scope.undoable = undoable;
-	});
-
-	
-	// Watch to see if redoing is possible
-	$scope.$watch( function () {
-		return execuStack.length > 0 && execuPointer <= execuStack.length - 1;
-	}, function (redoable) {
-		$scope.redoable = redoable;
-	});
-	
 	// Game Toggle Functions //
 	/*
 	 * Function which sets the period which is to be recorded in each game event. 
@@ -185,20 +136,18 @@ angular.module('HockeyApp')
 
 	 	var newGameEvent = new GameEvent($scope.period, $scope.activePlayers, getGameTime(), 1);
 
-		//applier
-		//For each active player:
+		// applier
+		// For each active player:
 		var applier = function (GameEvent) {
 			for (var i = 0; i < $scope.activePlayers.length; i++) {
-				$log.info(getGameTime());
 				$scope.activePlayers[i].games[$scope.gameNumber].gameEvents.shotsOn.push(GameEvent);
 			}
 		};
 
-		//unApplier
-		//For each active player:
+		// unApplier
+		// For each active player:
 		var unApplier = function () {
 			for (var i = 0; i < $scope.activePlayers.length; i++) {
-				$log.info(getGameTime());
 				$scope.activePlayers[i].games[$scope.gameNumber].gameEvents.shotsOn.pop();
 			}
 		};
@@ -217,20 +166,18 @@ angular.module('HockeyApp')
 
 		var newGameEvent = new GameEvent($scope.period, $scope.activePlayers, getGameTime(), -1);
 
-		//applier
-		//For each active player:
+		// applier
+		// For each active player:
 		var applier = function (GameEvent) {
 			for (var i = 0; i < $scope.activePlayers.length; i++) {
-				$log.info(getGameTime());
 				$scope.activePlayers[i].games[$scope.gameNumber].gameEvents.shotsOn.push(GameEvent);
 			}
 		};
 
-		//unApplier
-		//For each active player:
+		// unApplier
+		// For each active player:
 		var unApplier = function () {
 			for (var i = 0; i < $scope.activePlayers.length; i++) {
-				$log.info(getGameTime());
 				$scope.activePlayers[i].games[$scope.gameNumber].gameEvents.shotsOn.pop();
 			}
 		};
@@ -249,20 +196,18 @@ angular.module('HockeyApp')
 
 		var newGameEvent = new GameEvent($scope.period, $scope.activePlayers, getGameTime(), 1);
 
-		//applier
-		//For each active player:
+		// applier
+		// For each active player:
 		var applier = function (GameEvent) {
 			for (var i = 0; i < $scope.activePlayers.length; i++) {
-				$log.info(getGameTime());
 				$scope.activePlayers[i].games[$scope.gameNumber].gameEvents.shotsAgainst.push(GameEvent);
 			}
 		};
 
-		//unApplier
-		//For each active player:
+		// unApplier
+		// For each active player:
 		var unApplier = function () {
 			for (var i = 0; i < $scope.activePlayers.length; i++) {
-				$log.info(getGameTime());
 				$scope.activePlayers[i].games[$scope.gameNumber].gameEvents.shotsAgainst.pop();
 			}
 		};
@@ -281,20 +226,18 @@ angular.module('HockeyApp')
 
 		var newGameEvent = new GameEvent($scope.period, $scope.activePlayers, getGameTime(), -1);
 
-		//applier
-		//For each active player:
+		// applier
+		// For each active player:
 		var applier = function (GameEvent) {
 			for (var i = 0; i < $scope.activePlayers.length; i++) {
-				$log.info(getGameTime());
 				$scope.activePlayers[i].games[$scope.gameNumber].gameEvents.shotsAgainst.push(GameEvent);
 			}
 		};
 
-		//unApplier
-		//For each active player:
+		// unApplier
+		// For each active player:
 		var unApplier = function () {
 			for (var i = 0; i < $scope.activePlayers.length; i++) {
-				$log.info(getGameTime());
 				$scope.activePlayers[i].games[$scope.gameNumber].gameEvents.shotsAgainst.pop();
 			}
 		};
@@ -313,20 +256,18 @@ angular.module('HockeyApp')
 
 	 	var newGameEvent = new GameEvent($scope.period, $scope.activePlayers, getGameTime(), 1);
 
-		//applier
-		//For each active player:
+		// applier
+		// For each active player:
 		var applier = function (GameEvent) {
 			for (var i = 0; i < $scope.activePlayers.length; i++) {
-				$log.info(getGameTime());
 				$scope.activePlayers[i].games[$scope.gameNumber].gameEvents.teamGoals.push(GameEvent);
 			}
 		};
 
-		//unApplier
-		//For each active player:
+		// unApplier
+		// For each active player:
 		var unApplier = function () {
 			for (var i = 0; i < $scope.activePlayers.length; i++) {
-				$log.info(getGameTime());
 				$scope.activePlayers[i].games[$scope.gameNumber].gameEvents.teamGoals.pop();
 			}
 		};
@@ -345,20 +286,18 @@ angular.module('HockeyApp')
 
 		var newGameEvent = new GameEvent($scope.period, $scope.activePlayers, getGameTime(), 1);
 
-		//applier
-		//For each active player:
+		// applier
+		// For each active player:
 		var applier = function (GameEvent) {
 			for (var i = 0; i < $scope.activePlayers.length; i++) {
-				$log.info(getGameTime());
 				$scope.activePlayers[i].games[$scope.gameNumber].gameEvents.opponentGoals.push(GameEvent);
 			}
 		};
 
-		//unApplier
-		//For each active player:
+		// unApplier
+		// For each active player:
 		var unApplier = function () {
 			for (var i = 0; i < $scope.activePlayers.length; i++) {
-				$log.info(getGameTime());
 				$scope.activePlayers[i].games[$scope.gameNumber].gameEvents.opponentGoals.pop();
 			}
 		};
@@ -426,14 +365,17 @@ angular.module('HockeyApp')
 	 	newActivePlayers[4] = $scope.lineups[index].defence2;
 
 	 	for (var i = 0; i < newActivePlayers.length; i++) {
-	 		$log.info(newActivePlayers[i]);
 	 		if (!newActivePlayers[i].games[$scope.gameNumber]) {
-	 			newActivePlayers[i].games[$scope.gameNumber].gameEvents = {
+	 			var newGameEvents = {
 	 				shotsOn: [],
 	 				shotsAgainst: [],
-	 				goalsOn: [],
-	 				goalsAgainst: []
+	 				teamGoals: [],
+	 				opponentGoals: []
 	 			};
+	 			var newGame = {
+	 				gameEvents: newGameEvents
+	 			};
+	 			newActivePlayers[i].games[$scope.gameNumber] = newGame;
 	 		}
 	 	}
 
@@ -473,12 +415,26 @@ angular.module('HockeyApp')
 	  };
 
 
-	 //Player Pool Functions
+	 // Player Pool Functions
 
 	/*
 	 * Function which swaps the current selected position with the selected player.
 	 */
 	 $scope.swapPlayer = function (index) {
+
+	 	// Create the player's game event lists if they do not exist for this particalar game, ie. on first substitution.
+	 	if (!$scope.players[index].games[$scope.gameNumber]) {
+	 		var newGameEvents = {
+	 			shotsOn: [],
+	 			shotsAgainst: [],
+	 			teamGoals: [],
+	 			opponentGoals: []
+	 		};
+	 		var newGame = {
+	 			gameEvents: newGameEvents
+	 		};
+	 		$scope.players[index].games[$scope.gameNumber] = newGame;
+	 	}
 
 	 	var oldPlayerSwap = {
 	 		player: $scope.activePlayers[$scope.positionSelection],
@@ -589,14 +545,14 @@ angular.module('HockeyApp')
 			$scope.gameSeconds = newTime % 60;
 
 			// Update minutes
-			newTime = ($scope.gameMinutes + (newTime / 60) | 0); //Bitwise OR used for truncation
+			newTime = ($scope.gameMinutes + (newTime / 60) | 0); // Bitwise OR used for truncation
 			$scope.gameMinutes = newTime % 60;
 
 			if ($scope.gameMinutes > 0 && !$scope.showMinutes)
 				$scope.showMinutes = true;
 
 			// Update hours
-			$scope.gameHours += (newTime / 60) | 0; //Bitwise OR used for truncation
+			$scope.gameHours += (newTime / 60) | 0; // Bitwise OR used for truncation
 		};
 
 		/*
@@ -613,7 +569,7 @@ angular.module('HockeyApp')
 			while (str[0].length < 2)
 				str[0] = '0' + str[0];
 
-			//Truncate
+			// Truncate
 			str[1] = str[1].slice(0, 3);
 
 			// While the fractional portion has less than three digits, add padding
