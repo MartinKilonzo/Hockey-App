@@ -14,18 +14,18 @@
 
 	<!-- Period Flag buttons -->
 	<div class="col-xs-4 col-xs-offset-1">
-		<div class="btn-group btn-group-justified" role="group" aria-label="...">
+		<div class="btn-group btn-group-justified" role="group" aria-label="..." ng-init="period = 1">
 			<div class="btn-group" role="group">
-				<button type="button" class="btn btn-default">1st</button>
+				<button type="button" class="btn btn-default" ng-click="setPeriod(1)" ng-class="{active: period === 1}">1st</button>
 			</div>
 			<div class="btn-group" role="group">
-				<button type="button" class="btn btn-default">2nd</button>
+				<button type="button" class="btn btn-default" ng-click="setPeriod(2)" ng-class="{active: period === 2}">2nd</button>
 			</div>
 			<div class="btn-group" role="group">
-				<button type="button" class="btn btn-default">3rd</button>
+				<button type="button" class="btn btn-default" ng-click="setPeriod(3)" ng-class="{active: period === 3}">3rd</button>
 			</div>
 			<div class="btn-group" role="group">
-				<button type="button" class="btn btn-default">OT</button>
+				<button type="button" class="btn btn-default" ng-click="setPeriod(4)" ng-class="{active: period === 4}">OT</button>
 			</div>
 		</div>
 	</div>
