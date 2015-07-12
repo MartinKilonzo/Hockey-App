@@ -426,6 +426,7 @@ angular.module('HockeyApp')
 	 	newActivePlayers[4] = $scope.lineups[index].defence2;
 
 	 	for (var i = 0; i < newActivePlayers.length; i++) {
+	 		$log.info(newActivePlayers[i]);
 	 		if (!newActivePlayers[i].games[$scope.gameNumber]) {
 	 			newActivePlayers[i].games[$scope.gameNumber].gameEvents = {
 	 				shotsOn: [],

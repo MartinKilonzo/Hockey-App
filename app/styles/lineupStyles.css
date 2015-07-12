@@ -55,6 +55,14 @@
 	margin-left: 10px;
 }
 
+.error 
+{
+	background-color: #BF2B30;
+	border-color: #7F1C20;
+	color: #7F1C20;
+	font-size: 32pt;
+}
+
 /** Create lineup modal styles **/
 /* Styles for the cancel button */
 .modal .modal-header .btn 

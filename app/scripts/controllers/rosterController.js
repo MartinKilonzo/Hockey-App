@@ -23,6 +23,8 @@ angular.module('HockeyApp')
  			localStorageService.set('players', $scope.players);
  		}, true);
 
+ 		var tempPlayers = [];
+
  		// Method to add new players
  		$scope.addPlayer = function() {
  			if ($scope.playerInfo) {
@@ -42,6 +44,7 @@ angular.module('HockeyApp')
  					lastName:       info[1],
  					playerNumber:   parseInt(info[2]),
  					position:       info[3],
+ 					games: 			[]
  				};
 
  				var playerExists = false;

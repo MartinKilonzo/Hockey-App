@@ -20,6 +20,45 @@ angular.module('HockeyApp')
 			localStorageService.set('lineups', $scope.lineups);
 		}, true);
 
+		//TODO: Validate each lineup by checking its underlying players
+
+		/*
+		 *	Validation of the existing lineup by checking the players.
+		 */
+		var validateLineups = function () {
+			var tempPlayers = [];
+
+			// Create the buckets (in bucket sort) for easy testing
+			for (var i = 0; i < $scope.players.length; i++) {
+				tempPlayers[$scope.players[i].playerNumber] = $scope.players[i];
+			}
+
+			for (i = 0; i < $scope.lineups.length; i++) {
+
+				var playerNumber = $scope.lineups[i].leftWing.playerNumber;
+				if (!tempPlayers[playerNumber])
+					$scope.lineups[i].leftWing = false;
+
+				playerNumber = $scope.lineups[i].center.playerNumber;
+				if (!tempPlayers[playerNumber])
+					$scope.lineups[i].center = false;
+
+				playerNumber = $scope.lineups[i].rightWing.playerNumber;
+				if (!tempPlayers[playerNumber])
+					$scope.lineups[i].rightWing = false;
+
+				playerNumber = $scope.lineups[i].defence1.playerNumber;
+				if (!tempPlayers[playerNumber])
+					$scope.lineups[i].defence1 = false;
+
+				playerNumber = $scope.lineups[i].defence2.playerNumber;
+				if (!tempPlayers[playerNumber])
+					$scope.lineups[i].defence2 = false;
+			}
+		};
+
+		validateLineups();
+
 
 		// ** CREATE LINEUP FUNCTIONS ** //
 		$scope.createNewLineup = function () {
