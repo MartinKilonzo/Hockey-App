@@ -4,25 +4,25 @@
 	</div>
 </div>
 <div class="row lineup-template" ng-mouseenter="showLineupTools = true" ng-mouseleave="showLineupTools = false">
-	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 player-lineup noselect" ng-class="{error: !lineup.leftWing}" data-drop="dropToggle" ng-model="lineup.leftWing" jqyoui-droppable="{onDrop: 'addLeftWing(lineup, $index)'}">
-		<span ng-if="lineup.leftWing">#{{ lineup.leftWing.playerNumber }}</span>
-		<span ng-if="!lineup.leftWing">!</span>
+	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 player-lineup noselect" ng-class="{error: !lineup.leftWing.playerStatus}" data-drop="dropToggle" ng-model="lineup.leftWing" jqyoui-droppable="{onDrop: 'addLeftWing(lineup, $index)'}">
+		<span ng-if="lineup.leftWing.playerStatus">#{{ lineup.leftWing.playerNumber }}</span>
+		<span ng-if="!lineup.leftWing.playerStatus">!</span>
 	</div>
-	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 player-lineup noselect" ng-class="{error: !lineup.center}" data-drop="dropToggle" ng-model="lineup.center" jqyoui-droppable="{onDrop: 'addCenter(lineup, $index)'}">
-		<span ng-if="lineup.center">#{{ lineup.center.playerNumber }}</span>
-		<span ng-if="!lineup.center">!</span>
+	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 player-lineup noselect" ng-class="{error: !lineup.center.playerStatus}" data-drop="dropToggle" ng-model="lineup.center" jqyoui-droppable="{onDrop: 'addCenter(lineup, $index)'}">
+		<span ng-if="lineup.center.playerStatus">#{{ lineup.center.playerNumber }}</span>
+		<span ng-if="!lineup.center.playerStatus">!</span>
 	</div>
-	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 player-lineup noselect" ng-class="{error: !lineup.rightWing}" data-drop="dropToggle" ng-model="lineup" jqyoui-droppable="{onDrop: 'addRightWing(lineup, $index)'}">
-		<span ng-if="lineup.rightWing">#{{ lineup.rightWing.playerNumber }}</span>
-		<span ng-if="!lineup.rightWing">!</span>
+	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 player-lineup noselect" ng-class="{error: !lineup.rightWing.playerStatus}" data-drop="dropToggle" ng-model="lineup" jqyoui-droppable="{onDrop: 'addRightWing(lineup, $index)'}">
+		<span ng-if="lineup.rightWing.playerStatus">#{{ lineup.rightWing.playerNumber }}</span>
+		<span ng-if="!lineup.rightWing.playerStatus">!</span>
 	</div>
-	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 player-lineup noselect" ng-class="{error: !lineup.defence1}" data-drop="dropToggle" ng-model="lineup" jqyoui-droppable="{onDrop: 'addDefence1(lineup, $index)'}">
-		<span ng-if="lineup.defence1">#{{ lineup.defence1.playerNumber }}</span>
-		<span ng-if="!lineup.defence1">!</span>
+	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 player-lineup noselect" ng-class="{error: !lineup.defence1.playerStatus}" data-drop="dropToggle" ng-model="lineup" jqyoui-droppable="{onDrop: 'addDefence1(lineup, $index)'}">
+		<span ng-if="lineup.defence1.playerStatus">#{{ lineup.defence1.playerNumber }}</span>
+		<span ng-if="!lineup.defence1.playerStatus">!</span>
 	</div>
-	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 player-lineup noselect" ng-class="{error: !lineup.defence2}" data-drop="dropToggle" ng-model="lineup" jqyoui-droppable="{onDrop: 'addDefence2(lineup, $index)'}">
-		<span ng-if="lineup.defence2">#{{ lineup.defence2.playerNumber }}</span>
-		<span ng-if="!lineup.defence2">!</span>
+	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 player-lineup noselect" ng-class="{error: !lineup.defence2.playerStatus}" data-drop="dropToggle" ng-model="lineup" jqyoui-droppable="{onDrop: 'addDefence2(lineup, $index)'}">
+		<span ng-if="lineup.defence2.playerStatus">#{{ lineup.defence2.playerNumber }}</span>
+		<span ng-if="!lineup.defence2.playerStatus">!</span>
 	</div>
 
 	<!-- Lineup tools -->

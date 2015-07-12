@@ -2,7 +2,7 @@
 	<p class="input-group noselect" style="margin-top: 12px">
 		<span class="form-control player-info">#{{ player.playerNumber }} {{ player.firstName.charAt(0) }}. {{ player.lastName }}: {{ player.position }}</span>
 		<span class="input-group-btn">
-			<button class="btn btn-danger" ng-click="removePlayer($index)" aria-label="Remove">x</button>
+			<button class="btn btn-danger" ng-click="removePlayer(player)" aria-label="Remove">x</button>
 		</span>
 	</p>
 </div>

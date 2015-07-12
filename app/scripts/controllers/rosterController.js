@@ -71,18 +71,15 @@ angular.module('HockeyApp')
  			}
  		};
 
-		$scope.removePlayer = function (index) {
+		$scope.removePlayer = function (player) {
+			console.log(player);
+			var index = $scope.players.indexOf(player);
 			var removedPlayer = $scope.players[index];
 			var removedMessage = 'Removed ' + removedPlayer.firstName + ' ' + removedPlayer.lastName;
-			
+
 			$scope.players.splice(index, 1);
 			
 			console.log(removedMessage);
- 			/*for (var i = $scope.players.length - 1; i >= 0; i--) {
-				if ($scope.players[i].lastName === lastName && $scope.players[i].firstName === firstName) {
-					playerExists = true;
-				}
-			};*/
 		};
 
 		$scope.getInfo = function (index) {

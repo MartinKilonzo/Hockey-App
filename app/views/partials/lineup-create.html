@@ -10,31 +10,31 @@
 		<h4 class="text-center">{{ newTitle }}</h4>
 
 		<div class="col-xs-2 col-xs-offset-3 noselect">
-			<div class="player-lineup-new" ng-class="{'position-selected': currentPage === 0, 'error': newLineup[0] === false}" ng-click="setPage(0)">
+			<div class="player-lineup-new" ng-class="{'position-selected': currentPage === 0, 'error': newLineup[0].playerStatus === false}" ng-click="setPage(0)">
 				<p class="placeholder" ng-show="!newLineup[0]">LW</p>
 				<p ng-show="newLineup[0]">#{{ newLineup[0].playerNumber }}</p>
 			</div>
 		</div>
 		<div class="col-xs-2 noselect">
-			<div class="player-lineup-new" ng-class="{'position-selected': currentPage === 1, 'error': newLineup[1] === false}" ng-click="setPage(1)">
+			<div class="player-lineup-new" ng-class="{'position-selected': currentPage === 1, 'error': newLineup[1].playerStatus === false}" ng-click="setPage(1)">
 				<p class="placeholder" ng-show="!newLineup[1]">C</p>
 				<p ng-show="newLineup[1]">#{{ newLineup[1].playerNumber }}</p>
 			</div>
 		</div>
 		<div class="col-xs-2 noselect">
-			<div class="player-lineup-new" ng-class="{'position-selected': currentPage === 2, 'error': newLineup[2] === false}" ng-click="setPage(2)">
+			<div class="player-lineup-new" ng-class="{'position-selected': currentPage === 2, 'error': newLineup[2].playerStatus === false}" ng-click="setPage(2)">
 				<p class="placeholder" ng-show="!newLineup[2]">RW</p>
 				<p ng-show="newLineup[2]">#{{ newLineup[2].playerNumber }}</p>
 			</div>
 		</div>
 		<div class="col-xs-2 col-xs-offset-4 noselect">
-			<div class="player-lineup-new" ng-class="{'position-selected': defenceSelected === 1, 'error': newLineup[3] === false}" ng-click="setPage(3); setDefenceSelection(1)">
+			<div class="player-lineup-new" ng-class="{'position-selected': defenceSelected === 1, 'error': newLineup[3].playerStatus === false}" ng-click="setPage(3); setDefenceSelection(1)">
 				<p class="placeholder" ng-show="!newLineup[3]">D</p>
 				<p ng-show="newLineup[3]">#{{ newLineup[3].playerNumber }}</p>
 			</div>
 		</div>
 		<div class="col-xs-2 noselect">
-			<div class="player-lineup-new" ng-class="{'position-selected': defenceSelected === 2, 'error': newLineup[4] === false}" ng-click="setPage(3); setDefenceSelection(2)">
+			<div class="player-lineup-new" ng-class="{'position-selected': defenceSelected === 2, 'error': newLineup[4].playerStatus === false}" ng-click="setPage(3); setDefenceSelection(2)">
 				<p class="placeholder" ng-show="!newLineup[4]">D</p>
 				<p ng-show="newLineup[4]">#{{ newLineup[4].playerNumber }}</p>
 			</div>

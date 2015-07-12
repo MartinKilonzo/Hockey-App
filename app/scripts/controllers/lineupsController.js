@@ -35,25 +35,30 @@ angular.module('HockeyApp')
 
 			for (i = 0; i < $scope.lineups.length; i++) {
 
+				//Left Wing
 				var playerNumber = $scope.lineups[i].leftWing.playerNumber;
-				if (!tempPlayers[playerNumber])
-					$scope.lineups[i].leftWing = false;
+				if (!tempPlayers[playerNumber]) { $scope.lineups[i].leftWing.playerStatus = false; }
+				else { $scope.lineups[i].leftWing.playerStatus = true; }
 
+				//Center
 				playerNumber = $scope.lineups[i].center.playerNumber;
-				if (!tempPlayers[playerNumber])
-					$scope.lineups[i].center = false;
+				if (!tempPlayers[playerNumber]) { $scope.lineups[i].center.playerStatus = false; }
+				else { $scope.lineups[i].center.playerStatus = true; }
 
+				//Right Wing
 				playerNumber = $scope.lineups[i].rightWing.playerNumber;
-				if (!tempPlayers[playerNumber])
-					$scope.lineups[i].rightWing = false;
+				if (!tempPlayers[playerNumber]) { $scope.lineups[i].rightWing.playerStatus = false; }
+				else { $scope.lineups[i].rightWing.playerStatus = true; }
 
+				//Defence1
 				playerNumber = $scope.lineups[i].defence1.playerNumber;
-				if (!tempPlayers[playerNumber])
-					$scope.lineups[i].defence1 = false;
+				if (!tempPlayers[playerNumber]) { $scope.lineups[i].defence1.playerStatus = false; }
+				else { $scope.lineups[i].defence1.playerStatus = true; }
 
+				//Defence2
 				playerNumber = $scope.lineups[i].defence2.playerNumber;
-				if (!tempPlayers[playerNumber])
-					$scope.lineups[i].defence2 = false;
+				if (!tempPlayers[playerNumber]) { $scope.lineups[i].defence2.playerStatus = false; }
+				else { $scope.lineups[i].defence2.playerStatus = true; }
 			}
 		};
 
