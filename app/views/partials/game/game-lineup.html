@@ -1,17 +1,17 @@
 <div class="row game-lineup-template" ng-class="{'mouseover': hover === $index || lineupSelected($index)}" ng-dblclick="swapLineup($index)" ng-mouseenter="setHover($index)" ng-mouseleave="setHover(undefined)">
-	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 lineup noselect">
+	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 lineup noselect" data-toggle="tooltip" data=placement="top" title="{{lineup.leftWing.firstName}} {{lineup.leftWing.lastName}}" tooltip>
 		#{{ lineup.leftWing.playerNumber }}
 	</div>
-	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 lineup noselect">
+	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 lineup noselect" data-toggle="tooltip" data=placement="top" title="{{lineup.center.firstName}} {{lineup.center.lastName}}" tooltip>
 		#{{ lineup.center.playerNumber }}
 	</div>
-	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 lineup noselect">
+	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 lineup noselect" data-toggle="tooltip" data=placement="top" title="{{lineup.rightWing.firstName}} {{lineup.rightWing.lastName}}" tooltip>
 		#{{ lineup.rightWing.playerNumber }}
 	</div>
-	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 lineup noselect">
+	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 lineup noselect" data-toggle="tooltip" data=placement="top" title="{{lineup.defence1.firstName}} {{lineup.defence1.lastName}}" tooltip>
 		#{{ lineup.defence1.playerNumber }}
 	</div>
-	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 lineup noselect">
+	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 lineup noselect" data-toggle="tooltip" data=placement="top" title="{{lineup.defence2.firstName}} {{lineup.defence2.lastName}}" tooltip>
 		#{{ lineup.defence2.playerNumber }}
 	</div>
 	<div class="col-xs-3 col-sm-3 col-md-3 col-lg-2">

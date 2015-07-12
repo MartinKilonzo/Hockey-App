@@ -299,6 +299,22 @@
 	font-size: 32pt;
 }
 
+
+/* Styles for lineup tools */
+.lineup-tools
+{
+	opacity: 0;
+
+	-webkit-transition: opacity 0.20s ease-in;
+	transition: opacity 0.20s ease-in;
+}
+
+.lineup-tools.mouseover
+{
+	visibility: visible;
+	opacity: 1;
+}
+
 /** Create lineup modal styles **/
 /* Styles for the cancel button */
 .modal .modal-header .btn 
@@ -427,6 +443,7 @@
 {
 
 }
+
 /* Hidden horizontal scroll bar */
 body
 {
