@@ -3,7 +3,7 @@
 		<h4 class="lineup-title">{{ lineup.lineupTitle }}</h4>
 	</div>
 </div>
-<div class="row lineup-template" ng-mouseenter="showLineupTools = true" ng-mouseleave="showLineupTools = false">
+<div class="row lineup-template" ng-mouseenter="showLineupTools = $index" ng-mouseleave="showLineupTools = undefined">
 	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 player-lineup noselect" ng-class="{error: !lineup.leftWing.playerStatus}" data-drop="dropToggle" ng-model="lineup.leftWing" jqyoui-droppable="{onDrop: 'addLeftWing(lineup, $index)'}">
 		<span ng-if="lineup.leftWing.playerStatus">#{{ lineup.leftWing.playerNumber }}</span>
 		<span ng-if="!lineup.leftWing.playerStatus">!</span>
@@ -26,7 +26,7 @@
 	</div>
 
 	<!-- Lineup tools -->
-	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2" ng-init="showLineupTools = false" ng-show="showLineupTools">
+	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 lineup-tools" ng-init="showLineupTools = undefined" ng-class="{mouseover: showLineupTools === $index}">
 		<!-- Delete button -->
 		<div class="row lineup-template">
 		<button type="button" class="btn btn-danger" ng-click="lineups.splice($index, 1)"><span class="glyphicon glyphicon-remove"></span></button>

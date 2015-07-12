@@ -64,6 +64,14 @@ angular.module('HockeyApp')
 
 		validateLineups();
 
+		/*
+		 *	Function for lineup tools' mouseover
+		 */
+
+		 $scope.setHover = function (index) {
+		 	$scope.showLineupTools = index;
+		 };
+
 
 		// ** CREATE LINEUP FUNCTIONS ** //
 		$scope.createNewLineup = function () {
