@@ -21,7 +21,7 @@ angular.module('HockeyApp')
 
 					// If the element is a link, stopping propagation breaks the link event
 					// Likewise, if the element is a player to be swapped, do not reset the selection
-					if (!(target.is('a') || target.has('game-playerpool'))) {
+					if (!(target.is('a') || target.hasClass('game-playerpool'))) {
 						event.stopImmediatePropagation();
 						scope.setSelectedPosition(undefined);
 						scope.$apply(); // Run digest loop
