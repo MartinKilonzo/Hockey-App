@@ -17,7 +17,7 @@ angular.module('HockeyApp')
 
 				// On offclick, reset the seleciton
 				if (!selectable) {
-					var target = $(event.target);
+					var target = angular.element(event.target);
 
 					// If the element is a link, stopping propagation breaks the link event
 					// Likewise, if the element is a player to be swapped, do not reset the selection
