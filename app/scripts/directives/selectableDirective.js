@@ -10,13 +10,13 @@ angular.module('HockeyApp')
 
 				angular.element($document[0].body).click( function (event) {
 					var selectable = angular.element(event.target).inheritedData('selectable');
-					event.stopImmediatePropagation();
+					event.stopImmediatePropagation(); // Prevents firing from each 'selectable' DOM element
 					
 					// On offclick, reset the seleciton
 					if (!selectable) {
 						console.log(scope.positionSelection);
 						scope.setSelectedPosition(undefined);
-						scope.$apply();
+						scope.$apply(); // Run digest loop
 					}
 				});
 			}
