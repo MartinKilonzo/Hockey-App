@@ -24,8 +24,6 @@ angular.module('HockeyApp')
 			stack: [],
 			pointer: 0
 		};
-		// newActionStack.stack = [];
-		// newActionStack.pointer = 0;
 
 		return newActionStack;
 	};
