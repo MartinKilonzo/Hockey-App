@@ -3,5 +3,6 @@
 angular.module('HockeyApp')
 
 	.factory('gameData', function() {
-		return {};
-	});
+		var gameData = {};
+		return { gameData };
+	})
