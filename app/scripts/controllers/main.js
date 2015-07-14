@@ -24,5 +24,4 @@ angular.module('HockeyApp')
 		clearTimeout(mouseOverTimeout);
 		menu.delay(400).hide(300);
 	});
-
 });

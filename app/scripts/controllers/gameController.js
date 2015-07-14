@@ -12,9 +12,11 @@ angular.module('HockeyApp')
 	var savedPlayers = localStorageService.get('players');
 	var savedLineups = localStorageService.get('lineups');
 
-	$scope.players = savedPlayers || [];					// Initialize the player list
-	$scope.lineups = savedLineups || [];					// Initialize the lineup list
-	$scope.activePlayers = gameData.activePlayers || [];	// Initialize the active players
+	$scope.players = savedPlayers || [];					// Initialize player list
+	$scope.lineups = savedLineups || [];					// Initialize lineup list
+
+	$scope.activePlayers = gameData.getPlayers() || [];		// Initialize game board
+
 
 	// Undo and Redo Functionality //
 
@@ -23,25 +25,22 @@ angular.module('HockeyApp')
 		this.pointer = 0;
 	};
 
-	var execuStack = gameData.actionStack || new ActionStack();
-
 	ActionStack.prototype.push = function(action) {
-		this.stack[this.pointer] = action;
-		this.pointer++;
+		execuStack.stack[execuStack.pointer] = action;
+		execuStack.pointer++;
 
-		//Empty the older actions in the stack by trimming it ie. "dump" the redo portion of the stack
-		this.stack.length = this.pointer;
-		gameData.actionStack = this;	// Cache the stack state
-		$log.info(this);
-		$log.debug(gameData);
+		//Empty the older actions in the stack by trimming the stack ie. "dump" the redo portion of the stack
+		execuStack.stack.length = execuStack.pointer;
 	};
+
+
+	var execuStack =  gameData.getStack() || new ActionStack();		// Initialize action stack
 
 	$scope.undo = function () {
 		if ($scope.undoable) {
 			execuStack.pointer--;
 			var undoAction = execuStack.stack[execuStack.pointer];
 			undoAction.unExecute();
-			gameData.actionStack = execuStack;	// Cache the stack state
 		}
 	};
 
@@ -50,7 +49,6 @@ angular.module('HockeyApp')
 			var redoAction = execuStack.stack[execuStack.pointer];
 			redoAction.execute();
 			execuStack.pointer++;
-			gameData.actionStack = execuStack;	// Cache the stack state
 		}
 	};
 
@@ -83,14 +81,15 @@ angular.module('HockeyApp')
 
 	Action.prototype.execute = function () {
 		this.applier(this.newVal);
+		$log.debug(execuStack);
+		gameData.update(execuStack, $scope.activePlayers, $scope.period);
 	};
 
 	Action.prototype.unExecute = function () {
-		if (this.unApplier) {
-			this.unApplier();
-		}
-		else 
-			this.applier(this.oldVal);
+		if (this.unApplier) { this.unApplier(); }
+		else { this.applier(this.oldVal); }
+		$log.info(execuStack);
+		gameData.update(execuStack, $scope.activePlayers, $scope.period);
 	};
 	// Game Toggle Functions //
 	/*
@@ -101,15 +100,15 @@ angular.module('HockeyApp')
 	 	if (period >= 1 || period <= 4) {
 	 		var periodAction = new Action($scope.period, period, function (period) {
 	 			$scope.period = period;
-	 			gameData.period = $scope.period;	// Cache the data
+	 			$log.info($scope.period);
 	 		});
 
-	 		execuStack.push(periodAction);
+	 		if ($scope.period) { execuStack.push(periodAction); }	// If the period has never been initialized, initialize it without adding it to the action stack
 	 		periodAction.execute();
 	 	}
 	 };
 
-	 $scope.setPeriod(gameData.period || 1);	// Initialize the period
+	 $scope.setPeriod(gameData.getPeriod() || 1);	// Initialize the period if it has been saved
 
 	// Game Event Functions
 	/*
@@ -374,7 +373,6 @@ angular.module('HockeyApp')
 
 	 	var newAction = new Action($scope.activePlayers, newActivePlayers, function (newLineup) {
 	 		$scope.activePlayers = newLineup;
-	 		gameData.activePlayers = $scope.activePlayers;	// Cache the data
 	 	});
 
 	 	execuStack.push(newAction);
@@ -442,7 +440,6 @@ angular.module('HockeyApp')
 
 	 	var newAction = new Action(oldPlayerSwap, newPlayerSwap, function (playerSwap) {
 	 		$scope.activePlayers[playerSwap.index] = playerSwap.player;
-	 		gameData.activePlayers = $scope.activePlayers;	// Cache the data
 	 	});
 
 	 	execuStack.push(newAction);
@@ -469,16 +466,9 @@ angular.module('HockeyApp')
 	  	return playerSelected;
 	  };
 
-	  $scope.resetData = function () {
-	  	gameData.actionStack = execuStack = new ActionStack();
-	  	gameData.activePlayers = $scope.activePlayers = [];
-	  	gameData.period = $scope.period = 0;
-	  };
-
 	}])
 
-.controller('timerController', ['$scope', '$log', '$timeout', 'gameData', 
-	function ($scope, $log, $timeout, gameData) {
+.controller('timerController', ['$scope', '$log', '$timeout', function($scope, $log, $timeout) {
 	var nextCall;
 		var timerUnit = 47; // 47 chosen as it is a prime near 50 ms that is large enough to change the ms value frequently
 		var timers = [];
@@ -521,7 +511,7 @@ angular.module('HockeyApp')
 		};
 
 		/*
-		 * Function which resets the timer and the game state
+		 * Function which resets the timer
 		 */
 		 $scope.resetTimer = function () {
 			$scope.stopTimer();
@@ -530,9 +520,6 @@ angular.module('HockeyApp')
 			$scope.startTime = 0;
 			$scope.showMinutes = false;
 			$scope.gameInPlay = false;
-
-			// Reset the game and cached data upon game time reset
-			$scope.resetData();
 		};
 
 		/*
