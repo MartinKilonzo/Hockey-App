@@ -9,6 +9,21 @@ angular.module('HockeyApp')
 
 	$scope.pageClass = 'page-game';
 
+	if (!gameData) {
+		var gameTime = {
+			seconds: 0,
+			minutes: 0,
+			hours:   0
+		};
+
+		gameData = {
+			time: gameTime,
+			activePlayers: [],
+			period: 0,
+			//actionStack: new ActionStack(),
+		};
+	}
+
 	var savedPlayers = localStorageService.get('players');
 	var savedLineups = localStorageService.get('lineups');
 
@@ -109,6 +124,7 @@ angular.module('HockeyApp')
 	 	if (period >= 1 || period <= 4) {
 	 		var periodAction = new Action($scope.period, period, function (period) {
 	 			$scope.period = period;
+	 			gameData.period = $scope.period;	// Cache the data
 	 		});
 
 	 		execuStack.push(periodAction);
@@ -379,6 +395,7 @@ angular.module('HockeyApp')
 
 	 	var newAction = new Action($scope.activePlayers, newActivePlayers, function (newLineup) {
 	 		$scope.activePlayers = newLineup;
+	 		gameData.activePlayers = $scope.activePlayers;	// Cache the data
 	 	});
 
 	 	execuStack.push(newAction);
@@ -446,6 +463,7 @@ angular.module('HockeyApp')
 
 	 	var newAction = new Action(oldPlayerSwap, newPlayerSwap, function (playerSwap) {
 	 		$scope.activePlayers[playerSwap.index] = playerSwap.player;
+	 		gameData.activePlayers = $scope.activePlayers;	// Cache the data
 	 	});
 
 	 	$log.info(newAction);
@@ -473,9 +491,19 @@ angular.module('HockeyApp')
 	  	return playerSelected;
 	  };
 
+	  $scope.resetData = function () {
+	  	gameData.gameTime.seconds = 0;
+	  	gameData.gameTime.minutes = 0;
+	  	gameData.gameTime.hours = 0;
+	  	gameData.actionStack = execuStack = new ActionStack();
+	  	gameData.activePlayers = $scope.activePlayers = [];
+	  	gameData.period = $scope.period = 0;
+	  };
+
 	}])
 
-.controller('timerController', ['$scope', '$log', '$timeout', function($scope, $log, $timeout) {
+.controller('timerController', ['$scope', '$log', '$timeout', 'gameData', 
+	function ($scope, $log, $timeout, gameData) {
 	var nextCall;
 		var timerUnit = 47; // 47 chosen as it is a prime near 50 ms that is large enough to change the ms value frequently
 		var timers = [];
@@ -518,7 +546,7 @@ angular.module('HockeyApp')
 		};
 
 		/*
-		 * Function which resets the timer
+		 * Function which resets the timer and the game state
 		 */
 		 $scope.resetTimer = function () {
 			$scope.stopTimer();
@@ -527,6 +555,9 @@ angular.module('HockeyApp')
 			$scope.startTime = 0;
 			$scope.showMinutes = false;
 			$scope.gameInPlay = false;
+
+			// Reset the game and cached data upon game time reset
+			$scope.resetData();
 		};
 
 		/*
