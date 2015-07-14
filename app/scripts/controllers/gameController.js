@@ -11,11 +11,10 @@ angular.module('HockeyApp')
 
 	var savedPlayers = localStorageService.get('players');
 	var savedLineups = localStorageService.get('lineups');
-	var savedActivePlayers = localStorageService.get('activePlayers');
 
 	$scope.players = savedPlayers || [];
 	$scope.lineups = savedLineups || [];
-	$scope.activePlayers = savedActivePlayers || [];
+	$scope.activePlayers = gameData.activeplayers || [];
 
 	// Undo and Redo Functionality //
 
@@ -34,8 +33,9 @@ angular.module('HockeyApp')
 		execuStack.stack[execuStack.pointer] = action;
 		execuStack.pointer++;
 
-		//Empty the older actions in the stack ie. the redo portion of the stack
+		//Empty the older actions in the stack by trimming it ie. "dump" the redo portion of the stack
 		execuStack.stack.length = execuStack.pointer;
+		gameData.actionStack = execuStack;	// Cache the stack state
 		console.log(this);
 	};
 
@@ -44,6 +44,7 @@ angular.module('HockeyApp')
 			execuStack.pointer--;
 			var undoAction = execuStack.stack[execuStack.pointer];
 			undoAction.unExecute();
+			gameData.actionStack = execuStack;	// Cache the stack state
 			console.log(execuStack.stack);
 			$log.info(execuStack.pointer);
 		}
@@ -54,6 +55,7 @@ angular.module('HockeyApp')
 			var redoAction = execuStack.stack[execuStack.pointer];
 			redoAction.execute();
 			execuStack.pointer++;
+			gameData.actionStack = execuStack;	// Cache the stack state
 			console.log(execuStack.stack);
 			$log.info(execuStack.pointer);
 		}
