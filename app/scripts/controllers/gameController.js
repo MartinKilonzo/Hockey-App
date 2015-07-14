@@ -2,7 +2,8 @@
 
 angular.module('HockeyApp')
 
-.controller('gameController', ['$scope', '$log', '$timeout', 'localStorageService', function ($scope, $log, $timeout, localStorageService) {
+.controller('gameController', ['$scope', '$log', '$timeout', 'localStorageService', 'gameData', 
+	function ($scope, $log, $timeout, localStorageService, gameData) {
 
 	console.log('Loaded Game Controller.');
 
@@ -16,38 +17,47 @@ angular.module('HockeyApp')
 	$scope.lineups = savedLineups || [];
 	$scope.activePlayers = savedActivePlayers || [];
 
-	var execuStack = [];
-	var execuPointer = 0;
-
-
 	// Undo and Redo Functionality //
 
+	var ActionStack = function () {
+		var newActionStack = {
+			stack: [],
+			pointer: 0
+		};
+		// newActionStack.stack = [];
+		// newActionStack.pointer = 0;
+
+		return newActionStack;
+	};
+
+	var execuStack = gameData.actionStack || new ActionStack();
+
 	execuStack.push = function(action) {
-		execuStack[execuPointer] = action;
-		execuPointer++;
+		execuStack.stack[execuStack.pointer] = action;
+		execuStack.pointer++;
 
 		//Empty the older actions in the stack ie. the redo portion of the stack
-		execuStack.length = execuPointer;
+		execuStack.stack.length = execuStack.pointer;
 		console.log(this);
 	};
 
 	$scope.undo = function () {
 		if ($scope.undoable) {
-			execuPointer--;
-			var undoAction = execuStack[execuPointer];
+			execuStack.pointer--;
+			var undoAction = execuStack.stack[execuStack.pointer];
 			undoAction.unExecute();
-			console.log(execuStack);
-			$log.info(execuPointer);
+			console.log(execuStack.stack);
+			$log.info(execuStack.pointer);
 		}
 	};
 
 	$scope.redo = function () {
 		if ($scope.redoable) {
-			var redoAction = execuStack[execuPointer];
+			var redoAction = execuStack.stack[execuStack.pointer];
 			redoAction.execute();
-			execuPointer++;
-			console.log(execuStack);
-			$log.info(execuPointer);
+			execuStack.pointer++;
+			console.log(execuStack.stack);
+			$log.info(execuStack.pointer);
 		}
 	};
 
@@ -57,7 +67,7 @@ angular.module('HockeyApp')
 	
 	// Watch to see if undoing is possible
 	$scope.$watch( function () { 
-		return execuStack.length > 0 && execuPointer > 0;
+		return execuStack.stack.length > 0 && execuStack.pointer > 0;
 	}, function (undoable) { 
 		$scope.undoable = undoable;
 	});
@@ -65,7 +75,7 @@ angular.module('HockeyApp')
 	
 	// Watch to see if redoing is possible
 	$scope.$watch( function () {
-		return execuStack.length > 0 && execuPointer <= execuStack.length - 1;
+		return execuStack.stack.length > 0 && execuStack.pointer <= execuStack.stack.length - 1;
 	}, function (redoable) {
 		$scope.redoable = redoable;
 	});
