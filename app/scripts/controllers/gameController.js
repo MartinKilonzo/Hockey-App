@@ -2,8 +2,8 @@
 
 angular.module('HockeyApp')
 
-.controller('gameController', ['$scope', '$log', '$timeout', 'localStorageService', 'gameData', 'actionService', 'Action', 
-	function ($scope, $log, $timeout, localStorageService, gameData, actionService, Action) {
+.controller('gameController', ['$scope', '$log', 'localStorageService', 'gameData', 'actionService', 'Action', 
+	function ($scope, $log, localStorageService, gameData, actionService, Action) {
 
 	console.log('Loaded Game Controller.');
 
@@ -21,6 +21,17 @@ angular.module('HockeyApp')
 	$scope.undoable = $scope.execuStack.undoable;
 	$scope.redoable = $scope.execuStack.redoable;
 
+	
+	// Undo and Redo Support //
+	$scope.undo = function () {
+		$scope.execuStack.undo();
+		gameData.update($scope.activePlayers, $scope.period);
+	};
+
+	$scope.redo = function () {
+		$scope.execuStack.redo();
+		gameData.update($scope.activePlayers, $scope.period);
+	};
 
 	// Game Toggle Functions //
 	/*
@@ -35,6 +46,7 @@ angular.module('HockeyApp')
 
 	 		if ($scope.period) { $scope.execuStack.push(periodAction); }	// If the period has never been initialized,
 	 		else { periodAction.execute(); }								// Initialize it without adding it to the action stack
+	 		gameData.update($scope.activePlayers, $scope.period);
 	 	}
 	 };
 
@@ -296,6 +308,7 @@ angular.module('HockeyApp')
 	 	});
 
 	 	$scope.execuStack.push(newAction);
+	 	gameData.update($scope.activePlayers, $scope.period);
 	 };
 
 	 /*
@@ -362,6 +375,7 @@ angular.module('HockeyApp')
 	 	});
 
 	 	$scope.execuStack.push(newAction);
+	 	gameData.update($scope.activePlayers, $scope.period);
 	 };
 
 	 /*

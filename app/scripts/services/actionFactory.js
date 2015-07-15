@@ -19,7 +19,6 @@ angular.module('HockeyApp')
 		Action.prototype.execute = function () {
 				this.applier(this.newVal);
 				console.log(this);
-				//gameData.update(this, $scope.activePlayers, $scope.period);
 		};
 
 		/* 
@@ -29,7 +28,6 @@ angular.module('HockeyApp')
 			if (this.unApplier) { this.unApplier(); }
 			else { this.applier(this.oldVal); }
 			console.log(this);
-			//gameData.update(this, $scope.activePlayers, $scope.period);
 		};
 
 		return Action;
@@ -61,7 +59,6 @@ angular.module('HockeyApp')
 
 	.factory('actionService', ['$rootScope', 'Action', 'ActionStack', function ($rootScope, Action, ActionStack) {
 		var actionStack = new ActionStack();	// The ActionStack that will be created to persist the stack data between views
-
 		var undoable = false;		// Flag that indicates if there is room in the stack to undo an action
 		var redoable = false;		// Flag that indicates if there is room in the stack to redo an action
 
