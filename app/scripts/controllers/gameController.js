@@ -2,8 +2,8 @@
 
 angular.module('HockeyApp')
 
-.controller('gameController', ['$scope', '$log', '$timeout', 'localStorageService', 'gameData', 
-	function ($scope, $log, $timeout, localStorageService, gameData) {
+.controller('gameController', ['$scope', '$log', '$timeout', 'localStorageService', 'gameData', 'actionService', 'Action', 
+	function ($scope, $log, $timeout, localStorageService, gameData, actionService, Action) {
 
 	console.log('Loaded Game Controller.');
 
@@ -17,80 +17,11 @@ angular.module('HockeyApp')
 
 	$scope.activePlayers = gameData.getPlayers() || [];		// Initialize game board
 
-
-	// Undo and Redo Functionality //
-
-	var ActionStack = function () {
-		this.stack = [];
-		this.pointer = 0;
-	};
-
-	ActionStack.prototype.push = function(action) {
-		execuStack.stack[execuStack.pointer] = action;
-		execuStack.pointer++;
-
-		//Empty the older actions in the stack by trimming the stack ie. "dump" the redo portion of the stack
-		execuStack.stack.length = execuStack.pointer;
-	};
+	$scope.execuStack = actionService;
+	$scope.undoable = $scope.execuStack.undoable;
+	$scope.redoable = $scope.execuStack.redoable;
 
 
-	var execuStack =  gameData.getStack() || new ActionStack();		// Initialize action stack
-
-	$scope.undo = function () {
-		if ($scope.undoable) {
-			execuStack.pointer--;
-			var undoAction = execuStack.stack[execuStack.pointer];
-			undoAction.unExecute();
-		}
-	};
-
-	$scope.redo = function () {
-		if ($scope.redoable) {
-			var redoAction = execuStack.stack[execuStack.pointer];
-			redoAction.execute();
-			execuStack.pointer++;
-		}
-	};
-
-	$scope.undoable = false;
-	$scope.redoable = false;
-
-	
-	// Watch to see if undoing is possible
-	$scope.$watch( function () { 
-		return execuStack.stack.length > 0 && execuStack.pointer > 0;
-	}, function (undoable) { 
-		$scope.undoable = undoable;
-	});
-
-	
-	// Watch to see if redoing is possible
-	$scope.$watch( function () {
-		return execuStack.stack.length > 0 && execuStack.pointer <= execuStack.stack.length - 1;
-	}, function (redoable) {
-		$scope.redoable = redoable;
-	});
-
-	//Regular Actions
-	var Action = function (oldVal, newVal, applier, unApplier) {
-		this.oldVal = oldVal;
-		this.newVal = newVal;
-		this.applier = applier;
-		this.unApplier = unApplier;
-	};
-
-	Action.prototype.execute = function () {
-		this.applier(this.newVal);
-		$log.debug(execuStack);
-		gameData.update(execuStack, $scope.activePlayers, $scope.period);
-	};
-
-	Action.prototype.unExecute = function () {
-		if (this.unApplier) { this.unApplier(); }
-		else { this.applier(this.oldVal); }
-		$log.info(execuStack);
-		gameData.update(execuStack, $scope.activePlayers, $scope.period);
-	};
 	// Game Toggle Functions //
 	/*
 	 * Function which sets the period which is to be recorded in each game event. 
@@ -100,11 +31,10 @@ angular.module('HockeyApp')
 	 	if (period >= 1 || period <= 4) {
 	 		var periodAction = new Action($scope.period, period, function (period) {
 	 			$scope.period = period;
-	 			$log.info($scope.period);
 	 		});
 
-	 		if ($scope.period) { execuStack.push(periodAction); }	// If the period has never been initialized, initialize it without adding it to the action stack
-	 		periodAction.execute();
+	 		if ($scope.period) { $scope.execuStack.push(periodAction); }	// If the period has never been initialized,
+	 		else { periodAction.execute(); }								// Initialize it without adding it to the action stack
 	 	}
 	 };
 
@@ -136,7 +66,7 @@ angular.module('HockeyApp')
 	 *	Function which increments the Shots On statistic for each player involved in the play (active player).
 	 */
 	 $scope.addShotsOn = function () {
-	 	var newGameEvent = new GameEvent($scope.period, $scope.activePlayers, getGameTime(), 1);
+	 	var newGameEvent = new GameEvent($scope.period, $scope.activePlayers, $scope.gameTimer.time(), 1);
 
 		// applier
 		// For each active player:
@@ -156,15 +86,14 @@ angular.module('HockeyApp')
 
 		var newGameAction = new Action(undefined, newGameEvent, applier, unApplier);
 
-		execuStack.push(newGameAction);
-		newGameAction.execute();
+		$scope.execuStack.push(newGameAction);
 	};
 
 	/*
 	 *	Function which decrements the Shots On statistic for each player involved in the play (active player).
 	 */
 	 $scope.subtShotsOn = function () {
-		var newGameEvent = new GameEvent($scope.period, $scope.activePlayers, getGameTime(), -1);
+		var newGameEvent = new GameEvent($scope.period, $scope.activePlayers, $scope.gameTimer.time(), -1);
 
 		// applier
 		// For each active player:
@@ -184,15 +113,14 @@ angular.module('HockeyApp')
 
 		var newGameAction = new Action(undefined, newGameEvent, applier, unApplier);
 
-		execuStack.push(newGameAction);
-		newGameAction.execute();
+		$scope.execuStack.push(newGameAction);
 	};
 
 	/*
 	 *	Function which increments the Shots Against statistic for each player involved in the play (active player).
 	 */
 	 $scope.addShotsAgainst = function () {
-		var newGameEvent = new GameEvent($scope.period, $scope.activePlayers, getGameTime(), 1);
+		var newGameEvent = new GameEvent($scope.period, $scope.activePlayers, $scope.gameTimer.time(), 1);
 
 		// applier
 		// For each active player:
@@ -212,15 +140,14 @@ angular.module('HockeyApp')
 
 		var newGameAction = new Action(undefined, newGameEvent, applier, unApplier);
 
-		execuStack.push(newGameAction);
-		newGameAction.execute();
+		$scope.execuStack.push(newGameAction);
 	};
 
 	/*
 	 *	Function which decrements the Shots Against statistic for each player involved in the play (active player).
 	 */
 	 $scope.subtShotsAgainst = function () {
-		var newGameEvent = new GameEvent($scope.period, $scope.activePlayers, getGameTime(), -1);
+		var newGameEvent = new GameEvent($scope.period, $scope.activePlayers, $scope.gameTimer.time(), -1);
 
 		// applier
 		// For each active player:
@@ -240,15 +167,14 @@ angular.module('HockeyApp')
 
 		var newGameAction = new Action(undefined, newGameEvent, applier, unApplier);
 
-		execuStack.push(newGameAction);
-		newGameAction.execute();
+		$scope.execuStack.push(newGameAction);
 	};
 
 	/*
 	 *	Function which increments the Team Goal statistic for each player involved in the play (active player).
 	 */
 	 $scope.addTeamGoal = function () {
-	 	var newGameEvent = new GameEvent($scope.period, $scope.activePlayers, getGameTime(), 1);
+	 	var newGameEvent = new GameEvent($scope.period, $scope.activePlayers, $scope.gameTimer.time(), 1);
 
 		// applier
 		// For each active player:
@@ -268,15 +194,14 @@ angular.module('HockeyApp')
 		
 		var newGameAction = new Action(undefined, newGameEvent, applier, unApplier);
 
-		execuStack.push(newGameAction);
-		newGameAction.execute();
+		$scope.execuStack.push(newGameAction);
 	};
 
 	/*
 	 *	Function which increments the Opponent Goal statistic for each player involved in the play (active player).
 	 */
 	 $scope.addOpponentGoal = function () {
-		var newGameEvent = new GameEvent($scope.period, $scope.activePlayers, getGameTime(), 1);
+		var newGameEvent = new GameEvent($scope.period, $scope.activePlayers, $scope.gameTimer.time(), 1);
 
 		// applier
 		// For each active player:
@@ -296,18 +221,13 @@ angular.module('HockeyApp')
 
 		var newGameAction = new Action(undefined, newGameEvent, applier, unApplier);
 
-		execuStack.push(newGameAction);
-		newGameAction.execute();
+		$scope.execuStack.push(newGameAction);
 	};
 
 
 	// TODO: Game History Functions //
-
-
 	
 	// Game Board Functions //
-
-
 	/*
 	 * Function which sets the position where a player substitution is supposed to occur.
 	 */
@@ -375,8 +295,7 @@ angular.module('HockeyApp')
 	 		$scope.activePlayers = newLineup;
 	 	});
 
-	 	execuStack.push(newAction);
-	 	newAction.execute();
+	 	$scope.execuStack.push(newAction);
 	 };
 
 	 /*
@@ -442,8 +361,7 @@ angular.module('HockeyApp')
 	 		$scope.activePlayers[playerSwap.index] = playerSwap.player;
 	 	});
 
-	 	execuStack.push(newAction);
-	 	newAction.execute();
+	 	$scope.execuStack.push(newAction);
 	 };
 
 	 /*

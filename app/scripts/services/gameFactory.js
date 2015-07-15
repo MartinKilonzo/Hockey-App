@@ -9,7 +9,6 @@ angular.module('HockeyApp')
 		// var savedobj = JSON.parse(savedGameData);
 
 		var gameData = {
-			actionStack: undefined,
 			activePlayers: undefined,
 			period: undefined
 		};
@@ -17,10 +16,6 @@ angular.module('HockeyApp')
 		return {
 			getData: function () {
 				return gameData;
-			},
-
-			getStack: function () {
-				return gameData.actionStack;
 			},
 
 			getPlayers: function () {
@@ -35,8 +30,7 @@ angular.module('HockeyApp')
 				gameData = newGameData;
 			},
 
-			update: function (stack, players, period) {
-				gameData.actionStack = stack;
+			update: function (players, period) {
 				gameData.activePlayers = players;
 				gameData.period = period;
 
