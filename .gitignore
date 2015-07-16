@@ -8,4 +8,4 @@ app/views/contact.html
 app/views/features.html
 app/views/overview.html
 app/views/reports.html
-app/views//partials/sidebar.html
+app/views/partials/sidebar.html
