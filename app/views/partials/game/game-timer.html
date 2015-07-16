@@ -1,0 +1,7 @@
+<div class="col-xs-2 col-xs-offset-1">
+	<p class="clock" ng-dblclick="gameTimer.isActive = false; gameTimer.reset()">{{ gameTimer.time() }}</p>
+</div>
+<div class="col-xs-1">
+	<button type="button" class="btn btn-success" ng-show="!gameTimer.isActive" ng-click="gameTimer.isActive = true; gameTimer.start()">Start</button>
+	<button type="button" class="btn btn-danger" ng-show="gameTimer.isActive" ng-click="gameTimer.isActive = false; gameTimer.stop()">Stop</button>
+</div>

@@ -6,7 +6,7 @@ angular.module('HockeyApp')
 	.directive('lineupTemplate', function() {
 		return {
 			restrict: 'E',
-			templateUrl: 'views/partials/lineup-template.html'
+			templateUrl: 'views/partials/lineup/lineup-template.html'
 		};
 	})
 
@@ -15,7 +15,7 @@ angular.module('HockeyApp')
 
 		return {
 			restrict: 'E',
-			templateUrl: 'views/partials/lineup-player-pool.html'
+			templateUrl: 'views/partials/lineup/lineup-player-pool.html'
 		};
 	})
 
@@ -23,7 +23,7 @@ angular.module('HockeyApp')
 	.directive('lineupCreate', function() {
 
 		return {
-			restrict: "E",
-			templateUrl: 'views/partials/lineup-create.html'
+			restrict: 'E',
+			templateUrl: 'views/partials/lineup/lineup-create.html'
 		};
 	});

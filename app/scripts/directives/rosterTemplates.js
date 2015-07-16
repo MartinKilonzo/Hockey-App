@@ -5,13 +5,13 @@ angular.module('HockeyApp')
 	.directive('rosterPlayer', function () {
 		return {
 			restrict: 'E',
-			templateUrl: 'views/partials/roster-player.html'
+			templateUrl: 'views/partials/roster/roster-player.html'
 		};
 	})
 
 	.directive('rosterInput', function () {
 		return {
 			restrict: 'E',
-			templateUrl: 'views/partials/roster-input.html'
+			templateUrl: 'views/partials/roster/roster-input.html'
 		};
 	});

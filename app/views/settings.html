@@ -1,3 +1,15 @@
-<div class="jumbotron text-center">
-	<h1>Settings Page</h1>
+<div class="container-fluid">
+	<div class="jumbotron text-center" ng-click="setControl(0)">
+		<h1>Settings Page</h1>
+	</div>
+
+	<game-button-template></game-button-template>
+	
+	<div class="col-sm-5 col-sm-offset-2" style="padding-top: 48px">
+		<h4 class="text-vertical-centered">{{ getControlMessage() }}</h4>
+	</div>
+	<div class="col-sm-5" style="padding-top: 48px" ng-show="controlKey != 0">
+		<input class="text-vertical-centered" style="margin-top: 8px" type="text" placeholder="New Key" maxlength="1" ng-submit="newKey(input)"></input>
+	</div>
+	
 </div>
