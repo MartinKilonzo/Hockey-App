@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('HockeyApp', ['ngAnimate', 'ngCookies', 'ngRoute', 'ui.bootstrap','ngDragDrop', 'LocalStorageModule'])
+angular.module('HockeyApp', ['ngAnimate', 'ngCookies', 'ngRoute', 'ui.bootstrap', 'ngDragDrop', 'ngResource', 'LocalStorageModule'])
 
   .constant('version', 'v0.0.1')
   .constant('user', 'Martin')

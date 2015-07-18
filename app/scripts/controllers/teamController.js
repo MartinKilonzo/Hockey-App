@@ -2,10 +2,21 @@
 
 angular.module('HockeyApp')
 
-  .controller('teamController', function($scope) {
+  .controller('teamController', ['$scope', '$resource', '$log', function ($scope, $resource, $log) {
 
   	console.log('Loaded Team Controller.');
 
-  	$scope.pageClass = 'page-team';
+  	var GameEntry = $resource('/api/gamedb');
 
-  });
+  	$scope.pageClass = 'page-team';
+  	$scope.entries = [];
+
+  	$scope.postTest = function () {
+  		var entry = new GameEntry();
+  		entry.name = $scope.entryName;
+  		$scope.entries.push();
+  		$log.info('Saving:', entry);
+  		entry.$save();
+  	};
+
+  }]);

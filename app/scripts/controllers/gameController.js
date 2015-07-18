@@ -2,10 +2,12 @@
 
 angular.module('HockeyApp')
 
-.controller('gameController', ['$scope', '$log', 'localStorageService', 'gameData', 'actionService', 'Action', 
-	function ($scope, $log, localStorageService, gameData, actionService, Action) {
+.controller('gameController', ['$scope', '$log', '$resource', 'localStorageService', 'gameData', 'actionService', 'Action', 
+	function ($scope, $log, $resource, localStorageService, gameData, actionService, Action) {
 
 	console.log('Loaded Game Controller.');
+
+	var gamedb = $resource('/api/gamedb');
 
 	$scope.pageClass = 'page-game';
 
