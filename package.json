@@ -16,12 +16,14 @@
     "type": "git",
     "url": "https://github.com/MartinKilonzo/hockey-app.git"
   },
-   "licenses": [
+  "licenses": [
     {
       "type": "None"
     }
   ],
-  "dependencies": {},
+  "dependencies": {
+    "express": "^4.13.1"
+  },
   "devDependencies": {
     "gulp": "git://github.com/gulpjs/gulp.git#4.0",
     "ng-factory": "^1.0",
