@@ -9,12 +9,12 @@ angular.module('HockeyApp')
   	$scope.pageClass = 'page-settings';
 
   	var messages = [	'Select a button to change its key',
-  						'Change "Add Shots On" key: ',
-  						'Change "Add Shots Against" key: ',
-  						'Change "Add Team Goals" key: ',
-  						'Change "Subtract Shots On" key: ',
-  						'Change "Subtract Shots Against" key: ',
-  						'Change "Subtract Team Goals" key: '		];
+          						'Change "Add Shots On" key: ',
+          						'Change "Add Shots Against" key: ',
+          						'Change "Add Team Goals" key: ',
+          						'Change "Subtract Shots On" key: ',
+          						'Change "Subtract Shots Against" key: ',
+          						'Change "Add Opponent Goals" key: '		];
 
   	$scope.controlKey = 0;
 
