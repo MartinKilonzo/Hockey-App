@@ -2,50 +2,50 @@
 
 angular.module('HockeyApp')
 
-	.directive('keyboardSupport', function () {
+	.directive('keyboardSupport', ['$location', function ($location) {
 		return {
 			restrict: 'A',
 			link: function (scope, element, attrs, ctrl) {
 				var page = element.closest('html');
 				page.bind('keydown', function (event) {
-					
-					// CTRL + keys
-					if (event.ctrlKey) {
-						if (event.which === 90){
-							scope.$apply(scope.undo());
-						}
+					if ($location.url() === '/game') {
+						// CTRL + keys
+						if (event.ctrlKey) {
+							if (event.which === 90){
+								scope.$apply(scope.undo());
+							}
 
-						if (event.which === 89){
-							scope.$apply(scope.redo());
+							if (event.which === 89){
+								scope.$apply(scope.redo());
+							}
+						}
+						//TODO: Make these modifiable from settingsController
+						// q = +1 shots on
+						else if (event.which === 81) {
+							scope.addShotsOn();
+						}
+						// a = -1 shots on
+						else if (event.which === 65) {
+							scope.subtShotsOn();
+						}
+						// w = +1 shots against
+						else if (event.which === 87) {
+							scope.addSotsAgainst();
+						}
+						// s = -1 shots against
+						else if (event.which === 83) {
+							scope.subtShotsAgainst();
+						}
+						// e = +1 team goals
+						else if (event.which === 69) {
+							scope.addTeamGoal();
+						}
+						// d = =1 opponent goals
+						else if (event.which === 68) {
+							scope.addOpponentGoal();
 						}
 					}
-					//TODO: Make these modifiable from settingsController
-					// q = +1 shots on
-					else if (event.which === 81) {
-						scope.addShotsOn();
-					}
-					// a = -1 shots on
-					else if (event.which === 65) {
-						scope.subtShotsOn();
-					}
-					// w = +1 shots against
-					else if (event.which === 87) {
-						scope.addSotsAgainst();
-					}
-					// s = -1 shots against
-					else if (event.which === 83) {
-						scope.subtShotsAgainst();
-					}
-					// e = +1 team goals
-					else if (event.which === 69) {
-						scope.addTeamGoal();
-					}
-					// d = =1 opponent goals
-					else if (event.which === 68) {
-						scope.addOpponentGoal();
-					}
-
 				});
 			}
 		};
-	});
+	}]);
