@@ -9,13 +9,14 @@ angular.module('HockeyApp')
 	$scope.pageClass = 'page-roster';
 })
 
-.controller('rosterController', ['$scope', 'localStorageService',
-	function ($scope, localStorageService, TeamFactory, PlayerFactory) {
+.controller('rosterController', ['$scope', 'localStorageService', '$log', '$resource', 
+	function ($scope, localStorageService, $log, $resource) {
 		
  		// Initialization
  		console.log('Started controller roster');
 
  		var savedPlayers = localStorageService.get('players');
+ 		var Player = $resource('http://localhost:8999/api/test');
 
  		$scope.players = savedPlayers || [];
 
@@ -60,15 +61,28 @@ angular.module('HockeyApp')
  				} 
 
  				else {
- 					$scope.players.push(newPlayer);
- 					var addedMessage = 'Added ' + newPlayer.firstName + ' ' + newPlayer.lastName;
- 					console.log(addedMessage);
+
+ 					postPlayer(newPlayer);
  				}
 
  				$scope.playerInfo = '';
  				//TODO: Order by playerNumber on insert
  				//TODO: Modify alerts to be less intrusive
  			}
+ 		};
+
+ 		var postPlayer = function (player) {
+ 			var httpPlayer = new Player();
+ 			httpPlayer.firstName = player.firstName;
+ 			httpPlayer.lastName = player.lastName;
+ 			httpPlayer.playerNumber = player.playerNumber;
+ 			httpPlayer.position = player.position;
+ 			httpPlayer.games = [];
+ 			$log.info(httpPlayer);
+ 			httpPlayer.$save( function (result) {
+ 				$log.debug('result:', result);
+ 				$scope.players.push(result);
+ 			});
  		};
 
 		$scope.removePlayer = function (player) {
