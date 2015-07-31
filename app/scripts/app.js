@@ -27,6 +27,10 @@ angular.module('HockeyApp', ['ngAnimate', 'ngCookies', 'ngRoute', 'ui.bootstrap'
     .when('/contact', {
       templateUrl: 'views/contact.html'
     })
+    .when('/test', {
+      templateUrl: 'views/test.html',
+      controller: 'testController'
+    })
     .when('/game', {
       templateUrl: 'views/game.html',
       controller: 'gameController'
