@@ -28,10 +28,12 @@ var startExpress = function () {
 	mongoose.connect('mongodb://localhost:27017/app-test');
 
 	/* GET METHODS */
-	
-	
+	server.get('/api/players', playerdbCtrl.getPlayers);
+
 	/* POST METHODS */
 	server.post('/api/players', playerdbCtrl.create);
+
+	/* PUT METHODS */
 
 	/* DELETE METHODS */
 	server.delete('/api/players/:resourceId', playerdbCtrl.delete);

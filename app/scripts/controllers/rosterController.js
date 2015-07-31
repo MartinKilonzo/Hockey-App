@@ -15,10 +15,15 @@ angular.module('HockeyApp')
  		// Initialization
  		console.log('Started controller roster');
 
- 		var savedPlayers = localStorageService.get('players');
- 		var Player = $resource('http://localhost:8999/api/players/:resourceId', {resourceId: '@resourceId'});
+ 		var Player = $resource('http://localhost:8999/api/players/:resourceId', {resourceId: '@resourceId'}, {sync: {method: 'GET', isArray: true}});
 
- 		$scope.players = savedPlayers || [];
+ 		var populatePlayers = function () {
+ 			var savedPlayers = Player.sync( function (result) {
+ 				$scope.players = result;
+ 			});
+ 		};
+
+ 		populatePlayers();
 
  		$scope.$watch('players', function () {
  			localStorageService.set('players', $scope.players);
@@ -65,7 +70,6 @@ angular.module('HockeyApp')
  				}
 
  				$scope.playerInfo = '';
- 				//TODO: Order by playerNumber on insert
  				//TODO: Modify alerts to be less intrusive
  			}
  		};
@@ -78,7 +82,6 @@ angular.module('HockeyApp')
  			httpPlayer.position = player.position;
  			httpPlayer.games = [];
  			httpPlayer.$save( function (result) {
- 				$log.debug('result:', result);
  				$scope.players.push(result);
  			});
  		};
@@ -87,7 +90,6 @@ angular.module('HockeyApp')
 			var index = $scope.players.indexOf(player);
 			var removedPlayer = $scope.players[index];
 			deletePlayer(index);
-			$log.info('Removed:', player);
 		};
 
 		var deletePlayer = function (index) {

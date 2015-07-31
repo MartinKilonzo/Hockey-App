@@ -3,6 +3,16 @@ var mongoose = require('mongoose');
 var playerModels = require('../models/playerModel.js')(mongoose);
 var Player = playerModels.player;
 
+module.exports.getPlayers = function (req, res) {
+	console.log('Fetching players...');
+	var query = playerModels.Player.where({});
+	query.find( function (err, result) {
+		console.log(result);
+		res.json(result);
+	});
+	
+};
+
 module.exports.create = function (req, res) {
 	console.log('Creating...', req.body);
 	var newPlayer = new playerModels.Player({	firstName: req.body.firstName,
