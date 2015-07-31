@@ -5,11 +5,11 @@ var Schema = mongoose.Schema;
 
 module.exports = function (mongoose) {
 	var GameEvent = new Schema({
-		players			: 		{ required: true },
+		players			: 		{ type: [Player], required: true },
 		period			: 		{ type: Number, required: true },
 		time			: 		{ type: String, required: true },
 		stat 			: 		{ type: String, required: true },
-		count			: 		{ required: true }
+		count			: 		{ type: Number, required: true }
 	});
 
 	var GameTotal = new Schema({
@@ -25,11 +25,11 @@ module.exports = function (mongoose) {
 	});
 
 	var Player = new Schema({
-		number 			: 		{ type: Number, required: true },
-		position		: 		{ type: String, required: true },
-		firstName		: 		{ type: String, required: true },
-		lastName		: 		{ type: String, required: true },
-	 	games 			: 		{ type: [Game], required: true }
+		playerNumber	: 		{ type: Number },
+		position		: 		{ type: String },
+		firstName		: 		{ type: String },
+		lastName		: 		{ type: String },
+	 	games 			: 		{ type: [Game] }
 	 });
 
 	var models = {
