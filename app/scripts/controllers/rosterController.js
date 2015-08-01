@@ -15,7 +15,16 @@ angular.module('HockeyApp')
  		// Initialization
  		console.log('Started controller roster');
 
- 		$scope.players = gameAPI.getPlayers();
+ 		gameAPI.getPlayers( function (result) {
+ 			$scope.players = result;
+ 			$scope.players.indexOfPlayer = function (player) {
+ 				for (var i = 0; i < this.length; i++) {
+ 					if (this[i]._id === player._id)	{ return i; }
+ 				}
+ 				return -1;
+ 			};
+ 		});
+ 		
 
  		// $scope.$watch('players', function () {
  		// 	localStorageService.set('players', $scope.players);
@@ -77,14 +86,6 @@ angular.module('HockeyApp')
  				}
  			});
 		};
-
-		$scope.players.indexOfPlayer = function (player) {
-			for (var i = 0; i < this.length; i++) {
-				if (this[i]._id === player._id)	{ return i; }
-			}
-			return -1;
-		};
-
 
 		$scope.getInfo = function (index) {
 			var player = $scope.players[index];
