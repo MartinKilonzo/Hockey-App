@@ -2,8 +2,8 @@
 
 angular.module('HockeyApp')
 
-	.factory('gameData', ['$rootScope', 'localStorageService', '$log',
-		function ($rootScope, localStorageService, $log) {
+	.factory('gameData', ['localStorageService', '$log',
+		function (localStorageService, $log) {
 
 		// var savedGameData = localStorageService.get('gameData');
 		// var savedobj = JSON.parse(savedGameData);

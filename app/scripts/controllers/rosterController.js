@@ -9,27 +9,18 @@ angular.module('HockeyApp')
 	$scope.pageClass = 'page-roster';
 })
 
-.controller('rosterController', ['$scope', 'localStorageService', '$log', '$resource', 
-	function ($scope, localStorageService, $log, $resource) {
+.controller('rosterController', ['$scope', 'gameAPI', 'localStorageService', 
+	function ($scope, gameAPI, localStorageService) {
 		
  		// Initialization
  		console.log('Started controller roster');
 
- 		var Player = $resource('http://localhost:8999/api/players/:resourceId', {resourceId: '@resourceId'}, {sync: {method: 'GET', isArray: true}});
+ 		$scope.players = gameAPI.getPlayers();
 
- 		var populatePlayers = function () {
- 			var savedPlayers = Player.sync( function (result) {
- 				$scope.players = result;
- 			});
- 		};
+ 		// $scope.$watch('players', function () {
+ 		// 	localStorageService.set('players', $scope.players);
+ 		// }, true);
 
- 		populatePlayers();
-
- 		$scope.$watch('players', function () {
- 			localStorageService.set('players', $scope.players);
- 		}, true);
-
- 		var tempPlayers = [];
 
  		// Method to add new players
  		$scope.addPlayer = function() {
@@ -66,40 +57,34 @@ angular.module('HockeyApp')
  				} 
 
  				else {
-					postPlayer(newPlayer);
+ 					gameAPI.savePlayer(newPlayer, function (result) {
+ 						$scope.players.push(result);
+ 						$scope.playerInfo = '';
+ 					});
  				}
 
- 				$scope.playerInfo = '';
  				//TODO: Modify alerts to be less intrusive
  			}
  		};
 
- 		var postPlayer = function (player) {
- 			var httpPlayer = new Player();
- 			httpPlayer.firstName = player.firstName;
- 			httpPlayer.lastName = player.lastName;
- 			httpPlayer.playerNumber = player.playerNumber;
- 			httpPlayer.position = player.position;
- 			httpPlayer.games = [];
- 			httpPlayer.$save( function (result) {
- 				$scope.players.push(result);
+ 		$scope.removePlayer = function (player) {
+ 			gameAPI.deletePlayer(player, function (result) {
+ 				var index = $scope.players.indexOfPlayer(result);
+
+ 				if (index >= 0) {
+ 					var removedPlayer = $scope.players[index];
+ 					$scope.players.splice(index, 1);
+ 				}
  			});
- 		};
-
-		$scope.removePlayer = function (player) {
-			var index = $scope.players.indexOf(player);
-			var removedPlayer = $scope.players[index];
-			deletePlayer(index);
 		};
 
-		var deletePlayer = function (index) {
-			var httpPlayer = new Player({resourceId: $scope.players[index]._id.toString()});
-			httpPlayer.$delete( function (result) {
-				if (result.$resolved) {
-					$scope.players.splice(index, 1);
-				}
-			});
+		$scope.players.indexOfPlayer = function (player) {
+			for (var i = 0; i < this.length; i++) {
+				if (this[i]._id === player._id)	{ return i; }
+			}
+			return -1;
 		};
+
 
 		$scope.getInfo = function (index) {
 			var player = $scope.players[index];

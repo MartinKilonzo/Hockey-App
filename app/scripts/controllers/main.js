@@ -2,7 +2,7 @@
 
 angular.module('HockeyApp')
 
-.controller('MainCtrl', function($location, version, user) {
+.controller('MainCtrl', ['gameAPI', '$location', 'version', 'user', function (gameAPI, $location, version, user) {
 
 	var vm = this;
 	vm.path = $location.path.bind($location);
@@ -24,4 +24,4 @@ angular.module('HockeyApp')
 		clearTimeout(mouseOverTimeout);
 		menu.delay(400).hide(300);
 	});
-});
+}]);
