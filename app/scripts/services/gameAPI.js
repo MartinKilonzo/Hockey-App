@@ -70,12 +70,14 @@ angular.module('HockeyApp')
 		};
 
 		var parseLineup = function (lineup) {
-			lineup.lineupTitle		=		lineup.lineupTitle;
-			lineup.leftWing			=		playerBucket[lineup.leftWing];
-			lineup.center			=		playerBucket[lineup.center];
-			lineup.rightWing		=		playerBucket[lineup.rightWing];
-			lineup.defence1			=		playerBucket[lineup.defence1];
-			lineup.defence2			=		playerBucket[lineup.defence2];
+			if (lineup) {
+				lineup.lineupTitle		=		lineup.lineupTitle;
+				lineup.leftWing			=		playerBucket[lineup.leftWing];
+				lineup.center			=		playerBucket[lineup.center];
+				lineup.rightWing		=		playerBucket[lineup.rightWing];
+				lineup.defence1			=		playerBucket[lineup.defence1];
+				lineup.defence2			=		playerBucket[lineup.defence2];
+			}
 			return lineup;
 		};
 
@@ -99,11 +101,11 @@ angular.module('HockeyApp')
 			$log.debug(lineup);
 			var httpLineup = new Lineup();
 			httpLineup.leftWing		=	lineup.leftWing.playerNumber;
-			httpLineup.center		= 	lineup.center.playerNumber;
-			httpLineup.rightWing	= 	lineup.rightWing.playerNumber;
-			httpLineup.defence1		= 	lineup.defence1.playerNumber;
-			httpLineup.defence2		= 	lineup.defence2.playerNumber;
-			httpLineup.lineupTitle  = 	lineup.lineupTitle;
+			httpLineup.center		=	lineup.center.playerNumber;
+			httpLineup.rightWing	=	lineup.rightWing.playerNumber;
+			httpLineup.defence1		=	lineup.defence1.playerNumber;
+			httpLineup.defence2		=	lineup.defence2.playerNumber;
+			httpLineup.lineupTitle  =	lineup.lineupTitle;
 			$log.debug('httpLineup:', httpLineup);
 			httpLineup.$save( function (result) {
 				result = parseLineup(result);
@@ -115,11 +117,16 @@ angular.module('HockeyApp')
 
 		var changeLineup = function (oldLineup, newLineup, callback) {
 			var httpLineup = new Lineup();
-			httpLineup.oldLineup = oldLineup._id;
-			httpLineup.lineupTitle = newLineup.lineupTitle;
-			httpLineup.players = newLineup.players;
-			httpLineup.change( function (result) {
-				if (result) { $log.info('Added:', result); } 
+			httpLineup.oldLineup	=	oldLineup._id;
+			httpLineup.leftWing		=	newLineup.leftWing.playerNumber;
+			httpLineup.center		=	newLineup.center.playerNumber;
+			httpLineup.rightWing	=	newLineup.rightWing.playerNumber;
+			httpLineup.defence1		=	newLineup.defence1.playerNumber;
+			httpLineup.defence2		=	newLineup.defence2.playerNumber;
+			httpLineup.lineupTitle	=	newLineup.lineupTitle;
+			httpLineup.$change( function (result) {
+				result = parseLineup(result);
+				if (result) { $log.info('Changed:', result); } 
 				if (callback) { callback(result); } 
 				else { return result; }
 			});

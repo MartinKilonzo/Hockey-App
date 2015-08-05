@@ -98,7 +98,6 @@ angular.module('HockeyApp')
 			});
 
 			modalInstance.result.then(function (newLineup) {
-				console.log(newLineup);
 				saveLineup(newLineup, $scope.editLineupIndex);
 				
 			}, function () {

@@ -28,10 +28,16 @@ module.exports.create = function (req, res) {
 module.exports.modify = function (req, res) {
 	console.log('Modifying...\n', req.body);
 	var ObjectId = mongoose.Types.ObjectId;
-	var query = lineupModels.Lineup.where({ _id: new ObjectId(req.params.oldLineup) });
-	
-	query.update({ name: req.body.name }, { players: req.body.players }, function (err, result) {
-		res.json(result);
+	var query = lineupModels.Lineup.findOne({ _id: new ObjectId(req.body.oldLineup) }, function (err, lineup) {
+		lineup.lineupTitle		=		req.body.lineupTitle;
+		lineup.leftWing			=		req.body.leftWing;
+		lineup.center			=		req.body.center;
+		lineup.rightWing		=		req.body.rightWing;
+		lineup.defence1			=		req.body.defence1;
+		lineup.defence2			=		req.body.defence2;
+		lineup.save( function (err, result) {
+			res.json(result);
+		});
 	});
 };
 
