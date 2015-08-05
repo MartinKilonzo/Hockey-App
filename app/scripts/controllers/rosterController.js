@@ -24,14 +24,13 @@ angular.module('HockeyApp')
  				return -1;
  			};
  		});
- 		
 
  		// $scope.$watch('players', function () {
  		// 	localStorageService.set('players', $scope.players);
  		// }, true);
 
-
  		// Method to add new players
+ 		// TODO: ADD player number validation
  		$scope.addPlayer = function() {
  			if ($scope.playerInfo) {
  				//TODO: NEED TO ESCAPE SEQUENCE
