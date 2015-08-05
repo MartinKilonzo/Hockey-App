@@ -14,10 +14,10 @@ module.exports.getPlayers = function (req, res) {
 module.exports.create = function (req, res) {
 	console.log('Creating...\n', req.body);
 	var newPlayer = new playerModels.Player({	firstName: req.body.firstName,
-										    lastName: req.body.lastName,
-										    playerNumber: req.body.playerNumber,
-										    position: req.body.position,
-										    games: req.body.games			});
+											    lastName: req.body.lastName,
+											    playerNumber: req.body.playerNumber,
+											    position: req.body.position,
+											    games: req.body.games				});
 
 	newPlayer.save( function (err, result) {
 		res.json(result);
