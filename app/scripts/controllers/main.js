@@ -2,7 +2,7 @@
 
 angular.module('HockeyApp')
 
-.controller('MainCtrl', ['gameAPI', '$location', 'version', 'user', function (gameAPI, $location, version, user) {
+.controller('MainCtrl', ['$location', 'version', 'user', function ($location, version, user) {
 
 	var vm = this;
 	vm.path = $location.path.bind($location);

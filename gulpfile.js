@@ -9,7 +9,7 @@ var parser = require('body-parser');
 var cors = require('cors');
 var mongoose = require('mongoose');
 
-var playerdbCtrl = require('./api/controllers/playerdb.js'); 
+var ctrl = require('./api/controllers');
 
 //** EXPRESS **//
 var server = express();
@@ -28,15 +28,19 @@ var startExpress = function () {
 	mongoose.connect('mongodb://localhost:27017/app-test');
 
 	/* GET METHODS */
-	server.get('/api/players', playerdbCtrl.getPlayers);
+	server.get('/api/players', ctrl.playerdb.getPlayers);
+	server.get('/api/lineups', ctrl.lineupdb.getLineups);
 
 	/* POST METHODS */
-	server.post('/api/players', playerdbCtrl.create);
+	server.post('/api/players', ctrl.playerdb.create);
+	server.post('/api/lineups', ctrl.lineupdb.create);
 
 	/* PUT METHODS */
+	server.put('/api/lineups', ctrl.lineupdb.modify);
 
 	/* DELETE METHODS */
-	server.delete('/api/players/:resourceId', playerdbCtrl.delete);
+	server.delete('/api/players/:resourceId', ctrl.playerdb.delete);
+	server.delete('/api/lineups/:resourceId', ctrl.lineupdb.delete);
 
 	/* SERVER */
 	server.listen(serverPort, function () {

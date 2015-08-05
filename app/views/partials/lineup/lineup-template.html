@@ -4,34 +4,34 @@
 	</div>
 </div>
 <div class="row lineup-template" ng-mouseenter="showLineupTools = $index" ng-mouseleave="showLineupTools = undefined">
-	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 player-lineup noselect" ng-class="{error: !lineup.leftWing.playerStatus}" data-toggle="popover" data-placement="bottom" data-content="{{lineup.leftWing.firstName}} {{lineup.leftWing.lastName}}" popover>
-		<span ng-if="lineup.leftWing.playerStatus">#{{ lineup.leftWing.playerNumber }}</span>
-		<span ng-if="!lineup.leftWing.playerStatus">!</span>
+	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 player-lineup noselect" ng-class="{error: lineup.leftWing.playerStatus == false}" data-toggle="popover" data-placement="bottom" data-content="{{lineup.leftWing.firstName}} {{lineup.leftWing.lastName}}" popover>
+		<span ng-if="lineup.leftWing.playerStatus !== false">#{{ lineup.leftWing.playerNumber }}</span>
+		<span ng-if="lineup.leftWing.playerStatus == false">!</span>
 	</div>
-	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 player-lineup noselect" ng-class="{error: !lineup.center.playerStatus}" data-toggle="popover" data-placement="bottom" data-content="{{lineup.center.firstName}} {{lineup.center.lastName}}" popover>
-		<span ng-if="lineup.center.playerStatus">#{{ lineup.center.playerNumber }}</span>
-		<span ng-if="!lineup.center.playerStatus">!</span>
+	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 player-lineup noselect" ng-class="{error: lineup.center.playerStatus == false}" data-toggle="popover" data-placement="bottom" data-content="{{lineup.center.firstName}} {{lineup.center.lastName}}" popover>
+		<span ng-if="lineup.center.playerStatus !== false">#{{ lineup.center.playerNumber }}</span>
+		<span ng-if="lineup.center.playerStatus == false">!</span>
 	</div>
 	
-	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 player-lineup noselect" ng-class="{error: !lineup.rightWing.playerStatus}" data-toggle="popover" data-placement="bottom" data-content="{{lineup.rightWing.firstName}} {{lineup.rightWing.lastName}}" popover>
-		<span ng-if="lineup.rightWing.playerStatus">#{{ lineup.rightWing.playerNumber }}</span>
-		<span ng-if="!lineup.rightWing.playerStatus">!</span>
+	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 player-lineup noselect" ng-class="{error: lineup.rightWing.playerStatus == false}" data-toggle="popover" data-placement="bottom" data-content="{{lineup.rightWing.firstName}} {{lineup.rightWing.lastName}}" popover>
+		<span ng-if="lineup.rightWing.playerStatus !== false">#{{ lineup.rightWing.playerNumber }}</span>
+		<span ng-if="lineup.rightWing.playerStatus == false">!</span>
 	</div>
 
-	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 player-lineup noselect" ng-class="{error: !lineup.defence1.playerStatus}" data-toggle="popover" data-placement="bottom" data-content="{{lineup.defence1.firstName}} {{lineup.defence1.lastName}}" popover>
-		<span ng-if="lineup.defence1.playerStatus">#{{ lineup.defence1.playerNumber }}</span>
-		<span ng-if="!lineup.defence1.playerStatus">!</span>
+	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 player-lineup noselect" ng-class="{error: lineup.defence1.playerStatus == false}" data-toggle="popover" data-placement="bottom" data-content="{{lineup.defence1.firstName}} {{lineup.defence1.lastName}}" popover>
+		<span ng-if="lineup.defence1.playerStatus !== false">#{{ lineup.defence1.playerNumber }}</span>
+		<span ng-if="lineup.defence1.playerStatus == false">!</span>
 	</div>
-	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 player-lineup noselect" ng-class="{error: !lineup.defence2.playerStatus}" data-toggle="popover" data-placement="bottom" data-content="{{lineup.defence2.firstName}} {{lineup.defence2.lastName}}" popover>
-		<span ng-if="lineup.defence2.playerStatus">#{{ lineup.defence2.playerNumber }}</span>
-		<span ng-if="!lineup.defence2.playerStatus">!</span>
+	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 player-lineup noselect" ng-class="{error: lineup.defence2.playerStatus == false}" data-toggle="popover" data-placement="bottom" data-content="{{lineup.defence2.firstName}} {{lineup.defence2.lastName}}" popover>
+		<span ng-if="lineup.defence2.playerStatus !== false">#{{ lineup.defence2.playerNumber }}</span>
+		<span ng-if="lineup.defence2.playerStatus == false">!</span>
 	</div>
 
 	<!-- Lineup tools -->
 	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 lineup-tools" ng-init="showLineupTools = undefined" ng-class="{mouseover: showLineupTools === $index}">
 		<!-- Delete button -->
 		<div class="row lineup-template">
-		<button type="button" class="btn btn-danger" ng-click="lineups.splice($index, 1)"><span class="glyphicon glyphicon-remove"></span></button>
+		<button type="button" class="btn btn-danger" ng-click="removeLineup(lineup)"><span class="glyphicon glyphicon-remove"></span></button>
 		</div>
 		<!-- Edit button -->
 		<div class="row lineup-template">

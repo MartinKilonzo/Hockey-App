@@ -30,7 +30,7 @@ angular.module('HockeyApp')
  		// }, true);
 
  		// Method to add new players
- 		// TODO: ADD player number validation
+ 		// TODO: ADD player number validation (UNIQUE AND < 100)
  		$scope.addPlayer = function() {
  			if ($scope.playerInfo) {
  				//TODO: NEED TO ESCAPE SEQUENCE

@@ -2,38 +2,21 @@
 
 angular.module('HockeyApp')
 
-.controller('lineupsController', ['$scope', 'localStorageService','$modal', 
-	function ($scope, localStorageService, $modal, TeamFactory, PlayerFactory) {
+.controller('lineupsController', ['$scope','$modal', 'gameAPI',
+	function ($scope, $modal, gameAPI) {
 		console.log('Started lineupsController');
-		$('#warning').show();
-		$('#danger').hide();
 
 		$scope.dropToggle = false;
 
-		var savedPlayers = localStorageService.get('players');
-		var savedLineups = localStorageService.get('lineups');
-
-		$scope.players = savedPlayers || [];
-		$scope.lineups = savedLineups || [];
-
-		$scope.$watch('lineups', function () {
-			localStorageService.set('lineups', $scope.lineups);
-		}, true);
-
-		//TODO: Validate each lineup by checking its underlying players
-
 		/*
 		 *	Validation of the existing lineup by checking the players.
+		 *  TODO: Check for redundency considering the linuep API and how it handles parsing of lineups
 		 */
 		var validateLineups = function () {
-			var tempPlayers = [];
-
 			// Create the buckets (in bucket sort) for easy testing
-			for (var i = 0; i < $scope.players.length; i++) {
-				tempPlayers[$scope.players[i].playerNumber] = $scope.players[i];
-			}
+			var tempPlayers = gameAPI.playerBucket;
 
-			for (i = 0; i < $scope.lineups.length; i++) {
+			for (var i = 0; i < $scope.lineups.length; i++) {
 
 				//Left Wing
 				var playerNumber = $scope.lineups[i].leftWing.playerNumber;
@@ -62,7 +45,23 @@ angular.module('HockeyApp')
 			}
 		};
 
-		validateLineups();
+		/*
+		 *	Initialization of players and lineups from database.
+		 */
+		gameAPI.getPlayers( function (result) {
+ 			$scope.players = result;
+
+ 			gameAPI.getLineups( function (result) {
+	 			$scope.lineups = result;
+	 			$scope.lineups.indexOfLineup = function (lineup) {
+					for (var i = 0; i < this.length; i++) {
+						if (this[i]._id === lineup._id)	{ return i; }
+					}
+					return -1;
+				};
+	 			validateLineups();
+ 			});
+ 		});
 
 		/*
 		 *	Function for lineup tools' mouseover
@@ -79,7 +78,7 @@ angular.module('HockeyApp')
 			var modalInstance = $modal.open({
 
 				animation: true,
-				templateUrl: 'views/partials/lineup-create.html',
+				templateUrl: 'views/partials/lineup/lineup-create.html',
 				controller: 'createLineupController',
 				size: 'lg',
 				resolve: {
@@ -129,20 +128,31 @@ angular.module('HockeyApp')
 
 			// If an index has been set (ie. not undefined), then the user is editing a lineup, so be sure to overwrite the existing one
 			if (index >= 0) {
-				$scope.lineups[index] = newLineup;
+				gameAPI.modifyLineup($scope.lineups[index], newLineup, function (result) {
+					$scope.lineups[index] = result;
+				});	
 			}
 
 			// Otherwise, the user is creating a new lineup, so be sure to save it
 			else {
-				$scope.lineups.push(newLineup);
+				gameAPI.saveLineup(newLineup, function (result) {
+					$scope.lineups.push(result);
+				});
 			}
 			
 		};
 
-		console.log('Ended lineupsController');
-		$('#success').show();
-		$('#warning').hide();
+		$scope.removeLineup = function (lineup) {
+			gameAPI.deleteLineup(lineup, function (result) {
+				var index = $scope.lineups.indexOfLineup(result);
+				if (index >= 0) { 
+					console.log('index', index);
+					$scope.lineups.splice(index, 1); 
+			}
+			});
+		};
 
+		console.log('Ended lineupsController');
 	}])
 
 .controller('createLineupController', ['$scope', '$modalInstance', 'players', 'lineup',
@@ -193,7 +203,6 @@ angular.module('HockeyApp')
 		 * Function which saves the new lineup and passes the changes to the linuep page
 		 */
 		 $scope.saveNew = function () {
-		 	console.log('Create new lineup');
 		 	$scope.newLineup[5] = $scope.newTitle;
 		 	$modalInstance.close($scope.newLineup);
 		 };
