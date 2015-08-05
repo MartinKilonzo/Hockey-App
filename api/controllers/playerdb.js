@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 var playerModels = require('../models/playerModel.js')(mongoose);
 
 module.exports.getPlayers = function (req, res) {
-	console.log('Fetching players...');
+	console.log('Fetching players...\n');
 	var query = playerModels.Player.where({});
 	query.find( function (err, result) {
 		console.log(result);
@@ -12,7 +12,7 @@ module.exports.getPlayers = function (req, res) {
 };
 
 module.exports.create = function (req, res) {
-	console.log('Creating...', req.body);
+	console.log('Creating...\n', req.body);
 	var newPlayer = new playerModels.Player({	firstName: req.body.firstName,
 										    lastName: req.body.lastName,
 										    playerNumber: req.body.playerNumber,
@@ -25,7 +25,7 @@ module.exports.create = function (req, res) {
 };
 
 module.exports.delete = function (req, res) {
-	console.log('Deleting...', req.params);
+	console.log('Deleting...\n', req.params);
 	var ObjectId = mongoose.Types.ObjectId;
 	var query = playerModels.Player.where({ _id: new ObjectId(req.params.resourceId) });
 
