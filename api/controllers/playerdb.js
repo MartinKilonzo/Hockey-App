@@ -1,7 +1,6 @@
 'use strict';
 var mongoose = require('mongoose');
 var playerModels = require('../models/playerModel.js')(mongoose);
-var Player = playerModels.player;
 
 module.exports.getPlayers = function (req, res) {
 	console.log('Fetching players...');
@@ -10,7 +9,6 @@ module.exports.getPlayers = function (req, res) {
 		console.log(result);
 		res.json(result);
 	});
-	
 };
 
 module.exports.create = function (req, res) {
