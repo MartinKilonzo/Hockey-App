@@ -9,7 +9,8 @@ module.exports = function (mongoose) {
 		period			: 		{ type: Number, required: true },
 		time			: 		{ type: String, required: true },
 		stat 			: 		{ type: String, required: true },
-		count			: 		{ type: Number, required: true }
+		count			: 		{ type: Number, required: true },
+		eventId			: 		{ type: Number, required: true}
 	});
 
 	var GameTotal = new Schema({
