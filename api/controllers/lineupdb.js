@@ -1,7 +1,7 @@
 'use strict';
 
 var mongoose = require('mongoose');
-var lineupModels = require('../models/lineupModel.js')(mongoose);
+var lineupModels = require('../models/lineupModels.js')(mongoose);
 
 module.exports.getLineups = function (req, res) {
 	console.log('Fetching Lineups...\n');

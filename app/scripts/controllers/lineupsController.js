@@ -12,7 +12,7 @@ angular.module('HockeyApp')
 		 *	Validation of the existing lineup by checking the players.
 		 *  TODO: Check for redundency considering the linuep API and how it handles parsing of lineups
 		 */
-		var validateLineups = function () {
+		 var validateLineups = function () {
 			// Create the buckets (in bucket sort) for easy testing
 			var tempPlayers = gameAPI.playerBucket;
 
@@ -48,20 +48,20 @@ angular.module('HockeyApp')
 		/*
 		 *	Initialization of players and lineups from database.
 		 */
-		gameAPI.getPlayers( function (result) {
- 			$scope.players = result;
+		 gameAPI.getPlayers( function (result) {
+		 	$scope.players = result;
 
- 			gameAPI.getLineups( function (result) {
-	 			$scope.lineups = result;
-	 			$scope.lineups.indexOfLineup = function (lineup) {
-					for (var i = 0; i < this.length; i++) {
-						if (this[i]._id === lineup._id)	{ return i; }
-					}
-					return -1;
-				};
-	 			validateLineups();
- 			});
- 		});
+		 	gameAPI.getLineups( function (result) {
+		 		$scope.lineups = result;
+		 		$scope.lineups.indexOfLineup = function (lineup) {
+		 			for (var i = 0; i < this.length; i++) {
+		 				if (this[i]._id === lineup._id)	{ return i; }
+		 			}
+		 			return -1;
+		 		};
+		 		validateLineups();
+		 	});
+		 });
 
 		/*
 		 *	Function for lineup tools' mouseover
@@ -147,7 +147,7 @@ angular.module('HockeyApp')
 				if (index >= 0) { 
 					console.log('index', index);
 					$scope.lineups.splice(index, 1); 
-			}
+				}
 			});
 		};
 
