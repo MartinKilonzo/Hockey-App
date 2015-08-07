@@ -25,7 +25,7 @@ angular.module('HockeyApp')
 		 *	Function for executing actions. Used by undo.
 		 */
 		Action.prototype.unExecute = function () {
-			if (this.unApplier) { this.unApplier(); }
+			if (this.unapplier) { this.unapplier(); }
 			else { this.applier(this.oldVal); }
 			console.log(this);
 		};
