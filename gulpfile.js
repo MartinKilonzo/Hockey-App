@@ -30,10 +30,12 @@ var startExpress = function () {
 	/* GET METHODS */
 	server.get('/api/players', ctrl.playerdb.getPlayers);
 	server.get('/api/lineups', ctrl.lineupdb.getLineups);
+	server.get('/api/gameEvents', ctrl.gamedb.getGameEvents);
 
 	/* POST METHODS */
 	server.post('/api/players', ctrl.playerdb.create);
 	server.post('/api/lineups', ctrl.lineupdb.create);
+	server.post('/api/gameEvents', ctrl.gamedb.saveGameEvents);
 
 	/* PUT METHODS */
 	server.put('/api/lineups', ctrl.lineupdb.modify);
@@ -41,6 +43,7 @@ var startExpress = function () {
 	/* DELETE METHODS */
 	server.delete('/api/players/:resourceId', ctrl.playerdb.delete);
 	server.delete('/api/lineups/:resourceId', ctrl.lineupdb.delete);
+	server.delete('/api/gameEvents', ctrl.gamedb.deleteGameEvents);
 
 	/* SERVER */
 	server.listen(serverPort, function () {

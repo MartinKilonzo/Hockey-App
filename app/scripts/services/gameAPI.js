@@ -8,6 +8,7 @@ angular.module('HockeyApp')
 		var UserAPI = $resource('http://localhost:8999/api/players/:resourceId', {resourceId: '@resourceId'}, {sync: {method: 'GET', isArray: true}});
 		var Player = $resource('http://localhost:8999/api/players/:resourceId', {resourceId: '@resourceId'}, {sync: {method: 'GET', isArray: true}});
 		var Lineup = $resource('http://localhost:8999/api/lineups/:resourceId', {resourceId: '@resourceId'}, {sync: {method: 'GET', isArray: true}, change: {method: 'PUT'}});
+		var Game = $resource('http://localhost:8999/api/gameEvents:resourceId', {resourceId: '@resourceId'}, {sync: {method: 'GET', isArray: true}});
 
 		var Players, Lineups;
 		var playerBucket = [];
@@ -141,14 +142,53 @@ angular.module('HockeyApp')
 			});
 		};
 
+		var getGameEvents = function (gameEvents, callback) {
+			var httpGame = new Game();
+
+
+			httpGame.sync( function (result) {
+				if (result) { $log.info('Game Events:', result); }
+				if (callback) { callback(result); }
+				else { return result; }
+			});
+		};
+
+		var addGameEvents = function (gameEvents, callback) {
+			var httpGame = new Game();
+			httpGame.shotsOn		=	gameEvents.shotsOn;
+			httpGame.shotsAgainst	=	gameEvents.shotsAgainst;
+			httpGame.teamGoals		=	gameEvents.teamGoals;
+			httpGame.opponentGoals	=	gameEvents.opponentGoals;
+			$log.warn('SAVING GAME EVENTS');
+			httpGame.$save( function (result) { 
+				if (result) { $log.info('Added:', result); }
+				if (callback) { callback(result); }
+				else { return result; }
+			});
+		};
+
+		var removeGameEvents = function (gameEvents, callback) {
+			var httpGame = new Game();
+
+
+			httpGame.$delete( function (result) {
+				if (result) { $log.info('Removed:', result); }
+				if (callback) { callback(result); }
+				else { return result; }
+			});
+		};
+
 		return {
 			getPlayers: getPlayers,
 			getLineups: getLineups,
+			getGameEvents: getGameEvents,
 			savePlayer: addPlayer,
-			deletePlayer: removePlayer,
 			saveLineup: addLineup,
+			saveGameEvents: addGameEvents,
 			modifyLineup: changeLineup,
+			deletePlayer: removePlayer,
 			deleteLineup: removeLineup,
+			deleteGameEvents: removeGameEvents,
 			playerBucket: playerBucket
 		};
 	}]);

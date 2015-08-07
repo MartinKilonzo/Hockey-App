@@ -2,27 +2,50 @@
 
 angular.module('HockeyApp')
 
-.controller('gameController', ['$scope', '$log', '$resource', 'localStorageService', 'gameData', 'actionService', 'Action', 
-	function ($scope, $log, $resource, localStorageService, gameData, actionService, Action) {
+.controller('gameController', ['$scope', '$log', '$resource', 'localStorageService', 'gameAPI', 'gameData', 'actionService', 'Action', 
+	function ($scope, $log, $resource, localStorageService, gameAPI, gameData, actionService, Action) {
 
-	console.log('Loaded Game Controller.');
+		console.log('Loaded Game Controller.');
 
-	var gamedb = $resource('/api/gamedb');
+		var gamedb = $resource('/api/gamedb');
 
-	$scope.pageClass = 'page-game';
+		$scope.pageClass = 'page-game';
 
-	var savedPlayers = localStorageService.get('players');
-	var savedLineups = localStorageService.get('lineups');
+	/*
+	 *	Initialization of players and lineups from database.
+	 */
+	 gameAPI.getPlayers( function (result) {
+	 	$scope.players = result;
 
-	$scope.players = savedPlayers || [];					// Initialize player list
-	$scope.lineups = savedLineups || [];					// Initialize lineup list
+	 	gameAPI.getLineups( function (result) {
+	 		$scope.lineups = result;
+	 	});
+	 });
 
 	$scope.activePlayers = gameData.getPlayers() || [];		// Initialize game board
+
+	var initializeGameEvents = function () {
+		var newGame = {
+			shotsOn: [],
+			shotsAgainst: [],
+			teamGoals: [],
+			opponentGoals: []
+		};
+
+		var newGameStats = [newGame, newGame, newGame, newGame];
+
+		$scope.gameEvents = gameData.gameEvents || newGameStats;
+	};
+	initializeGameEvents();
 
 	$scope.execuStack = actionService;
 	$scope.undoable = $scope.execuStack.undoable;
 	$scope.redoable = $scope.execuStack.redoable;
 
+	var shotsOnId = gameData.shotsOnId || 0;
+	var shotsAgainstId = gameData.shotsAgainstId || 0; 
+	var teamGoalsId = gameData.teamGoalsId || 0; 
+	var opponentGoalsId = gameData.opponentGoalsId || 0;
 	
 	// Undo and Redo Support //
 	$scope.undo = function () {
@@ -42,11 +65,29 @@ angular.module('HockeyApp')
 	 */
 	 $scope.setPeriod = function (period) {
 	 	if (period >= 1 || period <= 4) {
-	 		var periodAction = new Action($scope.period, period, function (period) {
-	 			$scope.period = period;
+	 		var oldVal = {
+	 			period: $scope.period,
+	 			shotsOnId: shotsOnId,
+	 			shotsAgainstId: shotsAgainstId, 
+	 			teamGoalsId: teamGoalsId,
+	 			opponentGoalsId: opponentGoalsId
+	 		};
+
+	 		var newVal = {
+	 			period: period
+	 		};
+	 		var periodAction = new Action(oldVal, newVal, function (val) {
+	 			$scope.period = val.period;
+	 			shotsOnId = val.shotsOnId || 0;
+	 			shotsAgainstId = val.shotsAgainstId || 0;
+	 			teamGoalsId = val.teamGoalsId || 0;
+	 			opponentGoalsId = val.opponentGoalsId || 0;
 	 		});
 
-	 		if ($scope.period) { $scope.execuStack.push(periodAction); }	// If the period has never been initialized,
+	 		if ($scope.period) { 
+	 			$scope.execuStack.push(periodAction);
+	 			gameAPI.saveGameEvents($scope.gameEvents[$scope.period - 1]);
+	 		}	// If the period has never been initialized,
 	 		else { periodAction.execute(); }								// Initialize it without adding it to the action stack
 	 		gameData.update($scope.activePlayers, $scope.period);
 	 	}
@@ -59,7 +100,9 @@ angular.module('HockeyApp')
 	 * Constructor for game event objects that records the game number (ID), period, 
 	 * time within a game and the change of an attribute.
 	 */
-	 var GameEvent = function (period, activePlayers, time, count) {
+	 var GameEvent = function (eventId, period, activePlayers, time, count) {
+	 	this.game = 0,//$scope.gameDetails.gameNumber;
+	 	this.eventId = eventId;
 	 	this.period = period;
 	 	this.activePlayers = activePlayers;
 	 	this.time = time;
@@ -69,25 +112,30 @@ angular.module('HockeyApp')
 	 /*
 	  * Function which returns the game time, formatted as hh:mm:ss.tshsms
 	  */
-	 var getGameTime = function () {
-	 	if (!$scope.gameStart)
-	 		return '0';
-	 	
-	 	return $scope.gameHours.toString() + ':' + $scope.formatMinutes() + ':' +  $scope.formatSeconds();
-	 };
+	  var getGameTime = function () {
+	  	if (!$scope.gameStart)
+	  		return '0';
+
+	  	return $scope.gameHours.toString() + ':' + $scope.formatMinutes() + ':' +  $scope.formatSeconds();
+	  };
 
 	/*
 	 *	Function which increments the Shots On statistic for each player involved in the play (active player).
 	 */
 	 $scope.addShotsOn = function () {
-	 	var newGameEvent = new GameEvent($scope.period, $scope.activePlayers, $scope.gameTimer.time(), 1);
+	 	var newGameEvent = new GameEvent(shotsOnId, $scope.period, $scope.activePlayers, $scope.gameTimer.time(), 1);
 
 		// applier
 		// For each active player:
 		var applier = function (GameEvent) {
+			var activePlayers = [];
 			for (var i = 0; i < $scope.activePlayers.length; i++) {
 				$scope.activePlayers[i].games[$scope.gameNumber].gameEvents.shotsOn.push(GameEvent);
+				activePlayers.push($scope.activePlayers[i].playerNumber);
 			}
+			GameEvent.activePlayers = activePlayers;
+			$scope.gameEvents[$scope.period - 1].shotsOn.push(GameEvent);
+			shotsOnId++;
 		};
 
 		// unApplier
@@ -96,6 +144,8 @@ angular.module('HockeyApp')
 			for (var i = 0; i < $scope.activePlayers.length; i++) {
 				$scope.activePlayers[i].games[$scope.gameNumber].gameEvents.shotsOn.pop();
 			}
+			$scope.gameEvents[$scope.period - 1].shotsOn.pop();
+			shotsOnId--;
 		};
 
 		var newGameAction = new Action(undefined, newGameEvent, applier, unApplier);
@@ -107,14 +157,19 @@ angular.module('HockeyApp')
 	 *	Function which decrements the Shots On statistic for each player involved in the play (active player).
 	 */
 	 $scope.subtShotsOn = function () {
-		var newGameEvent = new GameEvent($scope.period, $scope.activePlayers, $scope.gameTimer.time(), -1);
+	 	var newGameEvent = new GameEvent(shotsOnId, $scope.period, $scope.activePlayers, $scope.gameTimer.time(), -1);
 
 		// applier
 		// For each active player:
 		var applier = function (GameEvent) {
+			var activePlayers = [];
 			for (var i = 0; i < $scope.activePlayers.length; i++) {
 				$scope.activePlayers[i].games[$scope.gameNumber].gameEvents.shotsOn.push(GameEvent);
+				activePlayers.push($scope.activePlayers[i].playerNumber);
 			}
+			GameEvent.activePlayers = activePlayers;
+			$scope.gameEvents[$scope.period - 1].shotsOn.push(GameEvent);
+			shotsOnId++;
 		};
 
 		// unApplier
@@ -123,6 +178,8 @@ angular.module('HockeyApp')
 			for (var i = 0; i < $scope.activePlayers.length; i++) {
 				$scope.activePlayers[i].games[$scope.gameNumber].gameEvents.shotsOn.pop();
 			}
+			$scope.gameEvents[$scope.period - 1].shotsOn.pop();
+			shotsOnId--;
 		};
 
 		var newGameAction = new Action(undefined, newGameEvent, applier, unApplier);
@@ -134,14 +191,19 @@ angular.module('HockeyApp')
 	 *	Function which increments the Shots Against statistic for each player involved in the play (active player).
 	 */
 	 $scope.addShotsAgainst = function () {
-		var newGameEvent = new GameEvent($scope.period, $scope.activePlayers, $scope.gameTimer.time(), 1);
+	 	var newGameEvent = new GameEvent(shotsAgainstId, $scope.period, $scope.activePlayers, $scope.gameTimer.time(), 1);
 
 		// applier
 		// For each active player:
 		var applier = function (GameEvent) {
+			var activePlayers = [];
 			for (var i = 0; i < $scope.activePlayers.length; i++) {
 				$scope.activePlayers[i].games[$scope.gameNumber].gameEvents.shotsAgainst.push(GameEvent);
+				activePlayers.push($scope.activePlayers[i].playerNumber);
 			}
+			GameEvent.activePlayers = activePlayers;
+			$scope.gameEvents[$scope.period - 1].shotsAgainst.push(GameEvent);
+			shotsAgainstId++;
 		};
 
 		// unApplier
@@ -150,6 +212,8 @@ angular.module('HockeyApp')
 			for (var i = 0; i < $scope.activePlayers.length; i++) {
 				$scope.activePlayers[i].games[$scope.gameNumber].gameEvents.shotsAgainst.pop();
 			}
+			$scope.gameEvents[$scope.period - 1].shotsAgainst.pop();
+			shotsAgainstId--;
 		};
 
 		var newGameAction = new Action(undefined, newGameEvent, applier, unApplier);
@@ -161,14 +225,19 @@ angular.module('HockeyApp')
 	 *	Function which decrements the Shots Against statistic for each player involved in the play (active player).
 	 */
 	 $scope.subtShotsAgainst = function () {
-		var newGameEvent = new GameEvent($scope.period, $scope.activePlayers, $scope.gameTimer.time(), -1);
+	 	var newGameEvent = new GameEvent(shotsAgainstId, $scope.period, $scope.activePlayers, $scope.gameTimer.time(), -1);
 
 		// applier
 		// For each active player:
 		var applier = function (GameEvent) {
+			var activePlayers = [];
 			for (var i = 0; i < $scope.activePlayers.length; i++) {
 				$scope.activePlayers[i].games[$scope.gameNumber].gameEvents.shotsAgainst.push(GameEvent);
+				activePlayers.push($scope.activePlayers[i].playerNumber);
 			}
+			GameEvent.activePlayers = activePlayers;
+			$scope.gameEvents[$scope.period - 1].shotsAgainst.push(GameEvent);
+			shotsAgainstId++;
 		};
 
 		// unApplier
@@ -177,6 +246,8 @@ angular.module('HockeyApp')
 			for (var i = 0; i < $scope.activePlayers.length; i++) {
 				$scope.activePlayers[i].games[$scope.gameNumber].gameEvents.shotsAgainst.pop();
 			}
+			$scope.gameEvents[$scope.period - 1].shotsAgainst.pop();
+			shotsAgainstId--;
 		};
 
 		var newGameAction = new Action(undefined, newGameEvent, applier, unApplier);
@@ -188,14 +259,19 @@ angular.module('HockeyApp')
 	 *	Function which increments the Team Goal statistic for each player involved in the play (active player).
 	 */
 	 $scope.addTeamGoal = function () {
-	 	var newGameEvent = new GameEvent($scope.period, $scope.activePlayers, $scope.gameTimer.time(), 1);
+	 	var newGameEvent = new GameEvent(teamGoalsId, $scope.period, $scope.activePlayers, $scope.gameTimer.time(), 1);
 
 		// applier
 		// For each active player:
 		var applier = function (GameEvent) {
+			var activePlayers = [];
 			for (var i = 0; i < $scope.activePlayers.length; i++) {
 				$scope.activePlayers[i].games[$scope.gameNumber].gameEvents.teamGoals.push(GameEvent);
+				activePlayers.push($scope.activePlayers[i].playerNumber);
 			}
+			GameEvent.activePlayers = activePlayers;
+			$scope.gameEvents[$scope.period - 1].teamGoals.push(GameEvent);
+			teamGoalsId++;
 		};
 
 		// unApplier
@@ -204,6 +280,8 @@ angular.module('HockeyApp')
 			for (var i = 0; i < $scope.activePlayers.length; i++) {
 				$scope.activePlayers[i].games[$scope.gameNumber].gameEvents.teamGoals.pop();
 			}
+			$scope.gameEvents[$scope.period - 1].teamGoals.pop();
+			teamGoalsId--;
 		};
 		
 		var newGameAction = new Action(undefined, newGameEvent, applier, unApplier);
@@ -215,14 +293,19 @@ angular.module('HockeyApp')
 	 *	Function which increments the Opponent Goal statistic for each player involved in the play (active player).
 	 */
 	 $scope.addOpponentGoal = function () {
-		var newGameEvent = new GameEvent($scope.period, $scope.activePlayers, $scope.gameTimer.time(), 1);
+	 	var newGameEvent = new GameEvent(opponentGoalsId, $scope.period, $scope.activePlayers, $scope.gameTimer.time(), 1);
 
 		// applier
 		// For each active player:
 		var applier = function (GameEvent) {
+			var activePlayers = [];
 			for (var i = 0; i < $scope.activePlayers.length; i++) {
 				$scope.activePlayers[i].games[$scope.gameNumber].gameEvents.opponentGoals.push(GameEvent);
+				activePlayers.push($scope.activePlayers[i].playerNumber);
 			}
+			GameEvent.activePlayers = activePlayers;
+			$scope.gameEvents[$scope.period - 1].opponentGoals.push(GameEvent);
+			opponentGoalsId++;
 		};
 
 		// unApplier
@@ -231,6 +314,8 @@ angular.module('HockeyApp')
 			for (var i = 0; i < $scope.activePlayers.length; i++) {
 				$scope.activePlayers[i].games[$scope.gameNumber].gameEvents.opponentGoals.pop();
 			}
+			$scope.gameEvents[$scope.period - 1].opponentGoals.pop();
+			opponentGoalsId--;
 		};
 
 		var newGameAction = new Action(undefined, newGameEvent, applier, unApplier);
