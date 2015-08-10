@@ -14,19 +14,4 @@ angular.module('HockeyApp')
 	};
 
 	$scope.logIn();
-
-	/* Dropdown menu interaction */
-	var mouseOverTimeout;
-	var menu;
-	$('.dropdown').mouseenter(function() {
-
-		menu = $(this).children('.dropdown-menu');
-		mouseOverTimeout = setTimeout(function() {
-        menu.show(400);
-
-    }, 400);
-	}).mouseleave(function() {
-		clearTimeout(mouseOverTimeout);
-		menu.delay(400).hide(300);
-	});
 }]);
