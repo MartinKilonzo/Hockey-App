@@ -7,11 +7,13 @@ angular.module('HockeyApp')
 			restrict: 'A',
 			link: function (scope, element, attrs) {
 				element.hover( function () {
-					element.dropdown('toggle');
-					element.children('.dropdown-menu').fadeIn(400);
+					var dropdown = element.children('.dropdown-menu');
+					dropdown.removeClass('display_none');
+					dropdown.fadeIn(400);
 				}, function () {
-					element.dropdown('toggle');
-					element.children('.dropdown-menu').finish().delay(100).fadeOut(300);
+					var dropdown = element.children('.dropdown-menu');
+					dropdown.finish().delay(100).fadeOut(300);
+					dropdown.addClass('display_none');
 				});
 			}
 		};
