@@ -2,13 +2,18 @@
 
 angular.module('HockeyApp')
 
-.controller('MainCtrl', ['$location', 'version', 'user', function ($location, version, user) {
-
+.controller('MainCtrl', ['$scope', '$location', 'version', 'gameAPI', function ($scope, $location, version, gameAPI) {
 	var vm = this;
 	vm.path = $location.path.bind($location);
 	vm.version = version;
-	vm.user = user;
 
+	$scope.logIn = function () {
+		gameAPI.getUser({ firstName: 'Martin', lastName: 'Kilonzo', team: 'Test Team 3' }, function (result) {
+			vm.user = result.firstName;
+		});
+	};
+
+	$scope.logIn();
 
 	/* Dropdown menu interaction */
 	var mouseOverTimeout;
