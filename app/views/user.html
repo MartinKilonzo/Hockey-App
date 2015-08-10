@@ -1,0 +1,23 @@
+<div class="container-fluid">
+	<div class="jumbotron text-center" ng-click="setControl(0)">
+		<h1>User Page</h1>
+	</div>
+	
+	<div class="container">
+		<form ng-submit="setUser()" ng-init="firstName = 'Martin'; lastName = 'Kilonzo'; team = 'Test Team 3'">
+			<div class="input-group" style="width: 100%">
+				<span class="input-group-addon" style="width: 95px">First Name</span>
+				<input type="text" class="form-control" placeholder="Martin" ng-model="firstName"></input>
+			</div>
+			<div class="input-group" style="width: 100%">
+				<span class="input-group-addon" style="width: 95px">Last Name</span>
+				<input type="text" class="form-control" placeholder="Kilonzo" ng-model="lastName"></input>
+			</div>
+			<div class="input-group" style="width: 100%">
+				<span class="input-group-addon" style="width: 95px">Team</span>
+				<input type="text" class="form-control" placeholder="Test Team" ng-model="team"></input>
+			</div>
+			<input type="submit" class="form-control" ng-show="canSubmit()"></input>
+		</form>
+	</div>
+</div>

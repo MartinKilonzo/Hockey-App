@@ -28,11 +28,13 @@ var startExpress = function () {
 	mongoose.connect('mongodb://localhost:27017/app-test');
 
 	/* GET METHODS */
+	server.get('/api/users/:userId', ctrl.userdb.getUser);
 	server.get('/api/players', ctrl.playerdb.getPlayers);
 	server.get('/api/lineups', ctrl.lineupdb.getLineups);
 	server.get('/api/gameEvents', ctrl.gamedb.getGameEvents);
 
 	/* POST METHODS */
+	server.post('/api/users', ctrl.userdb.create);
 	server.post('/api/players', ctrl.playerdb.create);
 	server.post('/api/lineups', ctrl.lineupdb.create);
 	server.post('/api/gameEvents', ctrl.gamedb.saveGameEvents);
@@ -41,8 +43,8 @@ var startExpress = function () {
 	server.put('/api/lineups', ctrl.lineupdb.modify);
 
 	/* DELETE METHODS */
-	server.delete('/api/players/:resourceId', ctrl.playerdb.delete);
-	server.delete('/api/lineups/:resourceId', ctrl.lineupdb.delete);
+	server.delete('/api/players/:userId/:resourceId', ctrl.playerdb.delete);
+	server.delete('/api/lineups/:userId/:resourceId', ctrl.lineupdb.delete);
 	server.delete('/api/gameEvents', ctrl.gamedb.deleteGameEvents);
 
 	/* SERVER */

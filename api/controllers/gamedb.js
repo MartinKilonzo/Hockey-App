@@ -22,6 +22,7 @@ module.exports.saveGameEvents = function (req, res) {
 
 	var callback = function (err, result) {
 		res.json(result);
+		console.log(err);
 	};
 
 	var reps = Math.ceil(req.body.shotsOn.length / 1000);

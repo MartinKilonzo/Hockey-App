@@ -2,6 +2,7 @@
 var mongoose = require('mongoose');
 var playerModels = require('../models/playerModels.js')(mongoose);
 
+// Depreciated.
 module.exports.getPlayers = function (req, res) {
 	console.log('Fetching players...\n');
 	var query = playerModels.Player.where({});
@@ -13,24 +14,37 @@ module.exports.getPlayers = function (req, res) {
 
 module.exports.create = function (req, res) {
 	console.log('Creating...\n', req.body);
-	var newPlayer = new playerModels.Player({	firstName: req.body.firstName,
-											    lastName: req.body.lastName,
-											    playerNumber: req.body.playerNumber,
-											    position: req.body.position,
-											    games: req.body.games				});
+	var ObjectId = mongoose.Types.ObjectId;
+	var newPlayer = new playerModels.Player({
+		firstName: req.body.firstName,
+		lastName: req.body.lastName,
+		playerNumber: req.body.playerNumber,
+		position: req.body.position,
+		games: req.body.games
+	});
 
-	newPlayer.save( function (err, result) {
-		res.json(result);
+	mongoose.model('User').findOne({ _id: new ObjectId(req.body.user) }, function (err, user) {
+		user.players.push(newPlayer);
+		user.save( function (err, result) {
+			if (err) { res.json(err); } 
+			else res.json(result);
+		});
 	});
 };
 
 module.exports.delete = function (req, res) {
 	console.log('Deleting...\n', req.params);
 	var ObjectId = mongoose.Types.ObjectId;
-	var query = playerModels.Player.where({ _id: new ObjectId(req.params.resourceId) });
+	var User = mongoose.model('User');
 
-	// Can use findOne() and Remove() seperately to store deleted data
-	query.findOneAndRemove( function (err, result) {
-		res.json(result);
+	User.findById(new ObjectId(req.params.userId), function (err, user) {
+		if (err) { res.json(err); } 
+		else {
+			user.players.id(req.params.resourceId).remove();
+			user.save( function (err, result) {
+				if (err) { res.json(err); } 
+				else res.json(result);
+			});
+		}		
 	});
 };

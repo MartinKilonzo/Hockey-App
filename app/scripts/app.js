@@ -51,41 +51,13 @@ angular.module('HockeyApp', ['ngAnimate', 'ngCookies', 'ngRoute', 'ui.bootstrap'
       templateUrl: 'views/settings.html',
       controller: 'settingsController'
     })
+    .when('/user', {
+      templateUrl: 'views/user.html',
+      controller: 'userController'
+    })
     .otherwise({
       redirectTo: '/'
     });
 
     localStorageServiceProvider.setPrefix('ls');
-  }])
-
-  .factory('TeamFactory',['localStorageService', function (localStorageService) {
-    var team = localStorageService.get('players') || [];
-
-    return {
-      add: function (player) {
-        this.team.push(player);
-      },
-      getPlayer: function (number) {
-        return this.team[number];
-      },
-
-      getTeam: function() {
-        return this.team;
-      }
-    };
-  }])
-
-.factory('PlayerFactory', function (playerInfo) {
-  console.log('NEW PLAYER');
-  var Player =  function () {
-  var info = playerInfo.replace(/, /g, '/').replace(/,/g, '/').split('/');
-
-    console.log(info);
-
-    this.firstName      = info[0];
-    this.lastName       = info[1];
-    this.playerNumber   = info[2];
-    this.position       = info[3];
-  };
-  return Player;
-});
+  }]);

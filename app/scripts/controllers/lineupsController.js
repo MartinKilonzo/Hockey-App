@@ -2,19 +2,21 @@
 
 angular.module('HockeyApp')
 
-.controller('lineupsController', ['$scope','$modal', 'gameAPI',
-	function ($scope, $modal, gameAPI) {
+.controller('lineupsController', ['$log', '$scope','$modal', 'gameAPI',
+	function ($log, $scope, $modal, gameAPI) {
 		console.log('Started lineupsController');
 
+		/** INITIALIZATION **/
 		$scope.dropToggle = false;
 
-		/*
+		 /** HELPER METHODS **/
+		 /*
 		 *	Validation of the existing lineup by checking the players.
 		 *  TODO: Check for redundency considering the linuep API and how it handles parsing of lineups
 		 */
 		 var validateLineups = function () {
 			// Create the buckets (in bucket sort) for easy testing
-			var tempPlayers = gameAPI.playerBucket;
+			var tempPlayers = gameAPI.bucket();
 
 			for (var i = 0; i < $scope.lineups.length; i++) {
 
@@ -46,19 +48,23 @@ angular.module('HockeyApp')
 		};
 
 		/*
-		 *	Initialization of players and lineups from database.
+		 *	Method which returns the index of a player in the player array. 
+		 *	If none exists, it returns -1.
 		 */
+		var indexOfLineup = function (lineup) {
+			for (var i = 0; i < $scope.lineups.length; i++) {
+				if ($scope.lineups[i]._id === lineup._id)	{ return i; }
+			}
+			return -1;
+		};
+
+		/* Initialization of players and lineups from database. */
 		 gameAPI.getPlayers( function (result) {
 		 	$scope.players = result;
 
 		 	gameAPI.getLineups( function (result) {
 		 		$scope.lineups = result;
-		 		$scope.lineups.indexOfLineup = function (lineup) {
-		 			for (var i = 0; i < this.length; i++) {
-		 				if (this[i]._id === lineup._id)	{ return i; }
-		 			}
-		 			return -1;
-		 		};
+		 		console.log('$scope.lineup', $scope.lineups);
 		 		validateLineups();
 		 	});
 		 });
@@ -66,7 +72,6 @@ angular.module('HockeyApp')
 		/*
 		 *	Function for lineup tools' mouseover
 		 */
-
 		 $scope.setHover = function (index) {
 		 	$scope.showLineupTools = index;
 		 };
@@ -87,7 +92,6 @@ angular.module('HockeyApp')
 					},
 					lineup: function () {
 						if ($scope.editLineupIndex >= 0) {
-
 							return $scope.lineups[$scope.editLineupIndex];
 						}
 						else {
@@ -97,7 +101,7 @@ angular.module('HockeyApp')
 				}
 			});
 
-			modalInstance.result.then(function (newLineup) {
+			modalInstance.result.then( function (newLineup) {
 				saveLineup(newLineup, $scope.editLineupIndex);
 				
 			}, function () {
@@ -128,13 +132,22 @@ angular.module('HockeyApp')
 			// If an index has been set (ie. not undefined), then the user is editing a lineup, so be sure to overwrite the existing one
 			if (index >= 0) {
 				gameAPI.modifyLineup($scope.lineups[index], newLineup, function (result) {
-					$scope.lineups[index] = result;
+					if (result) {
+						console.log('Old:', $scope.lineups[index], '\nNew:', result);
+						$scope.lineups[index].leftWing 		=	 newLineup.leftWing;
+						$scope.lineups[index].center 		=	 newLineup.center;
+						$scope.lineups[index].rightWing 	=	 newLineup.rightWing;
+						$scope.lineups[index].defence1 		=	 newLineup.defence1;
+						$scope.lineups[index].defence2 		=	 newLineup.defence2;
+						$scope.lineups[index].lineupTitle 	=	 newLineup.lineupTitle;
+					}
 				});	
 			}
 
 			// Otherwise, the user is creating a new lineup, so be sure to save it
 			else {
 				gameAPI.saveLineup(newLineup, function (result) {
+					console.log(result);
 					$scope.lineups.push(result);
 				});
 			}
@@ -143,7 +156,7 @@ angular.module('HockeyApp')
 
 		$scope.removeLineup = function (lineup) {
 			gameAPI.deleteLineup(lineup, function (result) {
-				var index = $scope.lineups.indexOfLineup(result);
+				var index = indexOfLineup({ _id: result });
 				if (index >= 0) { 
 					console.log('index', index);
 					$scope.lineups.splice(index, 1); 
