@@ -15,14 +15,14 @@
 			<ul class="nav navbar-nav navbar-right">
 				<li ng-class="{active: $path() == '/game'}"><a href="/test">Test</a></li>
 				<li ng-class="{active: $path() == '/game'}"><a href="/game">Game</a></li>
-				<li class="dropdown" ng-class="{active: $path() == '/roster'}"><a href="/roster" class="dropdown-toggle" data-toggle="dropdown" role="button">Roster</a>
+				<li class="dropdown" ng-class="{active: $path() == '/roster'}" dropdown><a href="/roster" class="dropdown-toggle" data-toggle="dropdown" role="button">Roster</a>
 					<ul class="dropdown-menu pull-center" role="menu">
 						<li ng-class="{active: $path() == '/lineups'}"><a href="/lineups">Lineups</a></li>
 					</ul>
 				</li>
 				<li ng-class="{active: $path() == '/team'}"><a href="/team">Team</a></li>
 				<li ng-class="{active: $path() == '/settings'}"><a href="/settings">Settings</a></li>
-				<li class="active"><a href="#">{{ main.user }}</a></li>
+				<li class="active"><a href="/user">{{ main.user }}</a></li>
 			</ul>
 		</div>
 	</nav>
