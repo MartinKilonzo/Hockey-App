@@ -9,8 +9,7 @@ module.exports = function () {
 		playerNumber	:		{ type: Number },
 		position		:		{ type: String },
 		firstName		:		{ type: String },
-		lastName		:		{ type: String },
-	 	games 			:		{ type: [Schema.Types.ObjectId] }
+		lastName		:		{ type: String }
 	 });
 
 	var models = {

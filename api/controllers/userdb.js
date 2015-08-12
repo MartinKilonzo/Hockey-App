@@ -16,11 +16,19 @@ module.exports.getUser = function (req, res) {
 
 module.exports.create = function (req, res) {
 	console.log('Creating...\n', req.body);
-	var user = new userModels.User({ 	firstName: 	req.body.firstName,
-										lastName: 	req.body.lastName,
-										team: 		req.body.team,		
-										players: 	[],
-										lineups: 	[],					});
+	var user = new userModels.User({ 	
+		firstName: 	req.body.firstName,
+		lastName: 	req.body.lastName,
+		team: 		req.body.team,		
+		players: 	[],
+		lineups: 	[],					
+		gameEvents: [],
+		stats: 		{
+			players: 	[],
+			lineups: 	[],
+			games: 		[]
+		}
+	});
 	user.save( function (err, result) {
 		if (err) { res.json(err); } 
 		else res.json(result);
