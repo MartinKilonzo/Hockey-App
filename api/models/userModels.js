@@ -5,18 +5,10 @@ var Schema = mongoose.Schema;
 
 var Player = mongoose.model('Player').schema;
 var Lineup = mongoose.model('Lineup').schema;
-var GameEvent = mongoose.model('GameEvent').schema;
-var GameTotal = mongoose.model('GameTotal').schema;
-var Stats = mongoose.model('Stats').schema;
+var GameEvents = mongoose.model('GameEvents').schema;
+var GameTotals = mongoose.model('GameTotals').schema;
 
 module.exports = function (mongoose) {
-
-	var game = {
-		shotsOn			: 		{ type: [GameEvent] },
-		shotsAgainst	: 		{ type: [GameEvent] },
-		teamGoals		: 		{ type: [GameEvent] },
-		opponentGoals	: 		{ type: [GameEvent] }
-	};
 
 	var User = new Schema({
 		firstName		: 		{ type: String, required: true },
@@ -25,8 +17,12 @@ module.exports = function (mongoose) {
 		googleDrive		: 		{ type: String },
 		players			: 		{ type: [Player] },
 		lineups			: 		{ type: [Lineup] },
-		gameEvents		: 		{ type: [game] },
-		stats 			: 		{ type: Stats }
+		gameEvents		: 		{ type: [GameEvents] },
+		stats 			: 		{ 
+			games			: 		{ type: [GameTotals] },
+			players			: 		{ type: [GameTotals] },
+			lineups			: 		{ type: [GameTotals] }
+		}
 	});
 	var models = {
 		User: mongoose.model('User', User, 'hockey')
