@@ -129,10 +129,7 @@ angular.module('HockeyApp')
 		// For each active player:
 		var applier = function (GameEvent) {
 			var activePlayers = [];
-			for (var i = 0; i < $scope.activePlayers.length; i++) {
-				$scope.activePlayers[i].games[$scope.gameNumber].gameEvents.shotsOn.push(GameEvent);
-				activePlayers.push($scope.activePlayers[i].playerNumber);
-			}
+			for (var i = 0; i < $scope.activePlayers.length; i++) { activePlayers.push($scope.activePlayers[i].playerNumber); }
 			GameEvent.activePlayers = activePlayers;
 			$scope.gameEvents[$scope.period - 1].shotsOn.push(GameEvent);
 			shotsOnId++;
@@ -141,9 +138,6 @@ angular.module('HockeyApp')
 		// unApplier
 		// For each active player:
 		var unApplier = function () {
-			for (var i = 0; i < $scope.activePlayers.length; i++) {
-				$scope.activePlayers[i].games[$scope.gameNumber].gameEvents.shotsOn.pop();
-			}
 			$scope.gameEvents[$scope.period - 1].shotsOn.pop();
 			shotsOnId--;
 		};
@@ -163,10 +157,7 @@ angular.module('HockeyApp')
 		// For each active player:
 		var applier = function (GameEvent) {
 			var activePlayers = [];
-			for (var i = 0; i < $scope.activePlayers.length; i++) {
-				$scope.activePlayers[i].games[$scope.gameNumber].gameEvents.shotsOn.push(GameEvent);
-				activePlayers.push($scope.activePlayers[i].playerNumber);
-			}
+			for (var i = 0; i < $scope.activePlayers.length; i++) { activePlayers.push($scope.activePlayers[i].playerNumber); }
 			GameEvent.activePlayers = activePlayers;
 			$scope.gameEvents[$scope.period - 1].shotsOn.push(GameEvent);
 			shotsOnId++;
@@ -175,9 +166,6 @@ angular.module('HockeyApp')
 		// unApplier
 		// For each active player:
 		var unApplier = function () {
-			for (var i = 0; i < $scope.activePlayers.length; i++) {
-				$scope.activePlayers[i].games[$scope.gameNumber].gameEvents.shotsOn.pop();
-			}
 			$scope.gameEvents[$scope.period - 1].shotsOn.pop();
 			shotsOnId--;
 		};
@@ -197,10 +185,7 @@ angular.module('HockeyApp')
 		// For each active player:
 		var applier = function (GameEvent) {
 			var activePlayers = [];
-			for (var i = 0; i < $scope.activePlayers.length; i++) {
-				$scope.activePlayers[i].games[$scope.gameNumber].gameEvents.shotsAgainst.push(GameEvent);
-				activePlayers.push($scope.activePlayers[i].playerNumber);
-			}
+			for (var i = 0; i < $scope.activePlayers.length; i++) { activePlayers.push($scope.activePlayers[i].playerNumber); }
 			GameEvent.activePlayers = activePlayers;
 			$scope.gameEvents[$scope.period - 1].shotsAgainst.push(GameEvent);
 			shotsAgainstId++;
@@ -209,9 +194,6 @@ angular.module('HockeyApp')
 		// unApplier
 		// For each active player:
 		var unApplier = function () {
-			for (var i = 0; i < $scope.activePlayers.length; i++) {
-				$scope.activePlayers[i].games[$scope.gameNumber].gameEvents.shotsAgainst.pop();
-			}
 			$scope.gameEvents[$scope.period - 1].shotsAgainst.pop();
 			shotsAgainstId--;
 		};
@@ -231,10 +213,7 @@ angular.module('HockeyApp')
 		// For each active player:
 		var applier = function (GameEvent) {
 			var activePlayers = [];
-			for (var i = 0; i < $scope.activePlayers.length; i++) {
-				$scope.activePlayers[i].games[$scope.gameNumber].gameEvents.shotsAgainst.push(GameEvent);
-				activePlayers.push($scope.activePlayers[i].playerNumber);
-			}
+			for (var i = 0; i < $scope.activePlayers.length; i++) { activePlayers.push($scope.activePlayers[i].playerNumber); }
 			GameEvent.activePlayers = activePlayers;
 			$scope.gameEvents[$scope.period - 1].shotsAgainst.push(GameEvent);
 			shotsAgainstId++;
@@ -243,9 +222,6 @@ angular.module('HockeyApp')
 		// unApplier
 		// For each active player:
 		var unApplier = function () {
-			for (var i = 0; i < $scope.activePlayers.length; i++) {
-				$scope.activePlayers[i].games[$scope.gameNumber].gameEvents.shotsAgainst.pop();
-			}
 			$scope.gameEvents[$scope.period - 1].shotsAgainst.pop();
 			shotsAgainstId--;
 		};
@@ -265,10 +241,7 @@ angular.module('HockeyApp')
 		// For each active player:
 		var applier = function (GameEvent) {
 			var activePlayers = [];
-			for (var i = 0; i < $scope.activePlayers.length; i++) {
-				$scope.activePlayers[i].games[$scope.gameNumber].gameEvents.teamGoals.push(GameEvent);
-				activePlayers.push($scope.activePlayers[i].playerNumber);
-			}
+			for (var i = 0; i < $scope.activePlayers.length; i++) { activePlayers.push($scope.activePlayers[i].playerNumber); }
 			GameEvent.activePlayers = activePlayers;
 			$scope.gameEvents[$scope.period - 1].teamGoals.push(GameEvent);
 			teamGoalsId++;
@@ -277,9 +250,6 @@ angular.module('HockeyApp')
 		// unApplier
 		// For each active player:
 		var unApplier = function () {
-			for (var i = 0; i < $scope.activePlayers.length; i++) {
-				$scope.activePlayers[i].games[$scope.gameNumber].gameEvents.teamGoals.pop();
-			}
 			$scope.gameEvents[$scope.period - 1].teamGoals.pop();
 			teamGoalsId--;
 		};
@@ -299,10 +269,7 @@ angular.module('HockeyApp')
 		// For each active player:
 		var applier = function (GameEvent) {
 			var activePlayers = [];
-			for (var i = 0; i < $scope.activePlayers.length; i++) {
-				$scope.activePlayers[i].games[$scope.gameNumber].gameEvents.opponentGoals.push(GameEvent);
-				activePlayers.push($scope.activePlayers[i].playerNumber);
-			}
+			for (var i = 0; i < $scope.activePlayers.length; i++) { activePlayers.push($scope.activePlayers[i].playerNumber); }
 			GameEvent.activePlayers = activePlayers;
 			$scope.gameEvents[$scope.period - 1].opponentGoals.push(GameEvent);
 			opponentGoalsId++;
@@ -311,9 +278,6 @@ angular.module('HockeyApp')
 		// unApplier
 		// For each active player:
 		var unApplier = function () {
-			for (var i = 0; i < $scope.activePlayers.length; i++) {
-				$scope.activePlayers[i].games[$scope.gameNumber].gameEvents.opponentGoals.pop();
-			}
 			$scope.gameEvents[$scope.period - 1].opponentGoals.pop();
 			opponentGoalsId--;
 		};
@@ -375,21 +339,6 @@ angular.module('HockeyApp')
 	 	newActivePlayers[3] = $scope.lineups[index].defence1;
 	 	newActivePlayers[4] = $scope.lineups[index].defence2;
 
-	 	for (var i = 0; i < newActivePlayers.length; i++) {
-	 		if (!newActivePlayers[i].games[$scope.gameNumber]) {
-	 			var newGameEvents = {
-	 				shotsOn: [],
-	 				shotsAgainst: [],
-	 				teamGoals: [],
-	 				opponentGoals: []
-	 			};
-	 			var newGame = {
-	 				gameEvents: newGameEvents
-	 			};
-	 			newActivePlayers[i].games[$scope.gameNumber] = newGame;
-	 		}
-	 	}
-
 	 	var newAction = new Action($scope.activePlayers, newActivePlayers, function (newLineup) {
 	 		$scope.activePlayers = newLineup;
 	 	});
@@ -432,20 +381,6 @@ angular.module('HockeyApp')
 	 * Function which swaps the current selected position with the selected player.
 	 */
 	 $scope.swapPlayer = function (index) {
-
-	 	// Create the player's game event lists if they do not exist for this particalar game, ie. on first substitution.
-	 	if (!$scope.players[index].games[$scope.gameNumber]) {
-	 		var newGameEvents = {
-	 			shotsOn: [],
-	 			shotsAgainst: [],
-	 			teamGoals: [],
-	 			opponentGoals: []
-	 		};
-	 		var newGame = {
-	 			gameEvents: newGameEvents
-	 		};
-	 		$scope.players[index].games[$scope.gameNumber] = newGame;
-	 	}
 
 	 	var oldPlayerSwap = {
 	 		player: $scope.activePlayers[$scope.positionSelection],
