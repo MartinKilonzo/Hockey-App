@@ -29,9 +29,9 @@ var startExpress = function () {
 
 	/* GET METHODS */
 	server.get('/api/users/:userId', ctrl.userdb.getUser);
-	server.get('/api/players', ctrl.playerdb.getPlayers);
-	server.get('/api/lineups', ctrl.lineupdb.getLineups);
-	server.get('/api/gameEvents', ctrl.gamedb.getGameEvents);
+	server.get('/api/players', ctrl.playerdb.getPlayers);		//Depreciated
+	server.get('/api/lineups', ctrl.lineupdb.getLineups);		//Depreciated
+	server.get('/api/gameEvents', ctrl.gamedb.getGameEvents);	//Depreciated
 
 	/* POST METHODS */
 	server.post('/api/users', ctrl.userdb.create);
