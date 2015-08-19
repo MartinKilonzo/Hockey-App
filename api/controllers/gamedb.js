@@ -18,19 +18,8 @@ module.exports.saveGame = function (req, res) {
 module.exports.saveGameEvents = function (req, res) {
 	console.log('Creating...\n', req.body);
 	var User = mongoose.model('User');
-	var newGameEvents = {
-		shotsOn: 		[],
-		shotsAgainst: 	[],
-		teamGoals: 		[],
-		opponentGoals: 	[]
-	};
 	var newGameEvent;
 	var i;
-
-	var callback = function (err, result) {
-		res.json(result);
-		console.log(err);
-	};
 
 	User.findOne({ _id: new ObjectId(req.body.user) }, function (err, user) {
 		if (err) { console.log('User not found.'); }
@@ -92,7 +81,7 @@ module.exports.saveGameEvents = function (req, res) {
 			}
 
 			console.log('Finished opponentGoals:\t', i);
-			
+
 			user.save( function (err, result) {
 				if (err) { res.json(err); } 
 				else { res.json(result); }
