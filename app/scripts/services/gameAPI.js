@@ -193,7 +193,6 @@ angular.module('HockeyApp')
 		var addGameEvents = function (gameInfo, callback) {
 			var httpGameEvents = new GameEvent();
 			httpGameEvents.user 			= 	UserData._id;
-			httpGameEvents.game 			= 	12;
 			httpGameEvents.period			= 	gameInfo.period;
 			httpGameEvents.shotsOn 			= 	gameInfo.gameEvents.shotsOn;
 			httpGameEvents.shotsAgainst 	= 	gameInfo.gameEvents.shotsAgainst;
