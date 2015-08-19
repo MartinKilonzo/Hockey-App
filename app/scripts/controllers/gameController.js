@@ -85,11 +85,18 @@ angular.module('HockeyApp')
 	 		});
 
 	 		if ($scope.period) { 
-	 			$scope.execuStack.push(periodAction);
-	 			gameAPI.saveGameEvents($scope.gameEvents[$scope.period - 1]);
+	 			//TODO: ADD GAME METADATA TO gameDATA
+	 			var gameInfo = {
+	 				period: $scope.period,
+	 				game: 	gameData.game,
+	 				gameEvents: $scope.gameEvents[$scope.period -1]
+	 			};
+	 			gameAPI.saveGameEvents(gameInfo, function (result) {
+	 				$scope.execuStack.push(periodAction);
+	 			});
 	 		}	// If the period has never been initialized,
 	 		else { periodAction.execute(); }								// Initialize it without adding it to the action stack
-	 		gameData.update($scope.activePlayers, $scope.period);
+	 		gameData.update($scope.activePlayers, $scope.period);			// This may cause problems with the callback above
 	 	}
 	 };
 

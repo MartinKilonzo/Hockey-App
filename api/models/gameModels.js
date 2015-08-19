@@ -4,6 +4,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 module.exports = function (mongoose) {
+	//TODO: USE UNIX TIME FOR TIME AND STORE AS NUMBER. PARSE ON GET
 	var GameEvent = {
 		game			:		{ type: Number, required: true},
 		eventId			: 		{ type: Number, required: true},
@@ -12,13 +13,6 @@ module.exports = function (mongoose) {
 		time			:		{ type: String, required: true },
 		count			:		{ type: Number, required: true }
 	};
-
-	var GameEvents = new Schema({
-		shotsOn			: 		{ type: [GameEvent] },
-		shotsAgainst	: 		{ type: [GameEvent] },
-		teamGoals		: 		{ type: [GameEvent] },
-		opponentGoals	: 		{ type: [GameEvent] }
-	});
 
 	var GameTotal = {
 		shotsOn			:		{ type: Number, required: true },
@@ -35,8 +29,9 @@ module.exports = function (mongoose) {
 	});
 
 	var models = {
-		GameEvents 		:		mongoose.model('GameEvents', GameEvents),
-		GameTotals 		:		mongoose.model('GameTotals', GameTotals),
+		GameEvent 		:		mongoose.model('GameEvent', GameEvent),
+		GameTotal 		:		mongoose.model('GameTotal', GameTotal),
+		GameTotals 		:		mongoose.model('GameTotals', GameTotals)
 	};
 
 	return models;

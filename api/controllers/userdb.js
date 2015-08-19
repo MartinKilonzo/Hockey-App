@@ -19,15 +19,7 @@ module.exports.create = function (req, res) {
 	var user = new userModels.User({ 	
 		firstName: 	req.body.firstName,
 		lastName: 	req.body.lastName,
-		team: 		req.body.team,		
-		players: 	[],
-		lineups: 	[],					
-		gameEvents: [],
-		stats: 		{
-			players: 	[],
-			lineups: 	[],
-			games: 		[]
-		}
+		team: 		req.body.team
 	});
 	user.save( function (err, result) {
 		if (err) { res.json(err); } 

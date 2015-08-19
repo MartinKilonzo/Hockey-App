@@ -1,6 +1,7 @@
 'use strict';
 var mongoose = require('mongoose');
 var playerModels = require('../models/playerModels.js')(mongoose);
+var ObjectId = mongoose.Types.ObjectId;
 
 // Depreciated.
 module.exports.getPlayers = function (req, res) {
@@ -14,7 +15,8 @@ module.exports.getPlayers = function (req, res) {
 
 module.exports.create = function (req, res) {
 	console.log('Creating...\n', req.body);
-	var ObjectId = mongoose.Types.ObjectId;
+	var User = mongoose.model('User');
+
 	var newPlayer = new playerModels.Player({
 		firstName: req.body.firstName,
 		lastName: req.body.lastName,
@@ -23,7 +25,7 @@ module.exports.create = function (req, res) {
 		games: req.body.games
 	});
 
-	mongoose.model('User').findOne({ _id: new ObjectId(req.body.user) }, function (err, user) {
+	User.findOne({ _id: new ObjectId(req.body.user) }, function (err, user) {
 		user.players.push(newPlayer);
 		user.save( function (err, result) {
 			if (err) { res.json(err); } 
@@ -34,7 +36,6 @@ module.exports.create = function (req, res) {
 
 module.exports.delete = function (req, res) {
 	console.log('Deleting...\n', req.params);
-	var ObjectId = mongoose.Types.ObjectId;
 	var User = mongoose.model('User');
 
 	User.findById(new ObjectId(req.params.userId), function (err, user) {

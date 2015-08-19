@@ -8,6 +8,7 @@ angular.module('HockeyApp')
 		var User = $resource('http://localhost:8999/api/users/:userId/:resourceId', {userId: '@userId', resourceId: '@resourceId'}, {fetch: {method: 'GET'}});
 		var Player = $resource('http://localhost:8999/api/players/:userId/:resourceId', {userId: '@userId', resourceId: '@resourceId'}, {sync: {method: 'GET', isArray: true}});
 		var Lineup = $resource('http://localhost:8999/api/lineups/:userId/:resourceId', {userId: '@userId', resourceId: '@resourceId'}, {sync: {method: 'GET', isArray: true}, change: {method: 'PUT'}});
+		var GameEvent = $resource('http://localhost:8999/api/gameEvents/:userId/:resourceId', {userId: '@userId', resourceId: '@resourceId'}, {sync: {method: 'GET', isArray: true}});
 
 		var playerBucket = [];
 		var UserData = {
@@ -71,11 +72,11 @@ angular.module('HockeyApp')
 		};
 
 		var modifyUser = function () {
-
+			//TODO
 		};
 
 		var removeUser = function () {
-
+			//TODO
 		};
 
 		//** PLAYER METHODS **//
@@ -140,10 +141,10 @@ angular.module('HockeyApp')
 			console.info('httpLineup:', httpLineup);
 			httpLineup.$save( function (result) {
 				if (result) { 
-					result = parseLineup(result.lineups[result.lineups.length - 1]);
+					var lineup = parseLineup(result.lineups[result.lineups.length - 1]);
 					console.info('Added:', result);
-					if (callback) { callback(lineup._id); }
-					else { return lineup._id; }
+					if (callback) { callback(lineup); }
+					else { return lineup; }
 				} 
 			});
 		};
@@ -178,6 +179,36 @@ angular.module('HockeyApp')
 			});
 		};
 
+		//** Game Event METHODS **//
+
+		var getGameEvents = function (callback) {
+			if (UserData.gameEvents) {
+				console.info('UserData.gameEvents:', UserData.gameEvents);
+				if (callback) { callback(UserData.gameEvents); }
+				else { return UserData.gameEvents; }
+			}
+			else { console.error('Game Events not found!', UserData); }
+		};
+
+		var addGameEvents = function (gameInfo, callback) {
+			var httpGameEvents = new GameEvent();
+			httpGameEvents.user 			= 	UserData._id;
+			httpGameEvents.game 			= 	12;
+			httpGameEvents.period			= 	gameInfo.period;
+			httpGameEvents.shotsOn 			= 	gameInfo.gameEvents.shotsOn;
+			httpGameEvents.shotsAgainst 	= 	gameInfo.gameEvents.shotsAgainst;
+			httpGameEvents.teamGoals 		= 	gameInfo.gameEvents.teamGoals;
+			httpGameEvents.opponentGoals 	= 	gameInfo.gameEvents.opponentGoals;
+			$log.info('httpGameEvents:', httpGameEvents);
+			httpGameEvents.$save( function (result) {
+				if (result) { 
+					console.info('Added:', result);
+					if (callback) { callback(result._id); }
+					else { return result._id; }
+				} 
+			});
+		};
+
 		return {
 			user: function () {
 				return UserData._id;
@@ -194,9 +225,11 @@ angular.module('HockeyApp')
 			getUser: getUser,
 			getPlayers: getPlayers,
 			getLineups: getLineups,
+			getGameEvents: getGameEvents,
 			setUser: setUser,
 			savePlayer: addPlayer,
 			saveLineup: addLineup,
+			saveGameEvents: addGameEvents,
 			modifyUser: modifyUser,
 			modifyLineup: modifyLineup,
 			removeUser: removeUser,

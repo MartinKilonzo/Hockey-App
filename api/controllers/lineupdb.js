@@ -2,6 +2,7 @@
 
 var mongoose = require('mongoose');
 var lineupModels = require('../models/lineupModels.js')(mongoose);
+var ObjectId = mongoose.Types.ObjectId;
 
 // Depreciated
 module.exports.getLineups = function (req, res) {
@@ -15,7 +16,7 @@ module.exports.getLineups = function (req, res) {
 
 module.exports.create = function (req, res) {
 	console.log('Creating...\n', req.body);
-	var ObjectId = mongoose.Types.ObjectId;
+	var User = mongoose.model('User');
 	var newLineup = new lineupModels.Lineup({ 	
 		lineupTitle		: 		req.body.lineupTitle,
 		leftWing		: 		req.body.leftWing,
@@ -25,7 +26,7 @@ module.exports.create = function (req, res) {
 		defence2		: 		req.body.defence2
 	});
 	
-	mongoose.model('User').findOne({ _id: new ObjectId(req.body.user) }, function (err, user) {
+	User.findOne({ _id: new ObjectId(req.body.user) }, function (err, user) {
 		user.lineups.push(newLineup);
 		user.save( function (err, result) {
 			if (err) { res.json(err); } 
@@ -36,7 +37,6 @@ module.exports.create = function (req, res) {
 
 module.exports.modify = function (req, res) {
 	console.log('Modifying...\n', req.body);
-	var ObjectId = mongoose.Types.ObjectId;
 	var User = mongoose.model('User');
 
 	User.findById(new ObjectId(req.body.user), function (err, user) {
@@ -59,7 +59,6 @@ module.exports.modify = function (req, res) {
 
 module.exports.delete = function (req, res) {
 	console.log('Deleting...\n', req.params);
-	var ObjectId = mongoose.Types.ObjectId;
 	var User = mongoose.model('User');
 
 	User.findById(new ObjectId(req.params.userId), function (err, user) {
