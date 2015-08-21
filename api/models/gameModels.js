@@ -14,6 +14,20 @@ module.exports = function (mongoose) {
 		count			:		{ type: Number, required: true }
 	};
 
+	var GameEvents = {
+		shotsOn			:		{ type: [GameEvent] },
+		shotsAgainst	:		{ type: [GameEvent] },
+		teamGoals		:		{ type: [GameEvent] },
+		opponentGoals	:		{ type: [GameEvent] }
+	};
+
+	var Game = new Schema({
+		period1 	: 		{ type: GameEvents },
+		period2 	: 		{ type: GameEvents },
+		period3 	: 		{ type: GameEvents },
+		overTime 	: 		{ type: GameEvents }
+	});
+
 	var GameTotal = {
 		shotsOn			:		{ type: Number, required: true },
 		shotsAgainst	:		{ type: Number, required: true },
@@ -29,8 +43,9 @@ module.exports = function (mongoose) {
 	});
 
 	var models = {
+		Game 			:		mongoose.model('Game', Game),
 		GameEvent 		:		mongoose.model('GameEvent', GameEvent),
-		GameTotal 		:		mongoose.model('GameTotal', GameTotal),
+		GameEvents		: 		mongoose.model('GameEvents', GameEvents),
 		GameTotals 		:		mongoose.model('GameTotals', GameTotals)
 	};
 

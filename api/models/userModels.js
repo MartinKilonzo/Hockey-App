@@ -5,7 +5,7 @@ var Schema = mongoose.Schema;
 
 var Player = mongoose.model('Player').schema;
 var Lineup = mongoose.model('Lineup').schema;
-var GameEvent = mongoose.model('GameEvent').schema;
+var Game = mongoose.model('Game').schema;
 var GameTotals = mongoose.model('GameTotals').schema;
 
 module.exports = function (mongoose) {
@@ -17,12 +17,7 @@ module.exports = function (mongoose) {
 		googleDrive		: 		{ type: String },
 		players			: 		{ type: [Player] },
 		lineups			: 		{ type: [Lineup] },
-		gameEvents		: 		{
-			shotsOn			: 		{ type: [GameEvent] },
-			shotsAgainst	: 		{ type: [GameEvent] },
-			teamGoals		: 		{ type: [GameEvent] },
-			opponentGoals	: 		{ type: [GameEvent] }
-		},
+		gameEvents		: 		{ type: [Game] },
 		stats 			: 		{ 
 			games			: 		{ type: [GameTotals] },
 			players			: 		{ type: [GameTotals] },

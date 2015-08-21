@@ -26,7 +26,8 @@ angular.module('HockeyApp')
 
 
 		var parseLineup = function (lineup) {
-			populatePlayerBucket(UserData.players);
+			console.log(playerBucket.length);
+			if (UserData.players) { populatePlayerBucket(UserData.players); }
 			if (lineup) {
 				lineup.lineupTitle		=		lineup.lineupTitle;
 				lineup.leftWing			=		playerBucket[lineup.leftWing];
@@ -197,6 +198,7 @@ angular.module('HockeyApp')
 		var addGameEvents = function (gameInfo, callback) {
 			var httpGameEvents = new GameEvent();
 			httpGameEvents.user 			= 	UserData._id;
+			httpGameEvents.game 			= 	gameInfo.game;
 			httpGameEvents.period			= 	gameInfo.period;
 			httpGameEvents.shotsOn 			= 	gameInfo.gameEvents.shotsOn;
 			httpGameEvents.shotsAgainst 	= 	gameInfo.gameEvents.shotsAgainst;

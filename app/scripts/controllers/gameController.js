@@ -24,15 +24,17 @@ angular.module('HockeyApp')
 
 	$scope.activePlayers = gameData.getPlayers() || [];		// Initialize game board
 
-	var initializeGameEvents = function () {
-		var newGame = {
-			shotsOn: [],
-			shotsAgainst: [],
-			teamGoals: [],
-			opponentGoals: []
-		};
+	var GameEvents = function () {
+			this.shotsOn = [];
+			this.shotsAgainst = [];
+			this.teamGoals = [];
+			this.opponentGoals = [];
+	};
 
-		var newGameStats = [newGame, newGame, newGame, newGame];
+	var initializeGameEvents = function () {
+		
+
+		var newGameStats = [new GameEvents(), new GameEvents(), new GameEvents(), new GameEvents()];
 
 		$scope.gameEvents = gameData.gameEvents || newGameStats;
 	};
@@ -88,8 +90,8 @@ angular.module('HockeyApp')
 	 			//TODO: ADD GAME METADATA TO gameDATA
 	 			var gameInfo = {
 	 				period: $scope.period,
-	 				game: 	gameData.game,
-	 				gameEvents: $scope.gameEvents[$scope.period -1]
+	 				game: 	gameData.game || 0,
+	 				gameEvents: $scope.gameEvents[$scope.period - 1]
 	 			};
 	 			gameAPI.saveGameEvents(gameInfo, function (result) {
 	 				$scope.execuStack.push(periodAction);
