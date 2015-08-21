@@ -26,6 +26,7 @@ angular.module('HockeyApp')
 
 
 		var parseLineup = function (lineup) {
+			populatePlayerBucket(UserData.players);
 			if (lineup) {
 				lineup.lineupTitle		=		lineup.lineupTitle;
 				lineup.leftWing			=		playerBucket[lineup.leftWing];
@@ -142,6 +143,7 @@ angular.module('HockeyApp')
 			httpLineup.$save( function (result) {
 				if (result) { 
 					var lineup = parseLineup(result.lineups[result.lineups.length - 1]);
+					console.info(lineup);
 					console.info('Added:', result);
 					if (callback) { callback(lineup); }
 					else { return lineup; }
@@ -149,10 +151,11 @@ angular.module('HockeyApp')
 			});
 		};
 
-		var modifyLineup = function (oldLineup, newLineup, callback) {
+		//TODO: Use index instead of passing in lineups
+		var modifyLineup = function (index, newLineup, callback) {
 			var httpLineup = new Lineup();
 			httpLineup.user 		= 	UserData._id;
-			httpLineup.oldLineup	=	oldLineup._id;
+			httpLineup.oldLineup	=	UserData.lineups[index]._id;
 			httpLineup.leftWing		=	newLineup.leftWing.playerNumber;
 			httpLineup.center		=	newLineup.center.playerNumber;
 			httpLineup.rightWing	=	newLineup.rightWing.playerNumber;
@@ -162,9 +165,10 @@ angular.module('HockeyApp')
 			$log.debug('httpLineup:', httpLineup);
 			httpLineup.$change( function (result) {
 				if (result) { 
-					console.info('Changed:', result.lineups);
-					if (callback) { callback(result); }
-					else { return result; }
+					var lineup = parseLineup(result.lineups[index]);
+					console.info('Changed:', lineup);
+					if (callback) { callback(lineup); }
+					else { return lineup; }
 				} 
 			});
 		};

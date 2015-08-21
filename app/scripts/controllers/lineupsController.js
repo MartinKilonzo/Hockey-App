@@ -131,15 +131,10 @@ angular.module('HockeyApp')
 
 			// If an index has been set (ie. not undefined), then the user is editing a lineup, so be sure to overwrite the existing one
 			if (index >= 0) {
-				gameAPI.modifyLineup($scope.lineups[index], newLineup, function (result) {
+				gameAPI.modifyLineup(index, newLineup, function (result) {
 					if (result) {
 						console.log('Old:', $scope.lineups[index], '\nNew:', result);
-						$scope.lineups[index].leftWing 		=	 newLineup.leftWing;
-						$scope.lineups[index].center 		=	 newLineup.center;
-						$scope.lineups[index].rightWing 	=	 newLineup.rightWing;
-						$scope.lineups[index].defence1 		=	 newLineup.defence1;
-						$scope.lineups[index].defence2 		=	 newLineup.defence2;
-						$scope.lineups[index].lineupTitle 	=	 newLineup.lineupTitle;
+						$scope.lineups[index] = result;
 					}
 				});	
 			}
