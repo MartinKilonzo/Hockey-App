@@ -30,7 +30,7 @@ angular.module('HockeyApp')
 						}
 						// w = +1 shots against
 						else if (event.which === 87) {
-							scope.addSotsAgainst();
+							scope.addShotsAgainst();
 						}
 						// s = -1 shots against
 						else if (event.which === 83) {

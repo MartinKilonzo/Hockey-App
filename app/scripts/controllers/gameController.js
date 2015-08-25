@@ -2,8 +2,8 @@
 
 angular.module('HockeyApp')
 
-.controller('gameController', ['$scope', '$log', '$resource', 'localStorageService', 'gameAPI', 'gameData', 'actionService', 'Action', 
-	function ($scope, $log, $resource, localStorageService, gameAPI, gameData, actionService, Action) {
+.controller('gameController', ['$scope', '$log', '$resource', '$modal', 'localStorageService', 'gameAPI', 'gameData', 'actionService', 'Action', 
+	function ($scope, $log, $resource, $modal, localStorageService, gameAPI, gameData, actionService, Action) {
 
 		console.log('Loaded Game Controller.');
 
@@ -24,11 +24,26 @@ angular.module('HockeyApp')
 
 	$scope.activePlayers = gameData.getPlayers() || [];		// Initialize game board
 
+	var modalInstance = $modal.open({
+		animation: true,
+		templateUrl: 'views/partials/game/game-modal.html',
+		controller: 'newGameModalController',
+		size: 'lg',
+	});
+
+	modalInstance.result.then( function (newGame) {
+		gameData.initialize(newGame);
+	}, function () {
+		console.log('Modal Closed.');
+	})['finally']( function () {
+		modalInstance = undefined;
+	});
+
 	var GameEvents = function () {
-			this.shotsOn = [];
-			this.shotsAgainst = [];
-			this.teamGoals = [];
-			this.opponentGoals = [];
+		this.shotsOn = [];
+		this.shotsAgainst = [];
+		this.teamGoals = [];
+		this.opponentGoals = [];
 	};
 
 	var initializeGameEvents = function () {
@@ -91,6 +106,9 @@ angular.module('HockeyApp')
 	 			var gameInfo = {
 	 				period: $scope.period,
 	 				game: 	gameData.game || 0,
+	 				opponent: gameData.opponent,
+	 				home: gameData.home,
+	 				location: gameData.location,
 	 				gameEvents: $scope.gameEvents[$scope.period - 1]
 	 			};
 	 			gameAPI.saveGameEvents(gameInfo, function (result) {
@@ -139,7 +157,7 @@ angular.module('HockeyApp')
 		var applier = function (GameEvent) {
 			var activePlayers = [];
 			for (var i = 0; i < $scope.activePlayers.length; i++) { activePlayers.push($scope.activePlayers[i].playerNumber); }
-			GameEvent.activePlayers = activePlayers;
+				GameEvent.activePlayers = activePlayers;
 			$scope.gameEvents[$scope.period - 1].shotsOn.push(GameEvent);
 			shotsOnId++;
 		};
@@ -167,7 +185,7 @@ angular.module('HockeyApp')
 		var applier = function (GameEvent) {
 			var activePlayers = [];
 			for (var i = 0; i < $scope.activePlayers.length; i++) { activePlayers.push($scope.activePlayers[i].playerNumber); }
-			GameEvent.activePlayers = activePlayers;
+				GameEvent.activePlayers = activePlayers;
 			$scope.gameEvents[$scope.period - 1].shotsOn.push(GameEvent);
 			shotsOnId++;
 		};
@@ -195,7 +213,7 @@ angular.module('HockeyApp')
 		var applier = function (GameEvent) {
 			var activePlayers = [];
 			for (var i = 0; i < $scope.activePlayers.length; i++) { activePlayers.push($scope.activePlayers[i].playerNumber); }
-			GameEvent.activePlayers = activePlayers;
+				GameEvent.activePlayers = activePlayers;
 			$scope.gameEvents[$scope.period - 1].shotsAgainst.push(GameEvent);
 			shotsAgainstId++;
 		};
@@ -223,7 +241,7 @@ angular.module('HockeyApp')
 		var applier = function (GameEvent) {
 			var activePlayers = [];
 			for (var i = 0; i < $scope.activePlayers.length; i++) { activePlayers.push($scope.activePlayers[i].playerNumber); }
-			GameEvent.activePlayers = activePlayers;
+				GameEvent.activePlayers = activePlayers;
 			$scope.gameEvents[$scope.period - 1].shotsAgainst.push(GameEvent);
 			shotsAgainstId++;
 		};
@@ -251,7 +269,7 @@ angular.module('HockeyApp')
 		var applier = function (GameEvent) {
 			var activePlayers = [];
 			for (var i = 0; i < $scope.activePlayers.length; i++) { activePlayers.push($scope.activePlayers[i].playerNumber); }
-			GameEvent.activePlayers = activePlayers;
+				GameEvent.activePlayers = activePlayers;
 			$scope.gameEvents[$scope.period - 1].teamGoals.push(GameEvent);
 			teamGoalsId++;
 		};
@@ -279,7 +297,7 @@ angular.module('HockeyApp')
 		var applier = function (GameEvent) {
 			var activePlayers = [];
 			for (var i = 0; i < $scope.activePlayers.length; i++) { activePlayers.push($scope.activePlayers[i].playerNumber); }
-			GameEvent.activePlayers = activePlayers;
+				GameEvent.activePlayers = activePlayers;
 			$scope.gameEvents[$scope.period - 1].opponentGoals.push(GameEvent);
 			opponentGoalsId++;
 		};
@@ -434,4 +452,30 @@ angular.module('HockeyApp')
 .controller('timerController', ['$scope', 'gameTimerFactory', 
 	function ($scope, gameTimerFactory) {
 		$scope.gameTimer = gameTimerFactory;
+	}])
+
+.controller('newGameModalController', ['$scope', '$modalInstance', 'gameAPI',
+	function ($scope, $modalInstance, gameAPI) {
+		$scope.gameNumber = gameAPI.getGameEvents().length;
+		$scope.team = gameAPI.getUser().team;
+		$scope.home = 'Home';
+		$scope.opponent = 'Someone';
+		$scope.location = 'Somewhere';
+
+		$scope.toggleHome = function () {
+			if ($scope.home === 'Home') { $scope.home = 'Away'; }
+			else {$scope.home = 'Home'; }
+		};
+
+
+		$scope.saveGameData = function () {
+			var newGame = {
+				game: $scope.gameNumber, 
+				opponent: $scope.opponent, 
+				home: $scope.home, 
+				location: $scope.location
+			};
+
+			$modalInstance.close(newGame);
+		};
 	}]);

@@ -107,8 +107,8 @@ angular.module('HockeyApp')
 			}, function () {
 				console.log('Modal Closed.');
 			})['finally'](function() {
-				$scope.modalInstance = undefined;
-   				 $scope.editLineupIndex = undefined;  // <--- This fixes
+				modalInstance = undefined;
+   				$scope.editLineupIndex = undefined;  // <--- This fixes
    				});
 		};
 

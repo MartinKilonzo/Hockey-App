@@ -13,6 +13,14 @@ angular.module('HockeyApp')
 			period: undefined
 		};
 
+		var initialize = function (game) {
+			this.game = game.game;
+			this.opponent = game.opponent;
+			this.home = game.home;
+			this.location = game.location;
+			console.log(this);
+		};
+
 		return {
 			getData: function () {
 				return gameData;
@@ -29,6 +37,8 @@ angular.module('HockeyApp')
 			setData: function (newGameData) {
 				gameData = newGameData;
 			},
+
+			initialize: initialize,
 
 			update: function (players, period) {
 				gameData.activePlayers = players;
