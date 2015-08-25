@@ -28,17 +28,17 @@ module.exports.saveGameEvents = function (req, res) {
 
 			// Find the existing entry for the game, if one exists. If not, initialize game
 			for (var igameEvents = 0; igameEvents < user.gameEvents.length; igameEvents++) {
-				if (user.gameEvents[igameEvents].gameId === req.body.game) { break; }
+				if (user.gameEvents[igameEvents].game === req.body.game) { break; }
 			}
-			console.log('User: ', user);
 			console.log('GameEvents from User: ', user.gameEvents);
 			console.log('igameEvents: ', igameEvents, 'user.gameEvents.length', user.gameEvents.length);
 
 			if (igameEvents < user.gameEvents.length) {
-				if (req.body.period === 1) { game = user.gameEvents[i].period1; }
-				if (req.body.period === 2) { game = user.gameEvents[i].period2; }
-				if (req.body.period === 3) { game = user.gameEvents[i].period3; }
-				if (req.body.period === 4) { game = user.gameEvents[i].overTime; }
+				if (req.body.period === 1 && user.gameEvents[igameEvents].period1) { game = user.gameEvents[igameEvents].period1; }
+				else if (req.body.period === 2 && user.gameEvents[igameEvents].period2) { game = user.gameEvents[igameEvents].period2; }
+				else if (req.body.period === 3 && user.gameEvents[igameEvents].period3) { game = user.gameEvents[igameEvents].period3; }
+				else if (req.body.period === 4 && user.gameEvents[igameEvents].overTime) { game = user.gameEvents[igameEvents].overTime; }
+				else { game = new gameModels.GameEvents(); }
 			}
 
 			else { game = new gameModels.GameEvents(); }
@@ -100,19 +100,19 @@ module.exports.saveGameEvents = function (req, res) {
 			console.info(game);
 
 			// Add the new entry
-			if (igameEvents < user.gameEvents.length) {
-				if (req.body.period === 1) { user.gameEvents[igameEvents].period1 = game; }
-				if (req.body.period === 2) { user.gameEvents[igameEvents].period2 = game; }
-				if (req.body.period === 3) { user.gameEvents[igameEvents].period3 = game; }
-				if (req.body.period === 4) { user.gameEvents[igameEvents].overTime = game; }
-			}
+			if (igameEvents >= user.gameEvents.length) {
+				var obj = {		
+					game 		: 		req.body.game,
+					opponent 	: 		req.body.opponent,
+					home 		: 		req.body.home,
+					location 	: 		req.body.location
+				};
+				console.log(obj);
+				if (req.body.period === 1) { obj.period1 = game; }
+				if (req.body.period === 2) { obj.period2 = game; }
+				if (req.body.period === 3) { obj.period3 = game; }
+				if (req.body.period === 4) { obj.overTime = game; }
 
-			else {
-				var obj;
-				if (req.body.period === 1) { obj = {period1: game }; }
-				if (req.body.period === 2) { obj = {period2: game }; }
-				if (req.body.period === 3) { obj = {period3: game }; }
-				if (req.body.period === 4) { obj = {overTime: game }; }
 				user.gameEvents.push(obj);
 			}
 

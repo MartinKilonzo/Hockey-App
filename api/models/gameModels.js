@@ -22,6 +22,10 @@ module.exports = function (mongoose) {
 	};
 
 	var Game = new Schema({
+		game 		: 		{ type: Number, min: 0},
+		opponent	: 		{ type: String },
+		home 		: 		{ type: String },
+		location	: 		{ type: String },
 		period1 	: 		{ type: GameEvents },
 		period2 	: 		{ type: GameEvents },
 		period3 	: 		{ type: GameEvents },
