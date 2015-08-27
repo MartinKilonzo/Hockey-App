@@ -29,6 +29,8 @@ angular.module('HockeyApp')
 		templateUrl: 'views/partials/game/game-modal.html',
 		controller: 'newGameModalController',
 		size: 'lg',
+		backdrop: 'static',
+		keyboard: false
 	});
 
 	modalInstance.result.then( function (newGame) {

@@ -2,7 +2,7 @@
 
 angular.module('HockeyApp')
 
-.factory('gameAPI', ['$resource', '$log', function ($resource, $log) {
+.factory('gameAPI', ['$resource', '$log', 'GameStats', function ($resource, $log, GameStats) {
 		// var UserData = $resource('http://localhost:8999/api/user');		// This is what it should be
 
 		var User = $resource('http://localhost:8999/api/users/:userId/:resourceId', {userId: '@userId', resourceId: '@resourceId'}, {fetch: {method: 'GET'}});
@@ -52,6 +52,7 @@ angular.module('HockeyApp')
 						populatePlayerBucket(result.players);
 						for(var i = 0; i < result.lineups.length; i++) { result.lineups[i] = parseLineup(result.lineups[i]); }
 							UserData = result;
+							UserData.stats = new GameStats(UserData.gameEvents, playerBucket);
 						console.info('UserData:', UserData); 
 					} 
 					if (callback) { callback(result); }
@@ -208,11 +209,11 @@ angular.module('HockeyApp')
 			httpGameEvents.opponentGoals 	= 	gameInfo.gameEvents.opponentGoals;
 			$log.info('httpGameEvents:', httpGameEvents);
 			httpGameEvents.$save( function (result) {
-				if (result) { 
+				if (result) {
 					console.info('Added:', result);
 					if (callback) { callback(result._id); }
 					else { return result._id; }
-				} 
+				}
 			});
 		};
 
