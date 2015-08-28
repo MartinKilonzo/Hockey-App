@@ -15,93 +15,88 @@ angular.module('HockeyApp')
 		this.period2 = [];
 		this.period3 = [];
 		this.overTime = [];
+		this.totals = new GameTotal();
 	};
 	var GameStats = function (gameEvents, playerBucket) {
 		this.maxPlayers = playerBucket.length;
 		this.games = [];
 		this.players = [];
+		for (var p in playerBucket) { this.players[p] = new GameTotals(); }
+		console.log(this.players);
 		this.lineups = [];
-		this.test(gameEvents);
+		this.playerBucket = playerBucket;
+		this.addGameStats(gameEvents);
 		//this.addGameStats(gameEvents, playerBucket);
 	};
 
-	var getGameTotals = function (period) {
+	GameStats.prototype.getGameTotals = function (period, game) {
 		var games = new GameTotal();
-		var i;		
+		var i;
+		var count;
 		for (i = 0; i < period.shotsOn.length; i++) {
-			games.shotsOn += period.shotsOn[i].count;
+			count = period.shotsOn[i].count;
+			games.shotsOn += count;
+			this.games[game].totals.shotsOn += count;
 		}
 		for (i = 0; i < period.shotsAgainst.length; i++) {
-			games.shotsAgainst += period.shotsAgainst[i].count;
+			count = period.shotsAgainst[i].count;
+			games.shotsAgainst += count;
+			this.games[game].totals.shotsAgainst += count;
 		}
 		for (i = 0; i < period.teamGoals.length; i++) {
-			games.teamGoals += period.teamGoals[i].count;
+			count = period.teamGoals[i].count;
+			games.teamGoals += count;
+			this.games[game].totals.teamGoals += count;
 		}
 		for (i = 0; i < period.opponentGoals.length; i++) {
-			games.opponentGoals += period.opponentGoals[i].count;
+			count = period.opponentGoals[i].count;
+			games.opponentGoals += count;
+			this.games[game].totals.opponentGoals += count;
 		}
 		return games;
 	};
 
-	var getPlayerTotals = function (period) {
-		var players = new GameTotal();
+	GameStats.prototype.getPlayerTotals = function (period, players) {
 		var i;
+		var player;
 		for (i = 0; i < period.shotsOn.length; i++) {
-
+			for (player in period.shotsOn[i].players) {
+				players[period.shotsOn[i].players[players]]++;
+			}
 		}
 		for (i = 0; i < period.shotsAgainst.length; i++) {
-
+			for (player in period.shotsAgainst[i].players) {
+				players[period.shotsAgainst[i].players]++;
+			}
 		}
 		for (i = 0; i < period.teamGoals.length; i++) {
-
+			for (player in period.teamGoals[i].players) {
+				players[period.teamGoals[i].players]++;
+			}
 		}
 		for (i = 0; i < period.opponentGoals.length; i++) {
-
-		}
-		return players;
-
-	};
-
-	GameStats.prototype.test = function (gameEvents) {
-		for (var game = 0; game < gameEvents.length; game++) {
-			this.games[game] = {};
-			if (gameEvents[game].hasOwnProperty('period1')) {
-				this.games[game].period1 = getGameTotals(gameEvents[game].period1);
-			}
-			if (gameEvents[game].hasOwnProperty('period2')) {
-				this.games[game].period2 = getGameTotals(gameEvents[game].period2);
-			}
-			if (gameEvents[game].hasOwnProperty('period3')) {
-				this.games[game].period3 = getGameTotals(gameEvents[game].period3);
-			}
-			if (gameEvents[game].hasOwnProperty('overTime')) {
-				this.games[game].overTime = getGameTotals(gameEvents[game].overTime);
+			for (player in period.opponentGoals[i].players) {
+				players[period.opponentGoals[i].players]++;
 			}
 		}
 	};
 
-	GameStats.prototype.addGameStats = function (gameEvents, playerBucket) {
-		for (var game in gameEvents) {
-			for (var period in game) {
-				var i;
-				for (i = 0; i < period.shotsOn.length; i++) {
-
-				}
-				for (i = 0; i < period.shotsAgainst.length; i++) {
-					
-				}
-				for (i = 0; i < period.teamGoals.length; i++) {
-					
-				}
-				for (i = 0; i < period.opponentGoals.length; i++) {
-					
-				}
+	GameStats.prototype.addGameStats = function (gameEvents) {
+		for (var i = 0; i < gameEvents.length; i++) {
+			this.games[i] = new GameTotals();
+			if (gameEvents[i].hasOwnProperty('period1')) {
+				this.games[i].period1 = this.getGameTotals(gameEvents[i].period1, i);
+			}
+			if (gameEvents[i].hasOwnProperty('period2')) {
+				this.games[i].period2 = this.getGameTotals(gameEvents[i].period2, i);
+			}
+			if (gameEvents[i].hasOwnProperty('period3')) {
+				this.games[i].period3 = this.getGameTotals(gameEvents[i].period3, i);
+			}
+			if (gameEvents[i].hasOwnProperty('overTime')) {
+				this.games[i].overTime = this.getGameTotals(gameEvents[i].overTime, i);
 			}
 		}
-		//calculate the shots on stat for all players
-		//calculate the shots against stat for all players
-		//calculate the team goals stat for all players
-		//calculate the opponent on stat for all players
 	};
 
 	var orderDescending = function (set) {
