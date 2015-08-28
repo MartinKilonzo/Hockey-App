@@ -31,31 +31,22 @@ angular.module('HockeyApp')
 		this.games = [];
 		this.players = [];
 		for (var p in playerBucket) { this.players[p] = new PlayerTotals(); }
-			console.log(this.players);
 		this.lineups = [];
 		this.playerBucket = playerBucket;
 		this.addGameStats(gameEvents);
 	};
 
-	GameStats.prototype.getGameTotals = function (periodEvents, game) {
+	GameStats.prototype.getGameTotals = function (periodEvents, period, game) {
 		var games = new GameTotal();
 		var stats = ['shotsOn', 'shotsAgainst', 'teamGoals', 'opponentGoals'];
 		for (var stat in stats) {
 			stat = stats[stat];
 			for (var periodEvent in periodEvents[stat]) {
 				var count = periodEvents[stat][periodEvent].count;
-				games[stat] += count;
+				this.games[game][period][stat] += count;
 				this.games[game].totals[stat] += count;
 			}
 		}
-		return games;
-	};
-
-	GameStats.prototype.addPlayerStat = function (player, period, count) {
-		if (period === 1) { this.players[player].period1 += count; }
-		if (period === 2) { this.players[player].period2 += count; }
-		if (period === 3) { this.players[player].period3 += count; }
-		if (period === 4) { this.players[player].overTime += count; }
 	};
 
 	GameStats.prototype.getPlayerTotals = function (periodEvents, period) {
@@ -76,22 +67,23 @@ angular.module('HockeyApp')
 		}
 	};
 
+	GameStats.prototype.getLineupTotals = function () {
+
+	};
+
 	GameStats.prototype.addGameStats = function (gameEvents) {
 		var periods = ['period1', 'period2', 'period3', 'overTime'];
-		for (var i = 0; i < gameEvents.length; i++) {
-			this.games[i] = new GameTotals();
+		for (var game in gameEvents) {
+			this.games[game] = new GameTotals();
+			console.log(game);
 			for (var period in periods) {
 				period = periods[period];
-				if (gameEvents[i].hasOwnProperty(period)) {
-					this.games[i][period] = this.getGameTotals(gameEvents[i][period], i);
-					this.getPlayerTotals(gameEvents[i][period], period);
+				if (gameEvents[game].hasOwnProperty(period)) {
+					this.getGameTotals(gameEvents[game][period], period, game);
+					this.getPlayerTotals(gameEvents[game][period], period);
 				}
 			}
 		}
-	};
-
-	var orderDescending = function (set) {
-		//order the set from max to min
 	};
 
 	return GameStats;
