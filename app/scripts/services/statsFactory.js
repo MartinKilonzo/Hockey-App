@@ -59,7 +59,6 @@ angular.module('HockeyApp')
 				for (var player in periodEvent.players) {
 					player = periodEvent.players[player];
 					var count = periodEvent.count;
-					console.log(player);
 					this.players[player][period][stat] += count;
 					this.players[player].totals[stat] += count;
 				}
@@ -75,12 +74,12 @@ angular.module('HockeyApp')
 		var periods = ['period1', 'period2', 'period3', 'overTime'];
 		for (var game in gameEvents) {
 			this.games[game] = new GameTotals();
-			console.log(game);
 			for (var period in periods) {
 				period = periods[period];
 				if (gameEvents[game].hasOwnProperty(period)) {
 					this.getGameTotals(gameEvents[game][period], period, game);
 					this.getPlayerTotals(gameEvents[game][period], period);
+					this.getLineupTotals();
 				}
 			}
 		}
