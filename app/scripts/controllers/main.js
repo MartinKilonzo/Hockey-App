@@ -8,6 +8,7 @@ angular.module('HockeyApp')
 	vm.version = version;
 
 	$scope.logIn = function () {
+		console.log('Logging in...');
 		gameAPI.getUser({ firstName: 'Martin', lastName: 'Kilonzo', team: 'Test Team 3' }, function (result) {
 			vm.user = result.firstName;
 		});

@@ -41,7 +41,7 @@ angular.module('HockeyApp')
  		// TODO: ADD player number validation (UNIQUE AND < 100)
  		$scope.addPlayer = function() {
  			if ($scope.playerInfo) {
- 				//TODO: NEED TO ESCAPE SEQUENCE
+ 				//TODO: NEED TO ESCAPE INPUT SEQUENCE
  				var info = $scope.playerInfo.replace(/, /g, '/').replace(/,/g, '/').split('/');
 
  				var validPlayer = true;
