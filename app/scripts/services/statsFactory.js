@@ -39,6 +39,7 @@ angular.module('HockeyApp')
 	GameStats.prototype.getGameTotals = function (periodEvents, period, game) {
 		var games = new GameTotal();
 		var stats = ['shotsOn', 'shotsAgainst', 'teamGoals', 'opponentGoals'];
+		this.games[game][period] = new GameTotal();
 		for (var stat in stats) {
 			stat = stats[stat];
 			for (var periodEvent in periodEvents[stat]) {
