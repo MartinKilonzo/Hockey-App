@@ -21,7 +21,6 @@ var configureServer = function () {
 	server.use(parser.json());
 };
 
-
 var startExpress = function () {	
 	configureServer();
 	//mongoose.connect('mongodb://localhost:27017/gamedb');
@@ -29,6 +28,7 @@ var startExpress = function () {
 
 	/* GET METHODS */
 	server.get('/api/users/:userId', ctrl.userdb.getUser);
+	server.get('/api/login', ctrl.login.login);
 	server.get('/api/players', ctrl.playerdb.getPlayers);		//Depreciated
 	server.get('/api/lineups', ctrl.lineupdb.getLineups);		//Depreciated
 	server.get('/api/gameEvents', ctrl.gamedb.getGameEvents);	//Depreciated

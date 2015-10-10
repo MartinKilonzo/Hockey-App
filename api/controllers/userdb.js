@@ -7,7 +7,7 @@ module.exports.getUser = function (req, res) {
 	var ObjectId = mongoose.Types.ObjectId;
 	userModels.User.findOne({ team: req.params.userId }, function (err, result) {
 		if (!err) {
-			console.log('Fetched...\n', result);
+			//console.log('Fetched...\n', result);
 			res.json(result);
 		}
 	});

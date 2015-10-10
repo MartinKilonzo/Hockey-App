@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('HockeyApp', ['ngAnimate', 'ngCookies', 'ngRoute', 'ui.bootstrap', 'ngDragDrop', 'ngResource', 'LocalStorageModule'])
+angular.module('HockeyApp', ['ngAnimate', 'ngCookies', 'ngRoute', 'ui.bootstrap', 'ngDragDrop', 'ngResource', 'LocalStorageModule', 'oauth'])
 
   .constant('version', 'v0.0.1')
   .constant('user', 'Martin')
@@ -14,7 +14,7 @@ angular.module('HockeyApp', ['ngAnimate', 'ngCookies', 'ngRoute', 'ui.bootstrap'
 
   .config(['$locationProvider', '$routeProvider', 'localStorageServiceProvider', function ($locationProvider, $routeProvider, localStorageServiceProvider) {
 
-    $locationProvider.html5Mode(true);
+    $locationProvider.html5Mode(true).hashPrefix('!');
 
     $routeProvider
     .when('/', {

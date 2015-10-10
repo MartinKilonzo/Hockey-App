@@ -1,0 +1,22 @@
+<!-- Depreciated. Using OATH instead -->
+<div class="modal-header">
+	<a class="btn btn-danger" ng-click="$dismiss('cancel')"><span class="glyphicon glyphicon-remove"></span></a>
+</div>
+
+<div class="modal-body">
+	<form>
+		<div class="input-group">
+			<span class="input-group-addon">Username</span>
+			<input type="text" class="form-control" placeholder="someone@google.com" ng-model="username"></input>
+		</div>
+		
+		<div class="input-group">
+		<span class="input-group-addon">Password</span>
+			<input type="text" class="form-control" placeholder="Password" ng-model="password"></input>
+		</div>
+	</form>
+</div>
+
+<div class="modal-footer">
+	<button type="button" class="btn btn-success" ng-click="login()">Log In</button>
+</div>

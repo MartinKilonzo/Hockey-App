@@ -22,7 +22,8 @@
 				</li>
 				<li ng-class="{active: $path() == '/team'}"><a href="/team">Team</a></li>
 				<li ng-class="{active: $path() == '/settings'}"><a href="/settings">Settings</a></li>
-				<li class="active"><a href="/user">{{ main.user }}</a></li>
+				<li class="active" ng-if="main.user"><a href="/user">{{ main.user }}</a></li>
+				<li class="active" ng-if="!main.user" ng-click="loginModal()"><a href="#">Log In</a></li>
 			</ul>
 		</div>
 	</nav>

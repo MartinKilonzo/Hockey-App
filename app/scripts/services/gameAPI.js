@@ -9,6 +9,7 @@ angular.module('HockeyApp')
 		var Player = $resource('http://localhost:8999/api/players/:userId/:resourceId', {userId: '@userId', resourceId: '@resourceId'}, {sync: {method: 'GET', isArray: true}});
 		var Lineup = $resource('http://localhost:8999/api/lineups/:userId/:resourceId', {userId: '@userId', resourceId: '@resourceId'}, {sync: {method: 'GET', isArray: true}, change: {method: 'PUT'}});
 		var GameEvent = $resource('http://localhost:8999/api/gameEvents/:userId/:resourceId', {userId: '@userId', resourceId: '@resourceId'}, {sync: {method: 'GET', isArray: true}});
+		var Google = $resource('http://localhost:8999/api/login');
 
 		var playerBucket = [];
 		var UserData = {
@@ -36,6 +37,15 @@ angular.module('HockeyApp')
 				lineup.defence2			=		playerBucket[lineup.defence2];
 			}
 			return lineup;
+		};
+
+		var login = function (callback) {
+			console.log('yay');
+			var httpLogin = new Google();
+			httpLogin.$get( function (result) {
+				if (callback) { callback(result); }
+				else { return result; }
+			});
 		};
 
 		//** USER METHODS **//
@@ -230,6 +240,7 @@ angular.module('HockeyApp')
 			bucket: function () {
 				return playerBucket;
 			},
+			login: login,
 			getUser: getUser,
 			getPlayers: getPlayers,
 			getLineups: getLineups,
