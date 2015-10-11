@@ -50,6 +50,10 @@ angular.module('HockeyApp', ['ngAnimate', 'ngCookies', 'ngRoute', 'ui.bootstrap'
       templateUrl: 'views/user.html',
       controller: 'userController'
     })
+    .when('/oauthredirect/:code/:token*', {
+      templateUrl: 'views/home.html',
+      controller: 'oauthController'
+    })
     .otherwise({
       redirectTo: '/'
     });

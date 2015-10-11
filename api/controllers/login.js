@@ -4,7 +4,7 @@ var google = require('googleapis');
 var OAuth2 = google.auth.OAuth2;
 var oauth2Client = new OAuth2('1031466315037-mri5opmcirkisus3fllv97q2oakgenfa.apps.googleusercontent.com',
 								'7zF3DHS0Zr8b57LowYlxXYAj',
-								'http://localhost:9000');
+								'http://localhost:9000/oauthredirect/');
 
 // generate a url that asks permissions for Google+ and Google Calendar scopes
 var scopes = [
