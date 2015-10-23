@@ -96,7 +96,16 @@
 	overflow-x: hidden;
 }
 
-/* Lineup stlyes */
+/* Button Styles */
+.game-buttons
+
+.starts 
+{
+	margin-top: 10%;
+}
+
+
+/* Lineup styles */
 .game-lineup-template
 {
 	opacity: 0.25;

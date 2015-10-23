@@ -11,10 +11,11 @@ angular.module('HockeyApp')
 					if ($location.url() === '/game') {
 						// CTRL + keys
 						if (event.ctrlKey) {
+							// Ctrl + z to undo
 							if (event.which === 90){
 								scope.$apply(scope.undo());
 							}
-
+							// Ctrl + y to undo
 							if (event.which === 89){
 								scope.$apply(scope.redo());
 							}
@@ -43,6 +44,10 @@ angular.module('HockeyApp')
 						// d = =1 opponent goals
 						else if (event.which === 68) {
 							scope.addOpponentGoal();
+						}
+						// space or j to toggle timer
+						else if (event.which === 32 || event.which === 74) {
+							scope.toggleTimer();
 						}
 					}
 				});

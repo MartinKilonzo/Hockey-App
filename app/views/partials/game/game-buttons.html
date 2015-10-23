@@ -1,4 +1,4 @@
-<div class="col-sm-3">
+<div class="col-sm-3 game-buttons">
 	<div class="row">
 		<div class="btn-group btn-group-justified" role="group">
 			<div class="btn-group" role="group">
@@ -22,6 +22,29 @@
 			</div>
 			<div class="btn-group" role="group">
 				<button type="button" class="btn btn-default" ng-click="addOpponentGoal()" aria-label="...">G-</button>
+			</div>
+		</div>
+	</div>
+
+	<div class="row starts" ng-show="!gameTimer.isActive">
+		<div class="col-xs-6">
+			<div class="btn-group btn-group-justified" role="group">
+				<div class="btn-group" role="group">
+					<button type="button" class="btn btn-primary" ng-class="{active: zoneStart === 0}" ng-click="zoneStart = 0" aria-label="...">Def Strong</button>
+				</div>
+				<div class="btn-group" role="group">
+					<button type="button" class="btn btn-info" ng-class="{active: zoneStart === 1}" ng-click="zoneStart = 1" aria-label="...">Def Weak</button>
+				</div>
+			</div>
+		</div>
+		<div class="col-xs-6">
+			<div class="btn-group btn-group-justified" role="group">
+				<div class="btn-group" role="group">
+					<button type="button" class="btn btn-warning" ng-class="{active: zoneStart === 2}" ng-click="zoneStart = 2" aria-label="...">Off Weak</button>
+				</div>
+				<div class="btn-group" role="group">
+					<button type="button" class="btn btn-danger" ng-class="{active: zoneStart === 3}" ng-click="zoneStart = 3" aria-label="...">Off Strong</button>
+				</div>
 			</div>
 		</div>
 	</div>

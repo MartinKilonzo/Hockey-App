@@ -116,6 +116,10 @@ angular.module('HockeyApp')
 			return timeString;
 		};
 
+		var unixTime = function () {
+			return new Date().getTime() - startTime;
+		};
+
 		return {
 			start: tick,
 			stop: stopTimer,
@@ -124,6 +128,7 @@ angular.module('HockeyApp')
 			minutes: minutes,
 			hours: hours, 
 			time: formatTime,
+			unixTime: unixTime,
 			startTime: startTime,
 			isActive: gameInPlay
 		};

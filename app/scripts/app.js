@@ -1,61 +1,66 @@
 'use strict';
 
-angular.module('HockeyApp', ['ngAnimate', 'ngCookies', 'ngRoute', 'ui.bootstrap', 'ngDragDrop', 'ngResource', 'LocalStorageModule'])
+angular.module('HockeyApp', ['ngAnimate', 'ngCookies', 'ui.router', 'ui.bootstrap', 'ngDragDrop', 'ngResource', 'LocalStorageModule'])
 
   .constant('version', 'v0.0.1')
-  .constant('user', 'Martin')
 
-  .constant('linupsToDisplay', 4)
-
-  .config(['$locationProvider', '$routeProvider', 'localStorageServiceProvider', function ($locationProvider, $routeProvider, localStorageServiceProvider) {
-
+  .config(['$locationProvider', '$stateProvider', '$urlRouterProvider', 'localStorageServiceProvider', function ($locationProvider, $stateProvider, $urlRouterProvider, localStorageServiceProvider) {
     $locationProvider.html5Mode(true).hashPrefix('!');
-
-    $routeProvider
-    .when('/', {
+    $urlRouterProvider.when('/lala', 'team');
+    $urlRouterProvider.otherwise('/lala');
+    $stateProvider
+    .state('home', {
+      url: '/',
       templateUrl: 'views/home.html',
       controller: 'MainCtrl'
     })
-    .when('/features', {
+    .state('features', {
+      url: '/features',
       templateUrl: 'views/features.html'
     })
-    .when('/contact', {
+    .state('contact', {
+      url: '/contact',
       templateUrl: 'views/contact.html'
     })
-    .when('/test', {
+    .state('test', {
+      url: '/test',
       templateUrl: 'views/test.html',
       controller: 'testController'
     })
-    .when('/game', {
+    .state('game', {
+      url: '/game',
       templateUrl: 'views/game.html',
       controller: 'gameController'
     })
-    .when('/roster', {
+    .state('roster', {
+      url: '/roster',
       templateUrl: 'views/roster.html',
       controller: 'rosterController'
     })
-    .when('/lineups', {
+    .state('lineups', {
+      url: '/lineups',
       templateUrl: 'views/lineups.html',
       controller: 'lineupsController'
     })
-    .when('/team', {
+    .state('team', {
+      url: '/team',
       templateUrl: 'views/team.html',
       controller: 'teamController'
     })
-    .when('/settings', {
+    .state('settings', {
+      url: '/settings',
       templateUrl: 'views/settings.html',
       controller: 'settingsController'
     })
-    .when('/user', {
+    .state('user', {
+      url: '/user',
       templateUrl: 'views/user.html',
       controller: 'userController'
     })
-    .when('/oauthredirect/:code/:token*', {
+    .state('oauthredirect', {
+      url: '/oauthredirect',
       templateUrl: 'views/home.html',
       controller: 'oauthController'
-    })
-    .otherwise({
-      redirectTo: '/'
     });
 
     localStorageServiceProvider.setPrefix('ls');

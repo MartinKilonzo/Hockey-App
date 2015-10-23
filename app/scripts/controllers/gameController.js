@@ -46,13 +46,16 @@ angular.module('HockeyApp')
 		this.shotsAgainst = [];
 		this.teamGoals = [];
 		this.opponentGoals = [];
+		this.iceTime = [];
+		this.zoneStarts = [];
 	};
 
 	var initializeGameEvents = function () {
 		
-
+		// Emptey game Stats object containing four GameEvent lists--one for each period
 		var newGameStats = [new GameEvents(), new GameEvents(), new GameEvents(), new GameEvents()];
 
+		// If there is data saved in cookies, use that, otherwise start anew
 		$scope.gameEvents = gameData.gameEvents || newGameStats;
 	};
 	initializeGameEvents();
@@ -65,6 +68,24 @@ angular.module('HockeyApp')
 	var shotsAgainstId = gameData.shotsAgainstId || 0; 
 	var teamGoalsId = gameData.teamGoalsId || 0; 
 	var opponentGoalsId = gameData.opponentGoalsId || 0;
+	var zoneStartsId = gameData.zoneStartsId || 0;
+
+	$scope.startTimer = function () {
+		if ($scope.setZoneStart()) { 
+			$scope.gameTimer.start();
+			$scope.gameTimer.isActive = true;
+		}
+	};
+
+	$scope.stopTimer = function () {
+		$scope.gameTimer.stop();
+		$scope.gameTimer.isActive = false;
+	};
+
+	$scope.toggleTimer = function () {
+		if ($scope.gameTimer.isActive) { $scope.startTimer(); }
+		else { $scope.stopTimer(); }
+	};
 	
 	// Undo and Redo Support //
 	$scope.undo = function () {
@@ -89,7 +110,8 @@ angular.module('HockeyApp')
 	 			shotsOnId: shotsOnId,
 	 			shotsAgainstId: shotsAgainstId, 
 	 			teamGoalsId: teamGoalsId,
-	 			opponentGoalsId: opponentGoalsId
+	 			opponentGoalsId: opponentGoalsId,
+	 			zoneStartsId: zoneStartsId
 	 		};
 
 	 		var newVal = {
@@ -101,6 +123,7 @@ angular.module('HockeyApp')
 	 			shotsAgainstId = val.shotsAgainstId || 0;
 	 			teamGoalsId = val.teamGoalsId || 0;
 	 			opponentGoalsId = val.opponentGoalsId || 0;
+	 			zoneStartsId = val.zoneStartsId || 0;
 	 		});
 
 	 		if ($scope.period) { 
@@ -123,6 +146,7 @@ angular.module('HockeyApp')
 	 };
 
 	 $scope.setPeriod(gameData.getPeriod() || 1);	// Initialize the period if it has been saved
+	 $scope.zoneStart = 0;
 
 	// Game Event Functions
 	/*
@@ -130,7 +154,7 @@ angular.module('HockeyApp')
 	 * time within a game and the change of an attribute.
 	 */
 	 var GameEvent = function (eventId, period, activePlayers, time, count) {
-	 	this.game = 0,//$scope.gameDetails.gameNumber;
+	 	this.game = gameData.game;//$scope.gameDetails.gameNumber;
 	 	this.eventId = eventId;
 	 	this.period = period;
 	 	this.activePlayers = activePlayers;
@@ -152,168 +176,220 @@ angular.module('HockeyApp')
 	 *	Function which increments the Shots On statistic for each player involved in the play (active player).
 	 */
 	 $scope.addShotsOn = function () {
-	 	var newGameEvent = new GameEvent(shotsOnId, $scope.period, $scope.activePlayers, $scope.gameTimer.time(), 1);
+	 	if ($scope.activePlayers.length > 0) {
+		 	var newGameEvent = new GameEvent(shotsOnId, $scope.period, $scope.activePlayers, $scope.gameTimer.time(), 1);
 
-		// applier
-		// For each active player:
-		var applier = function (GameEvent) {
-			var activePlayers = [];
-			for (var i = 0; i < $scope.activePlayers.length; i++) { activePlayers.push($scope.activePlayers[i].playerNumber); }
-				GameEvent.activePlayers = activePlayers;
-			$scope.gameEvents[$scope.period - 1].shotsOn.push(GameEvent);
-			shotsOnId++;
-		};
+			// applier
+			// For each active player:
+			var applier = function (GameEvent) {
+				var activePlayers = [];
+				for (var i = 0; i < $scope.activePlayers.length; i++) { activePlayers.push($scope.activePlayers[i].playerNumber); }
+					GameEvent.activePlayers = activePlayers;
+				$scope.gameEvents[$scope.period - 1].shotsOn.push(GameEvent);
+				shotsOnId++;
+			};
 
-		// unApplier
-		// For each active player:
-		var unApplier = function () {
-			$scope.gameEvents[$scope.period - 1].shotsOn.pop();
-			shotsOnId--;
-		};
+			// unApplier
+			// For each active player:
+			var unApplier = function () {
+				$scope.gameEvents[$scope.period - 1].shotsOn.pop();
+				shotsOnId--;
+			};
 
-		var newGameAction = new Action(undefined, newGameEvent, applier, unApplier);
+			var newGameAction = new Action(undefined, newGameEvent, applier, unApplier);
 
-		$scope.execuStack.push(newGameAction);
+			$scope.execuStack.push(newGameAction);
+		}
+		else { console.error('You need players on the rink!'); }
 	};
 
 	/*
 	 *	Function which decrements the Shots On statistic for each player involved in the play (active player).
 	 */
 	 $scope.subtShotsOn = function () {
-	 	var newGameEvent = new GameEvent(shotsOnId, $scope.period, $scope.activePlayers, $scope.gameTimer.time(), -1);
+	 	if ($scope.activePlayers.length > 0) {
+		 	var newGameEvent = new GameEvent(shotsOnId, $scope.period, $scope.activePlayers, $scope.gameTimer.time(), -1);
 
-		// applier
-		// For each active player:
-		var applier = function (GameEvent) {
-			var activePlayers = [];
-			for (var i = 0; i < $scope.activePlayers.length; i++) { activePlayers.push($scope.activePlayers[i].playerNumber); }
-				GameEvent.activePlayers = activePlayers;
-			$scope.gameEvents[$scope.period - 1].shotsOn.push(GameEvent);
-			shotsOnId++;
-		};
+			// applier
+			// For each active player:
+			var applier = function (GameEvent) {
+				var activePlayers = [];
+				for (var i = 0; i < $scope.activePlayers.length; i++) { activePlayers.push($scope.activePlayers[i].playerNumber); }
+					GameEvent.activePlayers = activePlayers;
+				$scope.gameEvents[$scope.period - 1].shotsOn.push(GameEvent);
+				shotsOnId++;
+			};
 
-		// unApplier
-		// For each active player:
-		var unApplier = function () {
-			$scope.gameEvents[$scope.period - 1].shotsOn.pop();
-			shotsOnId--;
-		};
+			// unApplier
+			// For each active player:
+			var unApplier = function () {
+				$scope.gameEvents[$scope.period - 1].shotsOn.pop();
+				shotsOnId--;
+			};
 
-		var newGameAction = new Action(undefined, newGameEvent, applier, unApplier);
+			var newGameAction = new Action(undefined, newGameEvent, applier, unApplier);
 
-		$scope.execuStack.push(newGameAction);
+			$scope.execuStack.push(newGameAction);
+		}
+		else { console.error('You need players on the rink!'); }
 	};
 
 	/*
 	 *	Function which increments the Shots Against statistic for each player involved in the play (active player).
 	 */
 	 $scope.addShotsAgainst = function () {
-	 	var newGameEvent = new GameEvent(shotsAgainstId, $scope.period, $scope.activePlayers, $scope.gameTimer.time(), 1);
+	 	if ($scope.activePlayers.length > 0) {
+		 	var newGameEvent = new GameEvent(shotsAgainstId, $scope.period, $scope.activePlayers, $scope.gameTimer.time(), 1);
 
-		// applier
-		// For each active player:
-		var applier = function (GameEvent) {
-			var activePlayers = [];
-			for (var i = 0; i < $scope.activePlayers.length; i++) { activePlayers.push($scope.activePlayers[i].playerNumber); }
-				GameEvent.activePlayers = activePlayers;
-			$scope.gameEvents[$scope.period - 1].shotsAgainst.push(GameEvent);
-			shotsAgainstId++;
-		};
+			// applier
+			// For each active player:
+			var applier = function (GameEvent) {
+				var activePlayers = [];
+				for (var i = 0; i < $scope.activePlayers.length; i++) { activePlayers.push($scope.activePlayers[i].playerNumber); }
+					GameEvent.activePlayers = activePlayers;
+				$scope.gameEvents[$scope.period - 1].shotsAgainst.push(GameEvent);
+				shotsAgainstId++;
+			};
 
-		// unApplier
-		// For each active player:
-		var unApplier = function () {
-			$scope.gameEvents[$scope.period - 1].shotsAgainst.pop();
-			shotsAgainstId--;
-		};
+			// unApplier
+			// For each active player:
+			var unApplier = function () {
+				$scope.gameEvents[$scope.period - 1].shotsAgainst.pop();
+				shotsAgainstId--;
+			};
 
-		var newGameAction = new Action(undefined, newGameEvent, applier, unApplier);
+			var newGameAction = new Action(undefined, newGameEvent, applier, unApplier);
 
-		$scope.execuStack.push(newGameAction);
+			$scope.execuStack.push(newGameAction);
+		}
+		else { console.error('You need players on the rink!'); }
 	};
 
 	/*
 	 *	Function which decrements the Shots Against statistic for each player involved in the play (active player).
 	 */
 	 $scope.subtShotsAgainst = function () {
-	 	var newGameEvent = new GameEvent(shotsAgainstId, $scope.period, $scope.activePlayers, $scope.gameTimer.time(), -1);
+	 	if ($scope.activePlayers.length > 0) {
+		 	var newGameEvent = new GameEvent(shotsAgainstId, $scope.period, $scope.activePlayers, $scope.gameTimer.time(), -1);
 
-		// applier
-		// For each active player:
-		var applier = function (GameEvent) {
-			var activePlayers = [];
-			for (var i = 0; i < $scope.activePlayers.length; i++) { activePlayers.push($scope.activePlayers[i].playerNumber); }
-				GameEvent.activePlayers = activePlayers;
-			$scope.gameEvents[$scope.period - 1].shotsAgainst.push(GameEvent);
-			shotsAgainstId++;
-		};
+			// applier
+			// For each active player:
+			var applier = function (GameEvent) {
+				var activePlayers = [];
+				for (var i = 0; i < $scope.activePlayers.length; i++) { activePlayers.push($scope.activePlayers[i].playerNumber); }
+					GameEvent.activePlayers = activePlayers;
+				$scope.gameEvents[$scope.period - 1].shotsAgainst.push(GameEvent);
+				shotsAgainstId++;
+			};
 
-		// unApplier
-		// For each active player:
-		var unApplier = function () {
-			$scope.gameEvents[$scope.period - 1].shotsAgainst.pop();
-			shotsAgainstId--;
-		};
+			// unApplier
+			// For each active player:
+			var unApplier = function () {
+				$scope.gameEvents[$scope.period - 1].shotsAgainst.pop();
+				shotsAgainstId--;
+			};
 
-		var newGameAction = new Action(undefined, newGameEvent, applier, unApplier);
+			var newGameAction = new Action(undefined, newGameEvent, applier, unApplier);
 
-		$scope.execuStack.push(newGameAction);
+			$scope.execuStack.push(newGameAction);
+		}
+		else { console.error('You need players on the rink!'); }
 	};
 
 	/*
 	 *	Function which increments the Team Goal statistic for each player involved in the play (active player).
 	 */
 	 $scope.addTeamGoal = function () {
-	 	var newGameEvent = new GameEvent(teamGoalsId, $scope.period, $scope.activePlayers, $scope.gameTimer.time(), 1);
+	 	if ($scope.activePlayers.length > 0) {
+		 	var newGameEvent = new GameEvent(teamGoalsId, $scope.period, $scope.activePlayers, $scope.gameTimer.time(), 1);
 
-		// applier
-		// For each active player:
-		var applier = function (GameEvent) {
-			var activePlayers = [];
-			for (var i = 0; i < $scope.activePlayers.length; i++) { activePlayers.push($scope.activePlayers[i].playerNumber); }
-				GameEvent.activePlayers = activePlayers;
-			$scope.gameEvents[$scope.period - 1].teamGoals.push(GameEvent);
-			teamGoalsId++;
-		};
+			// applier
+			// For each active player:
+			var applier = function (GameEvent) {
+				var activePlayers = [];
+				for (var i = 0; i < $scope.activePlayers.length; i++) { activePlayers.push($scope.activePlayers[i].playerNumber); }
+					GameEvent.activePlayers = activePlayers;
+				$scope.gameEvents[$scope.period - 1].teamGoals.push(GameEvent);
+				teamGoalsId++;
+			};
 
-		// unApplier
-		// For each active player:
-		var unApplier = function () {
-			$scope.gameEvents[$scope.period - 1].teamGoals.pop();
-			teamGoalsId--;
-		};
-		
-		var newGameAction = new Action(undefined, newGameEvent, applier, unApplier);
+			// unApplier
+			// For each active player:
+			var unApplier = function () {
+				$scope.gameEvents[$scope.period - 1].teamGoals.pop();
+				teamGoalsId--;
+			};
+			
+			var newGameAction = new Action(undefined, newGameEvent, applier, unApplier);
 
-		$scope.execuStack.push(newGameAction);
+			$scope.execuStack.push(newGameAction);
+		}
+		else { console.error('You need players on the rink!'); }
 	};
 
 	/*
 	 *	Function which increments the Opponent Goal statistic for each player involved in the play (active player).
 	 */
 	 $scope.addOpponentGoal = function () {
-	 	var newGameEvent = new GameEvent(opponentGoalsId, $scope.period, $scope.activePlayers, $scope.gameTimer.time(), 1);
+	 	if ($scope.activePlayers.length > 0) {
+		 	var newGameEvent = new GameEvent(opponentGoalsId, $scope.period, $scope.activePlayers, $scope.gameTimer.time(), 1);
 
-		// applier
-		// For each active player:
-		var applier = function (GameEvent) {
-			var activePlayers = [];
-			for (var i = 0; i < $scope.activePlayers.length; i++) { activePlayers.push($scope.activePlayers[i].playerNumber); }
-				GameEvent.activePlayers = activePlayers;
-			$scope.gameEvents[$scope.period - 1].opponentGoals.push(GameEvent);
-			opponentGoalsId++;
-		};
+			// applier
+			// For each active player:
+			var applier = function (GameEvent) {
+				var activePlayers = [];
+				for (var i = 0; i < $scope.activePlayers.length; i++) { activePlayers.push($scope.activePlayers[i].playerNumber); }
+					GameEvent.activePlayers = activePlayers;
+				$scope.gameEvents[$scope.period - 1].opponentGoals.push(GameEvent);
+				opponentGoalsId++;
+			};
 
-		// unApplier
-		// For each active player:
-		var unApplier = function () {
-			$scope.gameEvents[$scope.period - 1].opponentGoals.pop();
-			opponentGoalsId--;
-		};
+			// unApplier
+			// For each active player:
+			var unApplier = function () {
+				$scope.gameEvents[$scope.period - 1].opponentGoals.pop();
+				opponentGoalsId--;
+			};
 
-		var newGameAction = new Action(undefined, newGameEvent, applier, unApplier);
+			var newGameAction = new Action(undefined, newGameEvent, applier, unApplier);
 
-		$scope.execuStack.push(newGameAction);
+			$scope.execuStack.push(newGameAction);
+		}
+		else { console.error('You need players on the rink!'); }
+	};
+
+	/*
+	 *	Function which saves the zone start of the active players and then signals the timer to start.
+	 *	0 = strong def, 1 = weak def, 2 = weak off, 3 = strong off
+	 */
+	 $scope.setZoneStart = function () {
+		 	if ($scope.activePlayers.length > 0) {
+		 		var newGameEvent = new GameEvent(zoneStartsId, $scope.period, $scope.activePlayers, $scope.gameTimer.time(), $scope.zoneStart);
+
+			// applier
+			// For each active player:
+			var applier = function (GameEvent) {
+				var activePlayers = [];
+				for (var i = 0; i < $scope.activePlayers.length; i++) { activePlayers.push($scope.activePlayers[i].playerNumber); }
+					GameEvent.activePlayers = activePlayers;
+				$scope.gameEvents[$scope.period - 1].zoneStarts.push(GameEvent);
+				zoneStartsId++;
+			};
+
+			// unApplier
+			// For each active player:
+			var unApplier = function () {
+				$scope.gameEvents[$scope.period - 1].zoneStarts.pop();
+				zoneStartsId--;
+				if ($scope.gameTimer.isActive) { $scope.stopTimer(); }
+			};
+
+			var newGameAction = new Action(undefined, newGameEvent, applier, unApplier);
+
+			$scope.execuStack.push(newGameAction);
+			return true;
+		}
+		else { console.error('You need players on the rink!'); }
 	};
 
 
