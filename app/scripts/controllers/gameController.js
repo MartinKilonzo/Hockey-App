@@ -46,7 +46,8 @@ angular.module('HockeyApp')
 		this.shotsAgainst = [];
 		this.teamGoals = [];
 		this.opponentGoals = [];
-		this.iceTime = [];
+		this.timeOn = [];
+		this.timeOff = [];
 		this.zoneStarts = [];
 	};
 
@@ -71,7 +72,8 @@ angular.module('HockeyApp')
 	var zoneStartsId = gameData.zoneStartsId || 0;
 
 	$scope.startTimer = function () {
-		if ($scope.setZoneStart()) { 
+		if ($scope.setZoneStart()) {
+			$scope.zoneStart = -1; 
 			$scope.gameTimer.start();
 			$scope.gameTimer.isActive = true;
 		}
@@ -482,31 +484,95 @@ angular.module('HockeyApp')
 
 	 // Player Pool Functions
 
-	/*
-	 * Function which swaps the current selected position with the selected player.
-	 */
-	 $scope.swapPlayer = function (index) {
-
-	 	var oldPlayerSwap = {
-	 		player: $scope.activePlayers[$scope.positionSelection],
-	 		index: $scope.positionSelection
-	 	};
-
-	 	var newPlayerSwap = {
-	 		player: $scope.players[index],
-	 		index: $scope.positionSelection
-	 	};
-
-	 	var newAction = new Action(oldPlayerSwap, newPlayerSwap, function (playerSwap) {
-	 		$scope.activePlayers[playerSwap.index] = playerSwap.player;
-	 	});
-
-	 	$scope.execuStack.push(newAction);
-	 	gameData.update($scope.activePlayers, $scope.period);
+	 /*
+	  *	Method which returns the index of a player in the player array. 
+	  *	If none exists, it returns -1.
+	  *
+	  *	@param player 	- The player for which to find the index
+	  * @return 		- Int: The index of the player within the $scope.players array
+	  */
+	 var indexOfPlayer = function (player) {
+	 	for (var i = 0; i < $scope.players.length; i++) {
+	 		if ($scope.players[i].playerNumber === player.playerNumber) { return i; }
+	 	}
+	 	return -1;
 	 };
 
 	 /*
+	  *	Constructor for the PlayerSwap object
+	  *
+	  *	@param oldPlayer 	- The current player occupying the position
+	  *	@param newPlayer 	- The player which will repace the current player
+	  *	@param position 	- The position where the swap is being made
+	  *	@param time 		- The time of the swap
+	  */
+	 var PlayerSwap = function(oldPlayer, newPlayer, position, time) {
+	 	this.oldPlayer = oldPlayer;
+	 	this.newPlayer = newPlayer;
+	 	this.position = position;
+	 	this.time = time;
+	 };
+
+	 /*
+	  *	Function which swaps the current selected position with the selected player.
+	  *
+	  *	@param index 		- The index of the player who will make the swap
+	  */
+	 $scope.swapPlayer = function (index) {
+	 	// Check to make sure that both players making the swap are identical
+	 	var newPlayerSwap, applier, unApplier;
+	 	if (!$scope.activePlayers[$scope.positionSelection]) {
+	 		newPlayerSwap = new PlayerSwap(undefined, $scope.players[index], $scope.positionSelection, new Date().getTime());
+	 		applier = function (playerSwap) {
+	 			$scope.activePlayers[playerSwap.position] = playerSwap.newPlayer;
+	 			var timeOn = {
+	 				player: playerSwap.newPlayer.playerNumber,
+	 				time: playerSwap.time
+	 			};
+	 			$scope.gameEvents[$scope.period - 1].timeOn.push(timeOn);
+	 		};
+
+	 		unApplier = function (playerSwap) {
+	 			$scope.activePlayers[playerSwap.position] = playerSwap.oldPlayer;
+	 			$scope.gameEvents[$scope.period - 1].timeOn.pop();
+	 		};
+
+	 		$scope.execuStack.push(new Action(newPlayerSwap, newPlayerSwap, applier, unApplier));
+	 	}
+	 	else if ($scope.players[index].playerNumber !== $scope.activePlayers[$scope.positionSelection].playerNumber) {
+	 		newPlayerSwap = new PlayerSwap($scope.activePlayers[$scope.positionSelection], $scope.players[index], $scope.positionSelection, new Date().getTime());
+	 		applier = function (playerSwap) {
+	 			$scope.activePlayers[playerSwap.position] = playerSwap.newPlayer;
+	 			var timeOn = {
+	 				player: playerSwap.newPlayer.playerNumber,
+	 				time: playerSwap.time
+	 			};
+	 			var timeOff = {
+	 				player: playerSwap.oldPlayer.playerNumber,
+	 				time: playerSwap.time
+	 			};
+	 			$scope.gameEvents[$scope.period - 1].timeOn.push(timeOn);
+	 			$scope.gameEvents[$scope.period - 1].timeOff.push(timeOff);
+	 		};
+
+	 		unApplier = function (playerSwap) {
+	 			$scope.activePlayers[playerSwap.position] = playerSwap.oldPlayer;
+	 			$scope.gameEvents[$scope.period - 1].timeOn.pop();
+	 			$scope.gameEvents[$scope.period - 1].timeOff.pop();
+	 		};
+
+	 		$scope.execuStack.push(new Action(newPlayerSwap, newPlayerSwap, applier, unApplier));
+	 	}
+	 	else { console.error('You cannot swap the same player!'); }
+	};
+
+
+
+	 /*
 	  * Function which returns true if the player is currently active and false otherwise.
+	  * 
+	  * @param index 		- The index of the player which is currently selected/active
+	  * @return 			- Boolean: True if the player is currently active and false otherwise
 	  */
 	  $scope.playerSelected = function (index) {
 	  	var player = $scope.players[index];
