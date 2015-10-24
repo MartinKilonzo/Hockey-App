@@ -483,21 +483,6 @@ angular.module('HockeyApp')
 
 
 	 // Player Pool Functions
-
-	 /*
-	  *	Method which returns the index of a player in the player array. 
-	  *	If none exists, it returns -1.
-	  *
-	  *	@param player 	- The player for which to find the index
-	  * @return 		- Int: The index of the player within the $scope.players array
-	  */
-	 var indexOfPlayer = function (player) {
-	 	for (var i = 0; i < $scope.players.length; i++) {
-	 		if ($scope.players[i].playerNumber === player.playerNumber) { return i; }
-	 	}
-	 	return -1;
-	 };
-
 	 /*
 	  *	Constructor for the PlayerSwap object
 	  *
