@@ -434,24 +434,86 @@ angular.module('HockeyApp')
 	 	$scope.lineupSelection = selection;
 	 };
 
-	/*
-	 * Function which swaps the current active lineup with the selected one.
-	 */
-	 $scope.swapLineup = function (index) {
-	 	var newActivePlayers = [];
+		 /*
+	  *	Constructor for the Lineup object
+	  *
+	  *	@param oldLineup 	- The current active lineup
+	  *	@param newLineup 	- The lineup which will repace the current lineup
+	  *	@param time 		- The time of the swap
+	  */
+	 var LineupSwap = function(oldLineup, newLineup, time) {
+	 	this.oldLineup = oldLineup;
+	 	this.newLineup = newLineup;
+	 	this.time = time;
+	 };
 
-	 	newActivePlayers[0] = $scope.lineups[index].leftWing;
-	 	newActivePlayers[1] = $scope.lineups[index].center;
-	 	newActivePlayers[2] = $scope.lineups[index].rightWing;
-	 	newActivePlayers[3] = $scope.lineups[index].defence1;
-	 	newActivePlayers[4] = $scope.lineups[index].defence2;
+	 /*
+	  *	Function which swaps the current active lineup with the selected one, 
+	  *	recording timeOn and timeOff for the players as necessary
+	  *
+	  *	@param index 		- The index of the lineup replacing the existing one in $scope.lineups
+	  */
+	  $scope.swapLineup = function (index) {
 
-	 	var newAction = new Action($scope.activePlayers, newActivePlayers, function (newLineup) {
-	 		$scope.activePlayers = newLineup;
-	 	});
+	  	var newActivePlayers = [];
 
-	 	$scope.execuStack.push(newAction);
-	 	gameData.update($scope.activePlayers, $scope.period);
+	  	newActivePlayers[0] = $scope.lineups[index].leftWing;
+	  	newActivePlayers[1] = $scope.lineups[index].center;
+	  	newActivePlayers[2] = $scope.lineups[index].rightWing;
+	  	newActivePlayers[3] = $scope.lineups[index].defence1;
+	  	newActivePlayers[4] = $scope.lineups[index].defence2;
+
+	  	console.debug('old:', $scope.activePlayers, '\nnew:\t', newActivePlayers);
+
+	  	var newLineupSwap = new LineupSwap($scope.activePlayers, newActivePlayers, new Date().getTime());
+	  	var unApplier, timeOn, timeOff;
+	  	var applier = function (lineupSwap) {
+	  		$scope.activePlayers = lineupSwap.newLineup;
+	 		// For each player in the new lineup:
+	 		for (var i = 0; i < lineupSwap.newLineup.length; i++) {
+	 			// Check to see if a player filling the same position does not exists in the old lineup
+	 			if (!lineupSwap.oldLineup[i]) {
+	 				// If they do not, we only need to record a time in for the player
+	 				timeOn = {
+	 					player: lineupSwap.newLineup[i].playerNumber,
+	 					time: lineupSwap.time
+	 				};
+	 				$scope.gameEvents[$scope.period - 1].timeOn.push(timeOn);
+	 			}
+	 			// If they do exist, then, check to see if the player occupying the position is the same player
+	 			else if (lineupSwap.oldLineup[i].playerNumber !== lineupSwap.newLineup[i].playerNumber) {
+	 				// If not, then they are different players and the timeOff for the existing and the timeOn for the new needs to be recorded
+	 				timeOn = {
+	 					player: lineupSwap.newLineup[i].playerNumber,
+	 					time: lineupSwap.time
+	 				};
+	 				timeOff = {
+	 					player: lineupSwap.oldLineup[i].playerNumber,
+	 					time: lineupSwap.time
+	 				};
+	 				$scope.gameEvents[$scope.period - 1].timeOn.push(timeOn);
+	 				$scope.gameEvents[$scope.period - 1].timeOff.push(timeOff);
+	 			}
+	 			// Otherwise, the player is the same player and a timeOn/Off should not be recorded
+	 		}
+	 	};
+	 	// If this is not the first set of players on, then there will be timeOff data for the players to pop
+	 	if ($scope.activePlayers.length > 0) {
+	 		unApplier = function (lineupSwap) {
+	 			$scope.activePlayers = lineupSwap.oldLineup;
+	 			lineupSwap.oldLineup.forEach(function (player) { $scope.gameEvents[$scope.period - 1].timeOff.pop(); });
+	 			lineupSwap.newLineup.forEach(function (player) { $scope.gameEvents[$scope.period - 1].timeOn.pop(); });
+	 		};
+	 	}
+	 	// Otherwise, there is no timeOff data, so let's not try to pop it
+	 	else {
+	 		unApplier = function (lineupSwap) {
+	 			$scope.activePlayers = lineupSwap.oldLineup;
+	 			lineupSwap.newLineup.forEach(function (player) { $scope.gameEvents[$scope.period - 1].timeOn.pop(); });
+	 		};
+	 	}
+	 	$scope.execuStack.push(new Action(newLineupSwap, newLineupSwap, applier, unApplier));
+	 	console.debug('activePlayers:', $scope.activePlayers);
 	 };
 
 	 /*
