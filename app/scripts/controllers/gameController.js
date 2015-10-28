@@ -61,6 +61,19 @@ angular.module('HockeyApp')
 	};
 	initializeGameEvents();
 
+	/*
+	 *	Helper Method which returns true if there are players on the rink ($scope.activePlayers contains players), and false otherwise.
+	 *
+	 *	@return 		- True if there are players on the rink ($scope.activePlayers contains players), and false otherwise
+	 */
+	var playersAreActive = function () {
+		var status = false;
+		$scope.activePlayers.forEach(function (player) {
+			if (player) { status = true; } 
+		});
+		return status;
+	};
+
 	$scope.execuStack = actionService;
 	$scope.undoable = $scope.execuStack.undoable;
 	$scope.redoable = $scope.execuStack.redoable;
@@ -365,14 +378,14 @@ angular.module('HockeyApp')
 	 *	0 = strong def, 1 = weak def, 2 = weak off, 3 = strong off
 	 */
 	 $scope.setZoneStart = function () {
-		 	if ($scope.activePlayers.length > 0) {
+		 	if (playersAreActive()) {
 		 		var newGameEvent = new GameEvent(zoneStartsId, $scope.period, $scope.activePlayers, $scope.gameTimer.time(), $scope.zoneStart);
 
 			// applier
 			// For each active player:
 			var applier = function (GameEvent) {
 				var activePlayers = [];
-				for (var i = 0; i < $scope.activePlayers.length; i++) { activePlayers.push($scope.activePlayers[i].playerNumber); }
+				for (var i = 0; i < $scope.activePlayers.length && $scope.activePlayers[i]; i++) { activePlayers.push($scope.activePlayers[i].playerNumber); }
 					GameEvent.activePlayers = activePlayers;
 				$scope.gameEvents[$scope.period - 1].zoneStarts.push(GameEvent);
 				zoneStartsId++;
@@ -434,7 +447,7 @@ angular.module('HockeyApp')
 	 	$scope.lineupSelection = selection;
 	 };
 
-		 /*
+	 /*
 	  *	Constructor for the Lineup object
 	  *
 	  *	@param oldLineup 	- The current active lineup
@@ -572,7 +585,6 @@ angular.module('HockeyApp')
 	 	// If a position is selected, but no player, Substitute off a player without substiting one on
 	 	else if (index === undefined) {
 	 		if ($scope.activePlayers[$scope.positionSelection]) {
-	 			console.debug($scope.activePlayers[$scope.positionSelection]);
 	 			newPlayerSwap = new PlayerSwap($scope.activePlayers[$scope.positionSelection], undefined, $scope.positionSelection, new Date().getTime());
 	 			applier = function (playerSwap) {
 	 				$scope.activePlayers[playerSwap.position] = playerSwap.newPlayer;
@@ -667,11 +679,11 @@ angular.module('HockeyApp')
 	  //  DEBUGGING  //
 
 	  $scope.showGameData = function () {
-	  	console.debug($scope.gameEvents);
+	  	console.info($scope.gameEvents);
 	  };
 
 	  $scope.showUnixTime = function () {
-	  	console.debug($scope.gameTimer.unixTime());
+	  	console.info($scope.gameTimer.unixTime());
 	  };
 
 	}])
