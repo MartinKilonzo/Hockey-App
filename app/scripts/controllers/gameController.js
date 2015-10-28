@@ -688,8 +688,8 @@ angular.module('HockeyApp')
 	  	console.info($scope.gameEvents);
 	  };
 
-	  $scope.showUnixTime = function () {
-	  	console.info($scope.gameTimer.unixTime());
+	  $scope.showMilliseconds = function () {
+	  	console.info($scope.gameTimer.milliseconds());
 	  };
 
 	}])

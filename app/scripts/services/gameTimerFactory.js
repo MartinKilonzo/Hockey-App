@@ -5,6 +5,7 @@ angular.module('HockeyApp')
 	.factory('gameTimerFactory', ['$timeout', '$log', 
 		function ($timeout, $log) {
 
+		var milliseconds = 0;
 		var seconds = 0;
 		var minutes = 0;
 		var hours =   0;
@@ -13,19 +14,26 @@ angular.module('HockeyApp')
 		var timers = [];
 		var stopped = false;
 		var showMinutes = false;
-		var gameInPlay = false;
 
 		var startTime;
+		var timeStop;
+		var timeStart;
+		var timePaused = 0;
 		var nextCall;
+
+		var currentTime = function () {
+			return new Date().getTime() - timePaused - startTime;
+		};
 
 		var tick = function () {
 			if(!startTime) {
-				startTime = new Date().getTime();
+				startTime = timeStop = timeStart = new Date().getTime();
 				nextCall = startTime;
 			}
 
 			if (stopped) {
-				nextCall = new Date().getTime();
+				nextCall = timeStart = new Date().getTime();
+				timePaused += timeStart - timeStop;
 				stopped = false;
 			}
 
@@ -42,6 +50,7 @@ angular.module('HockeyApp')
 			for (var i = 0; i < timers.length; i++) {
 				$timeout.cancel(timers[i]);
 			}
+			timeStop = new Date().getTime();
 			timers = [];
 			stopped = true;
 		};
@@ -55,21 +64,19 @@ angular.module('HockeyApp')
 		};
 
 		var updateClock = function () {
-			var newTime;
+			var newTime = currentTime()/1000;
 
-			// Update seconds
-			newTime = seconds + timerUnit / 1000;
-			seconds = newTime % 60;
+			seconds = (newTime) % 60;
 
 			// Update minutes
-			newTime = (minutes + (newTime / 60) | 0); // Bitwise OR used for truncation
+			newTime = ((newTime - seconds) / 60) | 0; // Bitwise OR used for truncation
 			minutes = newTime % 60;
 
 			if (minutes > 0 && !showMinutes)
 				showMinutes = true;
 
 			// Update hours
-			hours += (newTime / 60) | 0; // Bitwise OR used for truncation
+			hours += ((newTime - minutes) / 60) | 0; // Bitwise OR used for truncation
 		};
 
 		var formatTime = function () {
@@ -116,8 +123,9 @@ angular.module('HockeyApp')
 			return timeString;
 		};
 
-		var unixTime = function () {
-			return new Date().getTime() - startTime;
+		var getMilliseconds = function () {
+			if (stopped) { return timeStop - timePaused - startTime; }
+			else { return currentTime(); }
 		};
 
 		return {
@@ -128,8 +136,8 @@ angular.module('HockeyApp')
 			minutes: minutes,
 			hours: hours, 
 			time: formatTime,
-			unixTime: unixTime,
+			milliseconds: getMilliseconds,
 			startTime: startTime,
-			isActive: gameInPlay
+			isActive: stopped
 		};
 	}]);
