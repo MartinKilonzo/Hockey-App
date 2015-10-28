@@ -191,7 +191,8 @@ angular.module('HockeyApp')
 	 *	Function which increments the Shots On statistic for each player involved in the play (active player).
 	 */
 	 $scope.addShotsOn = function () {
-	 	if ($scope.activePlayers.length > 0) {
+	 	// If there are players active:
+		if (playersAreActive()) {
 		 	var newGameEvent = new GameEvent(shotsOnId, $scope.period, $scope.activePlayers, $scope.gameTimer.time(), 1);
 
 			// applier
@@ -222,7 +223,8 @@ angular.module('HockeyApp')
 	 *	Function which decrements the Shots On statistic for each player involved in the play (active player).
 	 */
 	 $scope.subtShotsOn = function () {
-	 	if ($scope.activePlayers.length > 0) {
+	 	// If there are players active:
+		if (playersAreActive()) {
 		 	var newGameEvent = new GameEvent(shotsOnId, $scope.period, $scope.activePlayers, $scope.gameTimer.time(), -1);
 
 			// applier
@@ -253,7 +255,8 @@ angular.module('HockeyApp')
 	 *	Function which increments the Shots Against statistic for each player involved in the play (active player).
 	 */
 	 $scope.addShotsAgainst = function () {
-	 	if ($scope.activePlayers.length > 0) {
+	 	// If there are players active:
+		if (playersAreActive()) {
 		 	var newGameEvent = new GameEvent(shotsAgainstId, $scope.period, $scope.activePlayers, $scope.gameTimer.time(), 1);
 
 			// applier
@@ -284,7 +287,8 @@ angular.module('HockeyApp')
 	 *	Function which decrements the Shots Against statistic for each player involved in the play (active player).
 	 */
 	 $scope.subtShotsAgainst = function () {
-	 	if ($scope.activePlayers.length > 0) {
+	 	// If there are players active:
+		if (playersAreActive()) {
 		 	var newGameEvent = new GameEvent(shotsAgainstId, $scope.period, $scope.activePlayers, $scope.gameTimer.time(), -1);
 
 			// applier
@@ -315,7 +319,8 @@ angular.module('HockeyApp')
 	 *	Function which increments the Team Goal statistic for each player involved in the play (active player).
 	 */
 	 $scope.addTeamGoal = function () {
-	 	if ($scope.activePlayers.length > 0) {
+	 	// If there are players active:
+	 	if (playersAreActive()) {
 		 	var newGameEvent = new GameEvent(teamGoalsId, $scope.period, $scope.activePlayers, $scope.gameTimer.time(), 1);
 
 			// applier
@@ -346,7 +351,8 @@ angular.module('HockeyApp')
 	 *	Function which increments the Opponent Goal statistic for each player involved in the play (active player).
 	 */
 	 $scope.addOpponentGoal = function () {
-	 	if ($scope.activePlayers.length > 0) {
+	 	// If there are players active:
+	 	if (playersAreActive()) {
 		 	var newGameEvent = new GameEvent(opponentGoalsId, $scope.period, $scope.activePlayers, $scope.gameTimer.time(), 1);
 
 			// applier
@@ -508,8 +514,8 @@ angular.module('HockeyApp')
 	 			// Otherwise, the player is the same player and a timeOn/Off should not be recorded
 	 		}
 	 	};
-	 	// If this is not the first set of players on, then there will be timeOff data for the players to pop
-	 	if ($scope.activePlayers.length > 0) {
+	 	// If there are players on the rink, then there will be timeOff data for the players to pop
+	 	if (playersAreActive()) {
 	 		unApplier = function (lineupSwap) {
 	 			$scope.activePlayers = lineupSwap.oldLineup;
 	 			lineupSwap.oldLineup.forEach(function (player) { $scope.gameEvents[$scope.period - 1].timeOff.pop(); });
