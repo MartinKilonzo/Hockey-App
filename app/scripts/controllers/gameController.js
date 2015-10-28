@@ -71,6 +71,7 @@ angular.module('HockeyApp')
 		$scope.activePlayers.forEach(function (player) {
 			if (player) { status = true; } 
 		});
+		console.debug($scope.activePlayers);
 		return status;
 	};
 
@@ -85,10 +86,11 @@ angular.module('HockeyApp')
 	var zoneStartsId = gameData.zoneStartsId || 0;
 
 	$scope.startTimer = function () {
-		if ($scope.setZoneStart()) {
-			$scope.zoneStart = -1; 
+		if ($scope.setZoneStart() !== undefined) {
+			$scope.zoneStart = undefined; 
 			$scope.gameTimer.start();
 			$scope.gameTimer.isActive = true;
+			console.log($scope.gameTimer);
 		}
 	};
 
@@ -98,7 +100,7 @@ angular.module('HockeyApp')
 	};
 
 	$scope.toggleTimer = function () {
-		if ($scope.gameTimer.isActive) { $scope.startTimer(); }
+		if (!$scope.gameTimer.isActive) { $scope.startTimer(); }
 		else { $scope.stopTimer(); }
 	};
 	
@@ -482,7 +484,7 @@ angular.module('HockeyApp')
 	  	newActivePlayers[3] = $scope.lineups[index].defence1;
 	  	newActivePlayers[4] = $scope.lineups[index].defence2;
 
-	  	var newLineupSwap = new LineupSwap($scope.activePlayers, newActivePlayers, new Date().getTime());
+	  	var newLineupSwap = new LineupSwap($scope.activePlayers, newActivePlayers, $scope.gameTimer.time());
 	  	var unApplier, timeOn, timeOff;
 	  	var applier = function (lineupSwap) {
 	  		$scope.activePlayers = lineupSwap.newLineup;
@@ -591,7 +593,7 @@ angular.module('HockeyApp')
 	 	// If a position is selected, but no player, Substitute off a player without substiting one on
 	 	else if (index === undefined) {
 	 		if ($scope.activePlayers[$scope.positionSelection]) {
-	 			newPlayerSwap = new PlayerSwap($scope.activePlayers[$scope.positionSelection], undefined, $scope.positionSelection, new Date().getTime());
+	 			newPlayerSwap = new PlayerSwap($scope.activePlayers[$scope.positionSelection], undefined, $scope.positionSelection, $scope.gameTimer.time());
 	 			applier = function (playerSwap) {
 	 				$scope.activePlayers[playerSwap.position] = playerSwap.newPlayer;
 	 				var timeOff = {
@@ -611,7 +613,7 @@ angular.module('HockeyApp')
 	 	}
 	 	// Both a position and a player are selected, check to see if we are swapping an unfilled postition:
 	 	else if (!$scope.activePlayers[$scope.positionSelection]) {
-	 		newPlayerSwap = new PlayerSwap(undefined, $scope.players[index], $scope.positionSelection, new Date().getTime());
+	 		newPlayerSwap = new PlayerSwap(undefined, $scope.players[index], $scope.positionSelection, $scope.gameTimer.time());
 	 		applier = function (playerSwap) {
 	 			$scope.activePlayers[playerSwap.position] = playerSwap.newPlayer;
 	 			var timeOn = {
@@ -630,7 +632,7 @@ angular.module('HockeyApp')
 	 	}
 	 	// If both the position and the player are selected, and the position is filled, check to make sure the selections are not the same player (we cannot swap on and off the same player at the same time!)
 	 	else if ($scope.players[index].playerNumber !== $scope.activePlayers[$scope.positionSelection].playerNumber) {
-	 		newPlayerSwap = new PlayerSwap($scope.activePlayers[$scope.positionSelection], $scope.players[index], $scope.positionSelection, new Date().getTime());
+	 		newPlayerSwap = new PlayerSwap($scope.activePlayers[$scope.positionSelection], $scope.players[index], $scope.positionSelection, $scope.gameTimer.time());
 	 		applier = function (playerSwap) {
 	 			$scope.activePlayers[playerSwap.position] = playerSwap.newPlayer;
 	 			var timeOn = {
@@ -689,7 +691,7 @@ angular.module('HockeyApp')
 	  };
 
 	  $scope.showMilliseconds = function () {
-	  	console.info($scope.gameTimer.milliseconds());
+	  	console.info($scope.gameTimer.time());
 	  };
 
 	}])

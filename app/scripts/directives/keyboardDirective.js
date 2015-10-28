@@ -41,13 +41,13 @@ angular.module('HockeyApp')
 						else if (event.which === 69) {
 							scope.addTeamGoal();
 						}
-						// d = =1 opponent goals
+						// d = +1 opponent goals
 						else if (event.which === 68) {
 							scope.addOpponentGoal();
 						}
 						// space or j to toggle timer
 						else if (event.which === 32 || event.which === 74) {
-							scope.toggleTimer();
+							scope.$apply(scope.toggleTimer());
 						}
 					}
 				});

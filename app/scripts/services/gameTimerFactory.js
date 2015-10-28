@@ -12,7 +12,7 @@ angular.module('HockeyApp')
 
 		var timerUnit = 47; // 47 chosen as it is a prime near 50 ms that is large enough to change the ms value frequently
 		var timers = [];
-		var stopped = false;
+		var stopped = true;
 		var showMinutes = false;
 
 		var startTime;
@@ -29,6 +29,7 @@ angular.module('HockeyApp')
 			if(!startTime) {
 				startTime = timeStop = timeStart = new Date().getTime();
 				nextCall = startTime;
+				stopped = false;
 			}
 
 			if (stopped) {
@@ -123,7 +124,7 @@ angular.module('HockeyApp')
 			return timeString;
 		};
 
-		var getMilliseconds = function () {
+		var gameTime = function () {
 			if (stopped) { return timeStop - timePaused - startTime; }
 			else { return currentTime(); }
 		};
@@ -135,9 +136,8 @@ angular.module('HockeyApp')
 			seconds: seconds,
 			minutes: minutes,
 			hours: hours, 
-			time: formatTime,
-			milliseconds: getMilliseconds,
-			startTime: startTime,
-			isActive: stopped
+			time: gameTime,
+			formatTime: formatTime,
+			startTime: startTime
 		};
 	}]);
