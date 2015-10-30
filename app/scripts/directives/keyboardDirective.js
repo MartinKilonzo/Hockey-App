@@ -47,6 +47,7 @@ angular.module('HockeyApp')
 						}
 						// space or j to toggle timer
 						else if (event.which === 32 || event.which === 74) {
+							event.preventDefault();
 							scope.$apply(scope.toggleTimer());
 						}
 					}

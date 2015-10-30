@@ -15,6 +15,9 @@ module.exports = function (mongoose) {
 	};
 
 	var GameEvents = {
+		timeOn			: 		{ type: [GameEvent] },
+		timeOff			: 		{ type: [GameEvent] },
+		zoneStarts		: 		{ type: [GameEvent] },
 		shotsOn			:		{ type: [GameEvent] },
 		shotsAgainst	:		{ type: [GameEvent] },
 		teamGoals		:		{ type: [GameEvent] },
@@ -33,6 +36,9 @@ module.exports = function (mongoose) {
 	});
 
 	var GameTotal = {
+		timeOn			: 		{ type: Number, required: true },
+		timeOff			: 		{ type: Number, required: true },
+		zoneStarts		: 		{ type: Number, required: true },
 		shotsOn			:		{ type: Number, required: true },
 		shotsAgainst	:		{ type: Number, required: true },
 		teamGoals		:		{ type: Number, required: true },

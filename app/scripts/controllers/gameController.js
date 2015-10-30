@@ -79,11 +79,13 @@ angular.module('HockeyApp')
 	$scope.undoable = $scope.execuStack.undoable;
 	$scope.redoable = $scope.execuStack.redoable;
 
+	var timeOnId = gameData.timeOnId || 0;
+	var timeOffId = gameData.timeOffId || 0;
+	var zoneStartsId = gameData.zoneStartsId || 0;
 	var shotsOnId = gameData.shotsOnId || 0;
 	var shotsAgainstId = gameData.shotsAgainstId || 0; 
 	var teamGoalsId = gameData.teamGoalsId || 0; 
 	var opponentGoalsId = gameData.opponentGoalsId || 0;
-	var zoneStartsId = gameData.zoneStartsId || 0;
 
 	$scope.startTimer = function () {
 		if ($scope.setZoneStart() !== undefined) {
@@ -201,7 +203,7 @@ angular.module('HockeyApp')
 			// For each active player:
 			var applier = function (GameEvent) {
 				var activePlayers = [];
-				for (var i = 0; i < $scope.activePlayers.length; i++) { activePlayers.push($scope.activePlayers[i].playerNumber); }
+				for (var i = 0; i < $scope.activePlayers.length && $scope.activePlayers[i]; i++) { activePlayers.push($scope.activePlayers[i].playerNumber); }
 					GameEvent.activePlayers = activePlayers;
 				$scope.gameEvents[$scope.period - 1].shotsOn.push(GameEvent);
 				shotsOnId++;
@@ -233,7 +235,7 @@ angular.module('HockeyApp')
 			// For each active player:
 			var applier = function (GameEvent) {
 				var activePlayers = [];
-				for (var i = 0; i < $scope.activePlayers.length; i++) { activePlayers.push($scope.activePlayers[i].playerNumber); }
+				for (var i = 0; i < $scope.activePlayers.length && $scope.activePlayers[i]; i++) { activePlayers.push($scope.activePlayers[i].playerNumber); }
 					GameEvent.activePlayers = activePlayers;
 				$scope.gameEvents[$scope.period - 1].shotsOn.push(GameEvent);
 				shotsOnId++;
@@ -265,7 +267,7 @@ angular.module('HockeyApp')
 			// For each active player:
 			var applier = function (GameEvent) {
 				var activePlayers = [];
-				for (var i = 0; i < $scope.activePlayers.length; i++) { activePlayers.push($scope.activePlayers[i].playerNumber); }
+				for (var i = 0; i < $scope.activePlayers.length && $scope.activePlayers[i]; i++) { activePlayers.push($scope.activePlayers[i].playerNumber); }
 					GameEvent.activePlayers = activePlayers;
 				$scope.gameEvents[$scope.period - 1].shotsAgainst.push(GameEvent);
 				shotsAgainstId++;
@@ -297,7 +299,7 @@ angular.module('HockeyApp')
 			// For each active player:
 			var applier = function (GameEvent) {
 				var activePlayers = [];
-				for (var i = 0; i < $scope.activePlayers.length; i++) { activePlayers.push($scope.activePlayers[i].playerNumber); }
+				for (var i = 0; i < $scope.activePlayers.length && $scope.activePlayers[i]; i++) { activePlayers.push($scope.activePlayers[i].playerNumber); }
 					GameEvent.activePlayers = activePlayers;
 				$scope.gameEvents[$scope.period - 1].shotsAgainst.push(GameEvent);
 				shotsAgainstId++;
@@ -329,7 +331,7 @@ angular.module('HockeyApp')
 			// For each active player:
 			var applier = function (GameEvent) {
 				var activePlayers = [];
-				for (var i = 0; i < $scope.activePlayers.length; i++) { activePlayers.push($scope.activePlayers[i].playerNumber); }
+				for (var i = 0; i < $scope.activePlayers.length && $scope.activePlayers[i]; i++) { activePlayers.push($scope.activePlayers[i].playerNumber); }
 					GameEvent.activePlayers = activePlayers;
 				$scope.gameEvents[$scope.period - 1].teamGoals.push(GameEvent);
 				teamGoalsId++;
@@ -361,7 +363,7 @@ angular.module('HockeyApp')
 			// For each active player:
 			var applier = function (GameEvent) {
 				var activePlayers = [];
-				for (var i = 0; i < $scope.activePlayers.length; i++) { activePlayers.push($scope.activePlayers[i].playerNumber); }
+				for (var i = 0; i < $scope.activePlayers.length && $scope.activePlayers[i]; i++) { activePlayers.push($scope.activePlayers[i].playerNumber); }
 					GameEvent.activePlayers = activePlayers;
 				$scope.gameEvents[$scope.period - 1].opponentGoals.push(GameEvent);
 				opponentGoalsId++;
@@ -437,7 +439,22 @@ angular.module('HockeyApp')
 
 	// Lineup and Player Pool Functions //
 
-	
+	/*
+	 *	Constructor for the SwapEvent object
+	 *
+	 *	@param game 		- The game ID (game number)
+	 *	@param eventId	 	- The unique event ID
+	 *	@param player	 	- The player making the swap
+	 *	@param time 		- The time of the swap
+	 */
+	var SwapEvent = function (eventId, player, time) {
+		this.game = gameData.game;
+		this.eventId = eventId;
+		this.period = $scope.period;
+		this.player = player;
+		this.time = time;
+	};
+
 	// Lineup Functions
 	/*
 	 * Function which sets the hover scope variable to be used with ng-class in 
@@ -448,8 +465,8 @@ angular.module('HockeyApp')
 	 };
 
 	/*
-	 * Function which sets the selection scope variable to indicate stylistically 
-	 * which lineup will make the substitution.
+	 *	Function which sets the selection scope variable to indicate stylistically 
+	 *	which lineup will make the substitution.
 	 */
 	 $scope.setLineupSelection = function (selection) {
 	 	$scope.lineupSelection = selection;
@@ -490,26 +507,20 @@ angular.module('HockeyApp')
 	  		$scope.activePlayers = lineupSwap.newLineup;
 	 		// For each player in the new lineup:
 	 		for (var i = 0; i < lineupSwap.newLineup.length; i++) {
-	 			// Check to see if a player filling the same position does not exists in the old lineup
+	 			// Check to see if the position being filled is empty
 	 			if (!lineupSwap.oldLineup[i]) {
-	 				// If they do not, we only need to record a time in for the player
-	 				timeOn = {
-	 					player: lineupSwap.newLineup[i].playerNumber,
-	 					time: lineupSwap.time
-	 				};
+	 				// If it is, we only need to record a time in for the player
+	 				timeOn = new SwapEvent(timeOnId, lineupSwap.newLineup[i].playerNumber, lineupSwap.time);
+	 				timeOnId++;
 	 				$scope.gameEvents[$scope.period - 1].timeOn.push(timeOn);
 	 			}
-	 			// If they do exist, then, check to see if the player occupying the position is the same player
+	 			// If it is occupied, then, check to see if the player occupying the position is the same player as the one making the switch
 	 			else if (lineupSwap.oldLineup[i].playerNumber !== lineupSwap.newLineup[i].playerNumber) {
 	 				// If not, then they are different players and the timeOff for the existing and the timeOn for the new needs to be recorded
-	 				timeOn = {
-	 					player: lineupSwap.newLineup[i].playerNumber,
-	 					time: lineupSwap.time
-	 				};
-	 				timeOff = {
-	 					player: lineupSwap.oldLineup[i].playerNumber,
-	 					time: lineupSwap.time
-	 				};
+	 				timeOn = new SwapEvent(timeOnId, lineupSwap.newLineup[i].playerNumber, lineupSwap.time);
+	 				timeOff = new SwapEvent(timeOffId, lineupSwap.oldLineup[i].playerNumber, lineupSwap.time);
+	 				timeOnId++;
+	 				timeOffId++;
 	 				$scope.gameEvents[$scope.period - 1].timeOn.push(timeOn);
 	 				$scope.gameEvents[$scope.period - 1].timeOff.push(timeOff);
 	 			}
@@ -522,6 +533,8 @@ angular.module('HockeyApp')
 	 			$scope.activePlayers = lineupSwap.oldLineup;
 	 			lineupSwap.oldLineup.forEach(function (player) { $scope.gameEvents[$scope.period - 1].timeOff.pop(); });
 	 			lineupSwap.newLineup.forEach(function (player) { $scope.gameEvents[$scope.period - 1].timeOn.pop(); });
+	 			timeOnId--;
+	 			timeOffId--;
 	 		};
 	 	}
 	 	// Otherwise, there is no timeOff data, so let's not try to pop it
@@ -529,6 +542,7 @@ angular.module('HockeyApp')
 	 		unApplier = function (lineupSwap) {
 	 			$scope.activePlayers = lineupSwap.oldLineup;
 	 			lineupSwap.newLineup.forEach(function (player) { $scope.gameEvents[$scope.period - 1].timeOn.pop(); });
+	 			timeOnId--;
 	 		};
 	 	}
 	 	$scope.execuStack.push(new Action(newLineupSwap, newLineupSwap, applier, unApplier));
@@ -596,16 +610,15 @@ angular.module('HockeyApp')
 	 			newPlayerSwap = new PlayerSwap($scope.activePlayers[$scope.positionSelection], undefined, $scope.positionSelection, $scope.gameTimer.time());
 	 			applier = function (playerSwap) {
 	 				$scope.activePlayers[playerSwap.position] = playerSwap.newPlayer;
-	 				var timeOff = {
-	 					player: playerSwap.oldPlayer.playerNumber,
-	 					time: playerSwap.time
-	 				};
+	 				var timeOff = new SwapEvent(timeOffId, playerSwap.oldPlayer.playerNumber, playerSwap.time);
+	 				timeOffId++;
 	 				$scope.gameEvents[$scope.period - 1].timeOff.push(timeOff);
 	 			};
 
 	 			unApplier = function (playerSwap) {
 	 				$scope.activePlayers[playerSwap.position] = playerSwap.oldPlayer;
 	 				$scope.gameEvents[$scope.period - 1].timeOff.pop();
+	 				timeOffId--;
 	 			};
 
 	 			$scope.execuStack.push(new Action(newPlayerSwap, newPlayerSwap, applier, unApplier));
@@ -616,16 +629,15 @@ angular.module('HockeyApp')
 	 		newPlayerSwap = new PlayerSwap(undefined, $scope.players[index], $scope.positionSelection, $scope.gameTimer.time());
 	 		applier = function (playerSwap) {
 	 			$scope.activePlayers[playerSwap.position] = playerSwap.newPlayer;
-	 			var timeOn = {
-	 				player: playerSwap.newPlayer.playerNumber,
-	 				time: playerSwap.time
-	 			};
+	 			var timeOn = new SwapEvent(timeOnId, playerSwap.newPlayer.playerNumber, playerSwap.time);
+	 			timeOnId++;
 	 			$scope.gameEvents[$scope.period - 1].timeOn.push(timeOn);
 	 		};
 
 	 		unApplier = function (playerSwap) {
 	 			$scope.activePlayers[playerSwap.position] = playerSwap.oldPlayer;
 	 			$scope.gameEvents[$scope.period - 1].timeOn.pop();
+	 			timeOnId--;
 	 		};
 
 	 		$scope.execuStack.push(new Action(newPlayerSwap, newPlayerSwap, applier, unApplier));
@@ -635,14 +647,10 @@ angular.module('HockeyApp')
 	 		newPlayerSwap = new PlayerSwap($scope.activePlayers[$scope.positionSelection], $scope.players[index], $scope.positionSelection, $scope.gameTimer.time());
 	 		applier = function (playerSwap) {
 	 			$scope.activePlayers[playerSwap.position] = playerSwap.newPlayer;
-	 			var timeOn = {
-	 				player: playerSwap.newPlayer.playerNumber,
-	 				time: playerSwap.time
-	 			};
-	 			var timeOff = {
-	 				player: playerSwap.oldPlayer.playerNumber,
-	 				time: playerSwap.time
-	 			};
+	 			var timeOn = new SwapEvent(timeOnId, playerSwap.newPlayer.playerNumber, playerSwap.time);
+	 			var timeOff = new SwapEvent(timeOffId, playerSwap.oldPlayer.playerNumber, playerSwap.time);
+	 			timeOnId++;
+	 			timeOffId++;
 	 			$scope.gameEvents[$scope.period - 1].timeOn.push(timeOn);
 	 			$scope.gameEvents[$scope.period - 1].timeOff.push(timeOff);
 	 		};
@@ -651,6 +659,8 @@ angular.module('HockeyApp')
 	 			$scope.activePlayers[playerSwap.position] = playerSwap.oldPlayer;
 	 			$scope.gameEvents[$scope.period - 1].timeOn.pop();
 	 			$scope.gameEvents[$scope.period - 1].timeOff.pop();
+	 			timeOnId--;
+	 			timeOffId--;
 	 		};
 
 	 		$scope.execuStack.push(new Action(newPlayerSwap, newPlayerSwap, applier, unApplier));

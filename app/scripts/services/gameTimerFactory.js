@@ -126,7 +126,7 @@ angular.module('HockeyApp')
 
 		var gameTime = function () {
 			if (stopped) { return timeStop - timePaused - startTime; }
-			else { return currentTime(); }
+			else { return currentTime() || 0; }
 		};
 
 		return {

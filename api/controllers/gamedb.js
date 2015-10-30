@@ -19,6 +19,43 @@ var populateGameData = function (gameEvents, req) {
 	var newGameEvent;
 	var i;
 	// Assign game data
+	for (i = 0; i < req.body.timeOn.length; i++) {
+		newGameEvent = new gameModels.GameEvent({	
+			game		:		req.body.timeOn[i].game,
+			eventId		:		req.body.timeOn[i].eventId,
+			players		:		req.body.timeOn[i].player,
+			period		:		req.body.timeOn[i].period,
+			time		:		req.body.timeOn[i].time
+		});
+		gameEvents.timeOn.push(newGameEvent);
+	}
+		// console.log('Finished timeOn:\t', i);
+
+	for (i = 0; i < req.body.timeOff.length; i++) {
+		newGameEvent = new gameModels.GameEvent({	
+			game		:		req.body.timeOff[i].game,
+			eventId		:		req.body.timeOff[i].eventId,
+			players		:		req.body.timeOff[i].player,
+			period		:		req.body.timeOff[i].period,
+			time		:		req.body.timeOff[i].time,
+		});
+		gameEvents.timeOff.push(newGameEvent);
+	}
+		// console.log('Finished timeOff:\t', i);
+
+	for (i = 0; i < req.body.zoneStarts.length; i++) {
+		newGameEvent = new gameModels.GameEvent({	
+			game		:		req.body.zoneStarts[i].game,
+			eventId		:		req.body.zoneStarts[i].eventId,
+			players		:		req.body.zoneStarts[i].activePlayers,
+			period		:		req.body.zoneStarts[i].period,
+			time		:		req.body.zoneStarts[i].time,
+			count		:		req.body.zoneStarts[i].count
+		});
+		gameEvents.zoneStarts.push(newGameEvent);
+	}
+		// console.log('Finished zoneStarts:\t', i);
+
 	for (i = 0; i < req.body.shotsOn.length; i++) {
 		newGameEvent = new gameModels.GameEvent({	
 			game		:		req.body.shotsOn[i].game,
