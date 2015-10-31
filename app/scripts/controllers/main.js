@@ -18,4 +18,5 @@ angular.module('HockeyApp')
 			vm.user = result.firstName;
 		});
 	};
+	if (!gameAPI.user()) { $scope.logIn(); }
 }]);

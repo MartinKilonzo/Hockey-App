@@ -125,8 +125,8 @@ angular.module('HockeyApp')
 		};
 
 		var gameTime = function () {
-			if (stopped) { return timeStop - timePaused - startTime; }
-			else { return currentTime() || 0; }
+			if (stopped) { return timeStop - timePaused - startTime || 0; }
+			else { return currentTime(); }
 		};
 
 		return {

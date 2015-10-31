@@ -139,7 +139,7 @@ module.exports.saveGameEvents = function (req, res) {
 				else { gameEvents = new gameModels.GameEvents(); console.log('new');}
 			}
 
-			// If the game does no exist, create a new game entirely
+			// Otherwise the game does no exist, create a new game entirely
 			else { gameEvents = new gameModels.GameEvents(); console.log('brand new');}
 
 			// Populate the game data object
@@ -147,6 +147,8 @@ module.exports.saveGameEvents = function (req, res) {
 
 			// Update the meta data of the game
 			game.game = req.body.game;
+			game.startTime = req.body.startTime;
+			game.endTime = req.body.endTime;
 			game.opponent = req.body.opponent;
 			game.home = req.body.home;
 			game.location = req.body.location;

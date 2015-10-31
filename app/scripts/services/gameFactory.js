@@ -18,6 +18,8 @@ angular.module('HockeyApp')
 			this.opponent = game.opponent;
 			this.home = game.home;
 			this.location = game.location;
+			this.startTime = undefined;
+			this.endTime = undefined;
 			console.log(this);
 		};
 
@@ -46,6 +48,18 @@ angular.module('HockeyApp')
 
 				// var jsonObj = JSON.stringify(gameData);
 				// localStorageService.set('gameData', jsonObj);
+			},
+			getStartTime: function () {
+				return gameData.startTime;
+			},
+			setStartTime: function (time) {
+				gameData.startTime = time;
+			},
+			getEndTime: function () {
+				return gameData.endTime;
+			},
+			setEndTime: function (time) {
+				gameData.endTime = time;
 			}
 		};
 	}]);

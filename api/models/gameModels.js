@@ -26,6 +26,8 @@ module.exports = function (mongoose) {
 
 	var Game = new Schema({
 		game 		: 		{ type: Number, min: 0},
+		startTime 	: 		{ type: Number },
+		endTime 	: 		{ type: Number },
 		opponent	: 		{ type: String },
 		home 		: 		{ type: String },
 		location	: 		{ type: String },

@@ -68,11 +68,26 @@ angular.module('HockeyApp')
 	 */
 	var playersAreActive = function () {
 		var status = false;
-		$scope.activePlayers.forEach(function (player) {
-			if (player) { status = true; } 
-		});
-		console.debug($scope.activePlayers);
+		for (var player in $scope.activePlayers) {
+			if ($scope.players[player]) { status = true; }
+		}
 		return status;
+	};
+
+	/*
+	 *	Helper Methid that substitutes all active players off. Used at the end of periods and games.
+	 */
+	var emptyActivePlayers = function () {
+		// Stop the timer
+	 	if ($scope.gameTimer.isActive) { $scope.stopTimer(); }
+	 	// Record the stop time
+	 	gameData.setEndTime($scope.gameTimer.time());
+	 	for (var activePlayer in $scope.activePlayers) {
+			//Go through each position
+			$scope.positionSelection = activePlayer;
+			//Swap off the player
+			$scope.swapPlayer();
+		}
 	};
 
 	$scope.execuStack = actionService;
@@ -92,7 +107,7 @@ angular.module('HockeyApp')
 			$scope.zoneStart = undefined; 
 			$scope.gameTimer.start();
 			$scope.gameTimer.isActive = true;
-			console.log($scope.gameTimer);
+			if (!gameData.getStartTime) { gameData.setStartTime($scope.gameTimer.time()); }
 		}
 	};
 
@@ -155,6 +170,7 @@ angular.module('HockeyApp')
 	 				location: gameData.location,
 	 				gameEvents: $scope.gameEvents[$scope.period - 1]
 	 			};
+	 			emptyActivePlayers();
 	 			gameAPI.saveGameEvents(gameInfo, function (result) {
 	 				$scope.execuStack.push(periodAction);
 	 			});
@@ -385,10 +401,11 @@ angular.module('HockeyApp')
 
 	/*
 	 *	Function which saves the zone start of the active players and then signals the timer to start.
-	 *	0 = strong def, 1 = weak def, 2 = weak off, 3 = strong off
+	 *	-2 = strong def, -1 = weak def, 0 = neutral, 1 = weak off, 2 = strong off
 	 */
 	 $scope.setZoneStart = function () {
-		 	if (playersAreActive()) {
+	 		// Check to see that there is a zone start and active players
+		 	if ($scope.zoneStart !== undefined && playersAreActive()) {
 		 		var newGameEvent = new GameEvent(zoneStartsId, $scope.period, $scope.activePlayers, $scope.gameTimer.time(), $scope.zoneStart);
 
 			// applier
@@ -414,6 +431,8 @@ angular.module('HockeyApp')
 			$scope.execuStack.push(newGameAction);
 			return true;
 		}
+		// If not, throw the appropriate error messages to inform the user of their mistake
+		else if ($scope.zoneStart === undefined) { console.error('You need to select a zone start!'); }
 		else { console.error('You need players on the rink!'); }
 	};
 
@@ -606,6 +625,7 @@ angular.module('HockeyApp')
 	 		
 	 	// If a position is selected, but no player, Substitute off a player without substiting one on
 	 	else if (index === undefined) {
+	 		// Check to see if a player occupies the position
 	 		if ($scope.activePlayers[$scope.positionSelection]) {
 	 			newPlayerSwap = new PlayerSwap($scope.activePlayers[$scope.positionSelection], undefined, $scope.positionSelection, $scope.gameTimer.time());
 	 			applier = function (playerSwap) {
@@ -623,6 +643,7 @@ angular.module('HockeyApp')
 
 	 			$scope.execuStack.push(new Action(newPlayerSwap, newPlayerSwap, applier, unApplier));
 	 		}
+	 		// If not, the position is already unoccupied, so there is no swap being made
 	 	}
 	 	// Both a position and a player are selected, check to see if we are swapping an unfilled postition:
 	 	else if (!$scope.activePlayers[$scope.positionSelection]) {
@@ -694,6 +715,18 @@ angular.module('HockeyApp')
 	  	return playerSelected;
 	  };
 
+	  /*
+	   *	Function that ends the game by saving the current end game state.
+	   */
+	  $scope.endGame = function () {
+	  	// Record timeOff for active players
+	  	emptyActivePlayers();
+	  	$scope.gameTimer.reset();
+	  	// Push data
+	  	$scope.setPeriod(4);
+	  	//TODO: Have game summary modal come up
+	  };
+
 	  //  DEBUGGING  //
 
 	  $scope.showGameData = function () {
@@ -713,7 +746,8 @@ angular.module('HockeyApp')
 
 .controller('newGameModalController', ['$scope', '$modalInstance', 'gameAPI',
 	function ($scope, $modalInstance, gameAPI) {
-		$scope.gameNumber = gameAPI.getGameEvents().length;
+		var games = gameAPI.getGameEvents().length;
+		$scope.gameNumber = games;
 		$scope.team = gameAPI.getUser().team;
 		$scope.home = 'Home';
 		$scope.opponent = 'Someone';
@@ -724,10 +758,30 @@ angular.module('HockeyApp')
 			else {$scope.home = 'Home'; }
 		};
 
+		$scope.inValidGame = function () {
+			if ($scope.gameNumber < games && $scope.gameNumber >= 0) { return 1; }
+			else if ($scope.gameNumber < 0) { return 2; }
+			else { return 0; }
+		};
 
-		$scope.saveGameData = function () {
+		$scope.validOpponent = function () {
+			if ($scope.home) { return true; }
+			else { return false; }
+		};
+
+		$scope.validLocation = function () {
+			if ($scope.home) { return true; }
+			else { return false; }
+		};
+
+		$scope.showConfirm = function () {
+			if (!$scope.inValidGame()) { return true; }
+			else { return false; }
+		};
+
+		$scope.saveGameData = function (ignore) {
 			var newGame = {
-				game: $scope.gameNumber, 
+				game: Math.ceil($scope.gameNumber), 
 				opponent: $scope.opponent, 
 				home: $scope.home, 
 				location: $scope.location

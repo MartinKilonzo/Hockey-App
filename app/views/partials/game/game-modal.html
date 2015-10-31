@@ -1,31 +1,35 @@
 
 <div class="no-key">
 	<div class="modal-header">
-	<!-- TODO: GO BACK ON MODAL CLOSE WITHOUT SAVE -->
+		<!-- TODO: GO BACK ON MODAL CLOSE WITHOUT SAVE -->
 		<!-- <button type="button" class="close" aria-hidden="true" ng-click="$dismiss('cancel');">&times;</button> -->
 		<h4 class="modal-title">New Game</h4>
 	</div>
 	<div class="modal-body">
-		<form ng-submit="saveGameData()">
-			<div class="input-group">
-				<span class="input-group-addon" style="width: 95px">Game Number</span>
-				<input type="text" class="form-control" placeholder="Game Number" ng-model="gameNumber">
+		<form class="game-data" ng-submit="saveGameData()">
+			<div class="form-group" ng-class="{'has-error': inValidGame()}">
+				<label class="control-label" ng-show="inValidGame() === 1">Game Already Exists. If you proceed, the exising game will be overwritten.</label>
+				<label class="control-label" ng-show="inValidGame() === 2">Game number must be positive.</label>
+				<div class="input-group" style="margin-top: 0px">
+					<span class="input-group-addon control-label" style="width: 95px">Game Number</span>
+					<input type="text" class="form-control" placeholder="Game Number" ng-model="gameNumber">
+				</div>
 			</div>
 			<div class="input-group">
 				<!-- TODO: If set to home, use default home location for the location field -->
 				<button type="button" class="btn btn-default" ng-click="toggleHome()">{{ home }}</button>
 			</div>
-			<div class="input-group">
+			<div class="input-group" ng-class="{'has-warning': !opponent}">
 				<span class="input-group-addon" style="width: 95px">{{ team }} vs.</span>
 				<input type="text" class="form-control" placeholder="Who are you playing?" ng-model="opponent">
 			</div>
-			<div class="input-group">
+			<div class="input-group" ng-class="{'has-warning': !location}">
 				<span class="input-group-addon" style="width: 95px">Location</span>
 				<input type="text" class="form-control" placeholder="Where is the game?" ng-model="location">
 			</div>
 		</form>
 	</div>
-	<div class="modal-footer">
+	<div class="modal-footer" ng-show="showConfirm()">
 		<!-- <button type="button" class="btn btn-danger" ng-click="$dismiss('cancel');">Cancel</button> -->
 		<button type="button" class="btn btn-success" ng-click="saveGameData()">New Game</button>
 	</div>

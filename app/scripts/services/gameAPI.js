@@ -212,6 +212,8 @@ angular.module('HockeyApp')
 			httpGameEvents.opponent 		= 	gameInfo.opponent;
 			httpGameEvents.home				=	gameInfo.home;
 			httpGameEvents.location			=	gameInfo.location;
+			httpGameEvents.startTime		=	gameInfo.startTime;
+			httpGameEvents.endTime			=	gameInfo.endTime;
 			httpGameEvents.period			= 	gameInfo.period;
 			httpGameEvents.timeOn 			= 	gameInfo.gameEvents.timeOn;
 			httpGameEvents.timeOff 			= 	gameInfo.gameEvents.timeOff;

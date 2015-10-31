@@ -1,5 +1,13 @@
 /** GAME STYLES **/
 
+/* Modal Styles */
+form.game-data .input-group 
+{
+	width: 100%;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
 .container.game, .container-fluid.game
 {
 	margin-top: 20px;
