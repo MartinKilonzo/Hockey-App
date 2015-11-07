@@ -14,7 +14,7 @@ angular.module('HockeyApp')
 		// 	$window.location.href = result.url;
 		// 	console.log('url', result);
 		// });
-		gameAPI.getUser({ firstName: 'Martin', lastName: 'Kilonzo', team: 'Test Team 3' }, function (result) {
+		gameAPI.getUser({ firstName: 'Alex', lastName: 'Mai', team: 'Test Team 4' }, function (result) {
 			vm.user = result.firstName;
 		});
 	};
