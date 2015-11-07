@@ -14,12 +14,26 @@ form.game-data .input-group
 	margin-bottom: 20px;
 }
 
-/* Game Toggle styles */
+/* Game History Styles */
+
+div.history
+{
+	margin-right: 0;
+	margin-left: 0;
+	border-width: 1px;
+	border-radius: 8px 8px 8px 8px;
+	padding: 0px 40px 0px 40px;
+	border: 1px solid #E1E1E8;
+	overflow: hidden;
+}
 
 #undo.disabled, #redo.disabled 
 {
 	cursor: default;
 }
+
+
+/* Game Toggle styles */
 
 .clock 
 {
@@ -93,6 +107,7 @@ form.game-data .input-group
 /** Lineup and Player pool styles **/
 .pool
 {
+	max-height: 250px;
 	margin-right: 0;
 	margin-left: 0;
 	border-width: 1px;

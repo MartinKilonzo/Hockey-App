@@ -30,9 +30,10 @@
     "mongoose": "^4.0.8"
   },
   "devDependencies": {
+    "connect-modrewrite": "^0.8.2",
+    "factory-angular-channels": "^0.7.1",
     "gulp": "git://github.com/gulpjs/gulp.git#4.0",
     "ng-factory": "^1.0",
-    "undertaker-app-tasks": "^0.2.6",
-    "factory-angular-channels": "^0.7.1"
+    "undertaker-app-tasks": "^0.2.6"
   }
 }

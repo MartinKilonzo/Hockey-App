@@ -5,6 +5,7 @@ angular.module('HockeyApp', ['ngAnimate', 'ngCookies', 'ui.router', 'ui.bootstra
   .constant('version', 'v0.0.1')
 
   .config(['$locationProvider', '$stateProvider', '$urlRouterProvider', 'localStorageServiceProvider', function ($locationProvider, $stateProvider, $urlRouterProvider, localStorageServiceProvider) {
+    $locationProvider.html5Mode(true);
     $locationProvider.html5Mode(true).hashPrefix('!');
     $urlRouterProvider.when('/lala', 'team');
     $urlRouterProvider.otherwise('/lala');
@@ -14,14 +15,14 @@ angular.module('HockeyApp', ['ngAnimate', 'ngCookies', 'ui.router', 'ui.bootstra
       templateUrl: 'views/home.html',
       controller: 'MainCtrl'
     })
-    .state('features', {
-      url: '/features',
-      templateUrl: 'views/features.html'
-    })
-    .state('contact', {
-      url: '/contact',
-      templateUrl: 'views/contact.html'
-    })
+    // .state('features', {
+    //   url: '/features',
+    //   templateUrl: 'views/features.html'
+    // })
+    // .state('contact', {
+    //   url: '/contact',
+    //   templateUrl: 'views/contact.html'
+    // })
     .state('test', {
       url: '/test',
       templateUrl: 'views/test.html',

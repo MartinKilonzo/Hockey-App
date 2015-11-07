@@ -1,4 +1,4 @@
-'use-strict';
+'use strict';
 
 angular.module('HockeyApp')
 
@@ -16,10 +16,17 @@ angular.module('HockeyApp')
 		};
 	})
 
-	.directive('gameBoard', function () {
+	.directive('gameBoard', function ($window) {
 		return {
 			restrict: 'E',
-			templateUrl: 'views/partials/game/game-board.html'
+			templateUrl: 'views/partials/game/game-board.html',
+			// Function which sizes the history box to the height of the game board
+			link: function (scope, element, attrs) {
+				var resize = angular.element($window).on('resize', function() {
+					element.parent().find('.history').height(element.find('.game-board').css('height'));
+				}).trigger('resize');
+				angular.element($window).load(resize);
+			}
 		};
 	})
 
