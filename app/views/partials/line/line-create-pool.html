@@ -1,0 +1,33 @@
+<hr ng-show="currentPage != 4"></hr>
+
+	<div class="container-fluid container-roster" ng-show="!lastPage()">
+		<!-- Consider adding a search bar for quicker selection here -->
+		<div class="btn-group btn-group-justified" style="margin-bottom: 8px" role="group" aria-label="...">
+			<div class="btn-group" role="group">
+				<button type="button" class="btn btn-danger" ng-click="position = 'For'">Forward</button>
+			</div>
+			<div class="btn-group" role="group">
+				<button type="button" class="btn btn-primary" ng-click="position = 'Def'">Defence</button>
+			</div>
+			<div class="btn-group" role="group">
+				<button type="button" class="btn btn-default"  ng-click="position = ''">All</button>
+			</div>
+		</div>
+		<!-- Players -->
+		<div class="col-xs-4" ng-repeat="player in players | filter: position | orderBy: ['-playerNumber', 'position']">
+			<line-player-pool></line-player-pool>
+		</div>
+	</div>
+</div>
+
+<div class="modal-body" ng-show="lastPage()">
+	<!-- Change set title to method that confirms the line -->
+	<form role="form" ng-submit="setTitle(); validateLine()">
+		<!-- TODO: Implement ng-pattern for validation and has-warning for invalid characters -->
+		<div class="input-group" ng-class="{'has-success': newTitle,'has-error': !newTitle}">
+			<span class="input-group-addon"><span class="glyphicon glyphicon-pencil"></span></span>
+			<input class="form-control" type="text" ng-model="newTitle" placeholder="Title"></input>
+			<span class="input-group-addon" ng-show="newTitle"><span class="glyphicon glyphicon-ok"></span></span>
+		</div>
+	</form>
+</div>

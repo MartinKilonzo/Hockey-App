@@ -11,7 +11,8 @@ module.exports = function (mongoose) {
 		players			:		{ type: [Number], required: true },
 		period			:		{ type: Number, required: true },
 		time			:		{ type: String, required: true },
-		count			:		{ type: Number, required: true }
+		count			:		{ type: Number, required: true },
+		zoneStart 		: 		{ type: Number, required: true }
 	};
 
 	var GameEvents = {
@@ -19,7 +20,7 @@ module.exports = function (mongoose) {
 		timeOff			: 		{ type: [GameEvent] },
 		zoneStarts		: 		{ type: [GameEvent] },
 		shotsOn			:		{ type: [GameEvent] },
-		shotsAgainst	:		{ type: [GameEvent] },
+		shotAttempts	:		{ type: [GameEvent] },
 		teamGoals		:		{ type: [GameEvent] },
 		opponentGoals	:		{ type: [GameEvent] }
 	};
@@ -42,7 +43,7 @@ module.exports = function (mongoose) {
 		timeOff			: 		{ type: Number, required: true },
 		zoneStarts		: 		{ type: Number, required: true },
 		shotsOn			:		{ type: Number, required: true },
-		shotsAgainst	:		{ type: Number, required: true },
+		shotAttempts	:		{ type: Number, required: true },
 		teamGoals		:		{ type: Number, required: true },
 		opponentGoals	:		{ type: Number, required: true }
 	};

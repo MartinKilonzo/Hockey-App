@@ -1,0 +1,25 @@
+<div class="row">
+	<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+		<h4 class="line-title">{{ line.lineTitle }}</h4>
+	</div>
+</div>
+<div class="row line-template" ng-mouseenter="showLineTools = $index" ng-mouseleave="showLineTools = undefined">
+	
+	<!-- Players -->
+	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 player-line noselect" ng-class="{error: player.playerStatus == false}" data-toggle="popover" data-placement="bottom" data-content="{{player.firstName}} {{player.lastName}}" ng-repeat="player in line.players" popover>
+		<span ng-if="player.playerStatus !== false">#{{ player.playerNumber }}</span>
+		<span ng-if="player.playerStatus == false">!</span>
+	</div>
+
+	<!-- Line tools -->
+	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 line-tools" ng-init="showLineTools = undefined" ng-class="{mouseover: showLineTools === $index}">
+		<!-- Delete button -->
+		<div class="row line-template">
+		<button type="button" class="btn btn-danger" ng-click="removeLine(line)"><span class="glyphicon glyphicon-remove"></span></button>
+		</div>
+		<!-- Edit button -->
+		<div class="row line-template">
+		<button type="button" class="btn btn-primary" ng-click="editLine($index, line)"><span class="glyphicon glyphicon-pencil"></span></button>
+		</div>
+	</div>
+</div>

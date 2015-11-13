@@ -38,10 +38,10 @@ angular.module('HockeyApp', ['ngAnimate', 'ngCookies', 'ui.router', 'ui.bootstra
       templateUrl: 'views/roster.html',
       controller: 'rosterController'
     })
-    .state('lineups', {
-      url: '/lineups',
-      templateUrl: 'views/lineups.html',
-      controller: 'lineupsController'
+    .state('lines', {
+      url: '/lines',
+      templateUrl: 'views/lines.html',
+      controller: 'linesController'
     })
     .state('team', {
       url: '/team',

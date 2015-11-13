@@ -63,24 +63,26 @@ var populateGameData = function (gameEvents, req) {
 			players		:		req.body.shotsOn[i].activePlayers,
 			period		:		req.body.shotsOn[i].period,
 			time		:		req.body.shotsOn[i].time,
-			count		:		req.body.shotsOn[i].count
+			count		:		req.body.shotsOn[i].count,
+			zoneStart 	: 		req.body.shotsOn[i].zoneStart
 		});
 		gameEvents.shotsOn.push(newGameEvent);
 	}
 		// console.log('Finished ShotsOn:\t', i);
 
-	for (i = 0; i < req.body.shotsAgainst.length; i++) {
+	for (i = 0; i < req.body.shotAttempts.length; i++) {
 		newGameEvent = new gameModels.GameEvent({	
-			game		:		req.body.shotsAgainst[i].game,
-			eventId		:		req.body.shotsAgainst[i].eventId,
-			players		:		req.body.shotsAgainst[i].activePlayers,
-			period		:		req.body.shotsAgainst[i].period,
-			time		:		req.body.shotsAgainst[i].time,
-			count		:		req.body.shotsAgainst[i].count
+			game		:		req.body.shotAttempts[i].game,
+			eventId		:		req.body.shotAttempts[i].eventId,
+			players		:		req.body.shotAttempts[i].activePlayers,
+			period		:		req.body.shotAttempts[i].period,
+			time		:		req.body.shotAttempts[i].time,
+			count		:		req.body.shotAttempts[i].count,
+			zoneStart 	: 		req.body.shotAttempts[i].zoneStart
 		});
-		gameEvents.shotsAgainst.push(newGameEvent);
+		gameEvents.shotAttempts.push(newGameEvent);
 	}
-	// console.log('Finished shotsAgainst:\t', i);
+	// console.log('Finished shotAttempts:\t', i);
 
 	for (i = 0; i < req.body.teamGoals.length; i++) {
 		newGameEvent = new gameModels.GameEvent({	
@@ -89,7 +91,8 @@ var populateGameData = function (gameEvents, req) {
 			players		:		req.body.teamGoals[i].activePlayers,
 			period		:		req.body.teamGoals[i].period,
 			time		:		req.body.teamGoals[i].time,
-			count		:		req.body.teamGoals[i].count
+			count		:		req.body.teamGoals[i].count,
+			zoneStart 	: 		req.body.teamGoals[i].zoneStart
 		});
 		gameEvents.teamGoals.push(newGameEvent);
 	}
@@ -103,7 +106,8 @@ var populateGameData = function (gameEvents, req) {
 			players		:		req.body.opponentGoals[i].activePlayers,
 			period		:		req.body.opponentGoals[i].period,
 			time		:		req.body.opponentGoals[i].time,
-			count		:		req.body.opponentGoals[i].count
+			count		:		req.body.opponentGoals[i].count,
+			zoneStart 	: 		req.body.opponentGoals[i].zoneStart
 		});
 		gameEvents.opponentGoals.push(newGameEvent);
 	}

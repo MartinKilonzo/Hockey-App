@@ -14,7 +14,7 @@ angular.module('HockeyApp')
 			strongOff: 0
 		};
 		this.shotsOn = 0;
-		this.shotsAgainst = 0;
+		this.shotAttempts = 0;
 		this.teamGoals = 0;
 		this.opponentGoals = 0;
 	};
@@ -31,17 +31,23 @@ angular.module('HockeyApp')
 			strongOff: 0
 		};
 		this.shotsOn = 0;
-		this.shotsAgainst = 0;
+		this.shotAttempts = 0;
 		this.teamGoals = 0;
 		this.opponentGoals = 0;
 	};
 
-	var GameTotals = function () {
+	var GameTotals = function (gameEvents) {
+		this.game = gameEvents.game;
+		this.home = gameEvents.home;
+		this.location = gameEvents.location;
+		this.opponent = gameEvents.opponent;
+		this.startTime = gameEvents.startTime;
 		this.period1 = [];
 		this.period2 = [];
 		this.period3 = [];
 		this.overTime = [];
 		this.totals = new GameTotal();
+		this.totals.iceTime = gameEvents.endTime;
 	};
 
 	var PlayerTotals = function () {
@@ -57,7 +63,7 @@ angular.module('HockeyApp')
 		this.games = [];
 		this.players = [];
 		for (var p in playerBucket) { this.players[p] = new PlayerTotals(); }
-		this.lineups = [];
+		this.lines = [];
 		this.playerBucket = playerBucket;
 		this.addGameStats(gameEvents);
 	};
@@ -73,7 +79,7 @@ angular.module('HockeyApp')
 		var stat, periodEvent;
 		game = this.games[game];
 		// Game Button Totals
-		var stats = ['shotsOn', 'shotsAgainst', 'teamGoals', 'opponentGoals'];
+		var stats = ['shotsOn', 'shotAttempts', 'teamGoals', 'opponentGoals'];
 		game[period] = new GameTotal();
 		for (stat in stats) {
 			stat = stats[stat];
@@ -91,7 +97,6 @@ angular.module('HockeyApp')
 				game.totals[stat]++;
 			}
 		}
-		game.gameTime = game.endTime - game.startTime;
 		//Zone Starts Totals
 		stats = ['strongDef', 'weakDef', 'neutral', 'weakOff', 'strongOff'];
 		for (periodEvent in periodEvents.zoneStarts) {
@@ -100,6 +105,7 @@ angular.module('HockeyApp')
 			game.totals.zoneStarts[stat]++;
 		}
 	};
+	
 	/*
 	 *	Function that generates stat summaries for each statistic on a per period, per game basis.
 	 *
@@ -109,7 +115,7 @@ angular.module('HockeyApp')
 	GameStats.prototype.getPlayerTotals = function (periodEvents, period) {
 		var i, stat, periodEvent, player, count;
 		// Game Button Totals
-		var stats = ['shotsOn', 'shotsAgainst', 'teamGoals', 'opponentGoals'];
+		var stats = ['teamGoals', 'shotsOn', 'shotAttempts', 'opponentGoals'];
 		for (stat in stats) {
 			stat = stats[stat];
 			for (periodEvent in periodEvents[stat]) {
@@ -135,16 +141,6 @@ angular.module('HockeyApp')
 			}
 		}
 
-		for (player in this.players) {
-			player = this.players[player];
-			player.totals.iceTime = 0;
-			for (periodEvent in player[period].timeOn) {
-				count = player[period].timeOff[periodEvent].time - player[period].timeOn[periodEvent].time;
-				player[period].iceTime += count;
-				player.totals.iceTime += count;
-			}
-		}
-
 		//Zone Starts Totals
 		stats = ['strongDef', 'weakDef', 'neutral', 'weakOff', 'strongOff'];
 		for (periodEvent in periodEvents.zoneStarts) {
@@ -157,20 +153,34 @@ angular.module('HockeyApp')
 		}
 	};
 
-	GameStats.prototype.getLineupTotals = function () {
+	GameStats.prototype.getLineTotals = function () {
 
 	};
 
 	GameStats.prototype.addGameStats = function (gameEvents) {
+		var period;
 		var periods = ['period1', 'period2', 'period3', 'overTime'];
 		for (var game in gameEvents) {
-			this.games[game] = new GameTotals();
-			for (var period in periods) {
+			this.games[game] = new GameTotals(gameEvents[game]);
+			for (period in periods) {
 				period = periods[period];
 				if (gameEvents[game].hasOwnProperty(period)) {
 					this.getGameTotals(gameEvents[game][period], period, game);
 					this.getPlayerTotals(gameEvents[game][period], period);
-					this.getLineupTotals();
+					this.getLineTotals();
+				}
+			}
+		}
+
+		// Calculate the ice time for the players
+		for (var player in this.players) {
+			player = this.players[player];
+			for (period in periods) {
+				period = periods[period];
+				for (var periodEvent in player[period].timeOn) {
+					var count = player[period].timeOff[periodEvent].time - player[period].timeOn[periodEvent].time;
+					player[period].iceTime += count;
+					player.totals.iceTime += count;
 				}
 			}
 		}

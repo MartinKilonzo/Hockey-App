@@ -10,19 +10,20 @@ angular.module('HockeyApp')
 		var gamedb = $resource('/api/gamedb');
 
 		$scope.pageClass = 'page-game';
+		$scope.debugging = true;
 
 	/*
-	 *	Initialization of players and lineups from database.
+	 *	Initialization of players and lines from database.
 	 */
 	 gameAPI.getPlayers( function (result) {
 	 	$scope.players = result;
 
-	 	gameAPI.getLineups( function (result) {
-	 		$scope.lineups = result;
+	 	gameAPI.getLines( function (result) {
+	 		$scope.lines = result;
 	 	});
 	 });
 
-	$scope.activePlayers = gameData.getPlayers() || [];		// Initialize game board
+	$scope.activePlayers = gameData.getPlayers() || [undefined, undefined, undefined, undefined, undefined];		// Initialize game board
 
 	var modalInstance = $modal.open({
 		animation: true,
@@ -43,7 +44,7 @@ angular.module('HockeyApp')
 
 	var GameEvents = function () {
 		this.shotsOn = [];
-		this.shotsAgainst = [];
+		this.shotAttempts = [];
 		this.teamGoals = [];
 		this.opponentGoals = [];
 		this.timeOn = [];
@@ -98,22 +99,23 @@ angular.module('HockeyApp')
 	var timeOffId = gameData.timeOffId || 0;
 	var zoneStartsId = gameData.zoneStartsId || 0;
 	var shotsOnId = gameData.shotsOnId || 0;
-	var shotsAgainstId = gameData.shotsAgainstId || 0; 
+	var shotAttemptsId = gameData.shotAttemptsId || 0; 
 	var teamGoalsId = gameData.teamGoalsId || 0; 
 	var opponentGoalsId = gameData.opponentGoalsId || 0;
 
 	$scope.startTimer = function () {
 		if ($scope.setZoneStart() !== undefined) {
-			$scope.zoneStart = undefined; 
 			$scope.gameTimer.start();
 			$scope.gameTimer.isActive = true;
-			if (!gameData.getStartTime) { gameData.setStartTime($scope.gameTimer.time()); }
+			if (!gameData.getStartTime()) { gameData.setStartTime($scope.gameTimer.startTime()); }
 		}
 	};
 
 	$scope.stopTimer = function () {
+		$scope.zoneStart = undefined; 
 		$scope.gameTimer.stop();
 		$scope.gameTimer.isActive = false;
+		gameData.setEndTime($scope.gameTimer.time());
 	};
 
 	$scope.toggleTimer = function () {
@@ -142,7 +144,7 @@ angular.module('HockeyApp')
 	 		var oldVal = {
 	 			period: $scope.period,
 	 			shotsOnId: shotsOnId,
-	 			shotsAgainstId: shotsAgainstId, 
+	 			shotAttemptsId: shotAttemptsId, 
 	 			teamGoalsId: teamGoalsId,
 	 			opponentGoalsId: opponentGoalsId,
 	 			zoneStartsId: zoneStartsId
@@ -154,7 +156,7 @@ angular.module('HockeyApp')
 	 		var periodAction = new Action(oldVal, newVal, function (val) {
 	 			$scope.period = val.period;
 	 			shotsOnId = val.shotsOnId || 0;
-	 			shotsAgainstId = val.shotsAgainstId || 0;
+	 			shotAttemptsId = val.shotAttemptsId || 0;
 	 			teamGoalsId = val.teamGoalsId || 0;
 	 			opponentGoalsId = val.opponentGoalsId || 0;
 	 			zoneStartsId = val.zoneStartsId || 0;
@@ -165,14 +167,19 @@ angular.module('HockeyApp')
 	 			var gameInfo = {
 	 				period: $scope.period,
 	 				game: 	gameData.game || 0,
+	 				startTime: gameData.getStartTime(),
+	 				endTime: new Date().getTime(),
 	 				opponent: gameData.opponent,
 	 				home: gameData.home,
 	 				location: gameData.location,
 	 				gameEvents: $scope.gameEvents[$scope.period - 1]
 	 			};
 	 			emptyActivePlayers();
-	 			gameAPI.saveGameEvents(gameInfo, function (result) {
-	 				$scope.execuStack.push(periodAction);
+	 			gameAPI.syncGameEvents(gameInfo, function (result) {
+	 				if (result) {
+	 					$scope.execuStack.push(periodAction);
+	 				}
+	 				console.debug(gameAPI.getUser(), gameInfo);
 	 			});
 	 		}	// If the period has never been initialized,
 	 		else { periodAction.execute(); }								// Initialize it without adding it to the action stack
@@ -193,6 +200,7 @@ angular.module('HockeyApp')
 	 	this.eventId = eventId;
 	 	this.period = period;
 	 	this.activePlayers = activePlayers;
+	 	this.zoneStart = $scope.zoneStart;
 	 	this.time = time;
 	 	this.count = count;
 	 };
@@ -274,10 +282,10 @@ angular.module('HockeyApp')
 	/*
 	 *	Function which increments the Shots Against statistic for each player involved in the play (active player).
 	 */
-	 $scope.addShotsAgainst = function () {
+	 $scope.addshotAttempts = function () {
 	 	// If there are players active:
 		if (playersAreActive()) {
-		 	var newGameEvent = new GameEvent(shotsAgainstId, $scope.period, $scope.activePlayers, $scope.gameTimer.time(), 1);
+		 	var newGameEvent = new GameEvent(shotAttemptsId, $scope.period, $scope.activePlayers, $scope.gameTimer.time(), 1);
 
 			// applier
 			// For each active player:
@@ -285,15 +293,15 @@ angular.module('HockeyApp')
 				var activePlayers = [];
 				for (var i = 0; i < $scope.activePlayers.length && $scope.activePlayers[i]; i++) { activePlayers.push($scope.activePlayers[i].playerNumber); }
 					GameEvent.activePlayers = activePlayers;
-				$scope.gameEvents[$scope.period - 1].shotsAgainst.push(GameEvent);
-				shotsAgainstId++;
+				$scope.gameEvents[$scope.period - 1].shotAttempts.push(GameEvent);
+				shotAttemptsId++;
 			};
 
 			// unApplier
 			// For each active player:
 			var unApplier = function () {
-				$scope.gameEvents[$scope.period - 1].shotsAgainst.pop();
-				shotsAgainstId--;
+				$scope.gameEvents[$scope.period - 1].shotAttempts.pop();
+				shotAttemptsId--;
 			};
 
 			var newGameAction = new Action(undefined, newGameEvent, applier, unApplier);
@@ -306,10 +314,10 @@ angular.module('HockeyApp')
 	/*
 	 *	Function which decrements the Shots Against statistic for each player involved in the play (active player).
 	 */
-	 $scope.subtShotsAgainst = function () {
+	 $scope.subtshotAttempts = function () {
 	 	// If there are players active:
 		if (playersAreActive()) {
-		 	var newGameEvent = new GameEvent(shotsAgainstId, $scope.period, $scope.activePlayers, $scope.gameTimer.time(), -1);
+		 	var newGameEvent = new GameEvent(shotAttemptsId, $scope.period, $scope.activePlayers, $scope.gameTimer.time(), -1);
 
 			// applier
 			// For each active player:
@@ -317,15 +325,15 @@ angular.module('HockeyApp')
 				var activePlayers = [];
 				for (var i = 0; i < $scope.activePlayers.length && $scope.activePlayers[i]; i++) { activePlayers.push($scope.activePlayers[i].playerNumber); }
 					GameEvent.activePlayers = activePlayers;
-				$scope.gameEvents[$scope.period - 1].shotsAgainst.push(GameEvent);
-				shotsAgainstId++;
+				$scope.gameEvents[$scope.period - 1].shotAttempts.push(GameEvent);
+				shotAttemptsId++;
 			};
 
 			// unApplier
 			// For each active player:
 			var unApplier = function () {
-				$scope.gameEvents[$scope.period - 1].shotsAgainst.pop();
-				shotsAgainstId--;
+				$scope.gameEvents[$scope.period - 1].shotAttempts.pop();
+				shotAttemptsId--;
 			};
 
 			var newGameAction = new Action(undefined, newGameEvent, applier, unApplier);
@@ -456,7 +464,7 @@ angular.module('HockeyApp')
 	  	$scope.positionSelection = undefined;
 	  };
 
-	// Lineup and Player Pool Functions //
+	// Line and Player Pool Functions //
 
 	/*
 	 *	Constructor for the SwapEvent object
@@ -474,124 +482,123 @@ angular.module('HockeyApp')
 		this.time = time;
 	};
 
-	// Lineup Functions
+	// Line Functions
 	/*
 	 * Function which sets the hover scope variable to be used with ng-class in 
-	 * game-lineup for mouseover effects.
+	 * game-line for mouseover effects.
 	 */
-	 $scope.setHover = function (index) {
+	 $scope.setHover = function (index, type) {
 	 	$scope.hover = index;
+	 	$scope.hoverType = type;
 	 };
 
 	/*
 	 *	Function which sets the selection scope variable to indicate stylistically 
-	 *	which lineup will make the substitution.
+	 *	which line will make the substitution.
 	 */
-	 $scope.setLineupSelection = function (selection) {
-	 	$scope.lineupSelection = selection;
+	 $scope.setLineSelection = function (selection, type) {
+	 	$scope.lineSelection = selection;
+	 	$scope.lineSelectionType = type;
 	 };
 
 	 /*
-	  *	Constructor for the Lineup object
+	  *	Constructor for the Line object
 	  *
-	  *	@param oldLineup 	- The current active lineup
-	  *	@param newLineup 	- The lineup which will repace the current lineup
+	  *	@param oldLine 		- The current active line
+	  *	@param newLine 		- The line which will repace the current line
+	  * @param type 		- The type of the lineup making the swap
 	  *	@param time 		- The time of the swap
 	  */
-	 var LineupSwap = function(oldLineup, newLineup, time) {
-	 	this.oldLineup = oldLineup;
-	 	this.newLineup = newLineup;
+	 var LineSwap = function (oldLine, newLine, type, time) {
+	 	this.oldLine = oldLine;
+	 	this.newLine = newLine;
+	 	this.type = type;
+	 	if (type === 0) { this.offset = 0; }
+	 	else if (type === 1) { this.offset = 3; }
 	 	this.time = time;
 	 };
 
-	 /*
-	  *	Function which swaps the current active lineup with the selected one, 
-	  *	recording timeOn and timeOff for the players as necessary
-	  *
-	  *	@param index 		- The index of the lineup replacing the existing one in $scope.lineups
-	  */
-	  $scope.swapLineup = function (index) {
+	/*
+	 *	Function which swaps the current active line with the selected one, 
+	 *	recording timeOn and timeOff for the players as necessary
+	 *
+	 *	@param index 		- The index of the line replacing the existing one in $scope.lines
+	 */
+	$scope.swapLine = function (line) {
 
-	  	var newActivePlayers = [];
+		var oldLine = [];
+		for (var player in $scope.activePlayers) { oldLine[player] = $scope.activePlayers[player]; }
 
-	  	newActivePlayers[0] = $scope.lineups[index].leftWing;
-	  	newActivePlayers[1] = $scope.lineups[index].center;
-	  	newActivePlayers[2] = $scope.lineups[index].rightWing;
-	  	newActivePlayers[3] = $scope.lineups[index].defence1;
-	  	newActivePlayers[4] = $scope.lineups[index].defence2;
+	  	var newLineSwap = new LineSwap(oldLine, line.players, line.lineType, $scope.gameTimer.time());
 
-	  	var newLineupSwap = new LineupSwap($scope.activePlayers, newActivePlayers, $scope.gameTimer.time());
-	  	var unApplier, timeOn, timeOff;
-	  	var applier = function (lineupSwap) {
-	  		$scope.activePlayers = lineupSwap.newLineup;
-	 		// For each player in the new lineup:
-	 		for (var i = 0; i < lineupSwap.newLineup.length; i++) {
-	 			// Check to see if the position being filled is empty
-	 			if (!lineupSwap.oldLineup[i]) {
-	 				// If it is, we only need to record a time in for the player
-	 				timeOn = new SwapEvent(timeOnId, lineupSwap.newLineup[i].playerNumber, lineupSwap.time);
-	 				timeOnId++;
-	 				$scope.gameEvents[$scope.period - 1].timeOn.push(timeOn);
-	 			}
-	 			// If it is occupied, then, check to see if the player occupying the position is the same player as the one making the switch
-	 			else if (lineupSwap.oldLineup[i].playerNumber !== lineupSwap.newLineup[i].playerNumber) {
-	 				// If not, then they are different players and the timeOff for the existing and the timeOn for the new needs to be recorded
-	 				timeOn = new SwapEvent(timeOnId, lineupSwap.newLineup[i].playerNumber, lineupSwap.time);
-	 				timeOff = new SwapEvent(timeOffId, lineupSwap.oldLineup[i].playerNumber, lineupSwap.time);
-	 				timeOnId++;
-	 				timeOffId++;
-	 				$scope.gameEvents[$scope.period - 1].timeOn.push(timeOn);
-	 				$scope.gameEvents[$scope.period - 1].timeOff.push(timeOff);
-	 			}
-	 			// Otherwise, the player is the same player and a timeOn/Off should not be recorded
-	 		}
-	 	};
-	 	// If there are players on the rink, then there will be timeOff data for the players to pop
-	 	if (playersAreActive()) {
-	 		unApplier = function (lineupSwap) {
-	 			$scope.activePlayers = lineupSwap.oldLineup;
-	 			lineupSwap.oldLineup.forEach(function (player) { $scope.gameEvents[$scope.period - 1].timeOff.pop(); });
-	 			lineupSwap.newLineup.forEach(function (player) { $scope.gameEvents[$scope.period - 1].timeOn.pop(); });
-	 			timeOnId--;
-	 			timeOffId--;
-	 		};
-	 	}
-	 	// Otherwise, there is no timeOff data, so let's not try to pop it
-	 	else {
-	 		unApplier = function (lineupSwap) {
-	 			$scope.activePlayers = lineupSwap.oldLineup;
-	 			lineupSwap.newLineup.forEach(function (player) { $scope.gameEvents[$scope.period - 1].timeOn.pop(); });
-	 			timeOnId--;
-	 		};
-	 	}
-	 	$scope.execuStack.push(new Action(newLineupSwap, newLineupSwap, applier, unApplier));
+	  	var applier = function (lineSwap) {
+	  		console.debug(lineSwap);
+	  		for (var player in lineSwap.newLine) {
+	  			player = parseInt(player);
+
+	  			var newPlayer = lineSwap.newLine[player];
+	  			var activePlayer = $scope.activePlayers[player + lineSwap.offset];
+
+	  			// If there does not exist a player in the position, then a one-way swap needs to occur
+	  			if (!activePlayer) {
+	  				$scope.gameEvents[$scope.period - 1].timeOn.push( new SwapEvent(timeOnId++, newPlayer.playerNumber, lineSwap.time) );
+	  				$scope.activePlayers[player + lineSwap.offset] = newPlayer;
+	  			}
+	  			// Otherwise, if there exists a player in the position and it is not the same player as the new one, then a two-way swap needs to occur
+	  			else if (activePlayer && activePlayer.playerNumber !== newPlayer.playerNumber) {
+	  				$scope.gameEvents[$scope.period - 1].timeOff.push( new SwapEvent(timeOffId++, activePlayer.playerNumber, lineSwap.time) );
+					$scope.gameEvents[$scope.period - 1].timeOn.push( new SwapEvent(timeOnId++, newPlayer.playerNumber, lineSwap.time) );
+	  				$scope.activePlayers[player + lineSwap.offset] = newPlayer;
+	  			}
+	  			// Otherwise, no swap needs to occur
+	  		}
+	  	};
+
+	  	var unApplier = function (lineSwap) {
+	  		console.debug(lineSwap);
+	  		for (var player in lineSwap.newLine) {
+	  			player = parseInt(player);
+
+	  			var oldPlayer = lineSwap.oldLine[player];
+	  			var activePlayer = $scope.activePlayers[player + lineSwap.offset];
+
+	  			// If there does not exist a player in the old position, then a one-way swap needs to be undone
+	  			if (!oldPlayer) {
+	  				$scope.gameEvents[$scope.period - 1].timeOn.pop(); 
+	  				timeOnId--;
+	  				console.debug($scope.gameEvents[$scope.period - 1].timeOn);
+	  				$scope.activePlayers[player + lineSwap.offset] = oldPlayer;	// Setting the current active player to undefined
+	  			}
+	  			// Otherwise, if there exists a player in the old position and it is not the same player as the new one, then a two-way swap needs to be undone
+	  			else if (activePlayer && activePlayer.playerNumber !== oldPlayer.playerNumber) {
+	  				$scope.gameEvents[$scope.period - 1].timeOff.pop();
+	  				timeOffId--;
+					$scope.gameEvents[$scope.period - 1].timeOn.pop();
+					timeOnId--;
+	  				console.debug($scope.gameEvents[$scope.period - 1].timeOn);
+					$scope.activePlayers[player + lineSwap.offset] = oldPlayer;	// Setting the current active player to the old player
+	  			}
+	  			// Otherwise, no swap has occured and nothing needs to be undone
+	  		}
+	  	};
+	  	
+	 	$scope.execuStack.push(new Action(newLineSwap, newLineSwap, applier, unApplier));
 	 };
 
 	 /*
-	  * Function which returns true if the lineup is currently active and false otherwise.
+	  * Function which returns true if the line is currently active and false otherwise.
 	  */
-	  $scope.lineupSelected = function (index) {
-	  	var selectedLineup = true;
-
-	  	var lineup = [];
-
-	  	lineup[0] = $scope.lineups[index].leftWing;
-	  	lineup[1] = $scope.lineups[index].center;
-	  	lineup[2] = $scope.lineups[index].rightWing;
-	  	lineup[3] = $scope.lineups[index].defence1;
-	  	lineup[4] = $scope.lineups[index].defence2;
-
-	  	if (!$scope.activePlayers[0])
-	  		selectedLineup = false;
-
-	  	for (var j = 0; j < $scope.activePlayers.length; j++) {
-	  		if (!$scope.activePlayers[j] || lineup[j].playerNumber !== $scope.activePlayers[j].playerNumber) {
-	  			selectedLineup = false;
+	  $scope.lineSelected = function (index, type) {
+	  	var selectedLine = true;	  	
+	  	var lineTypes = ['offence', 'defence'];
+	  	for (var player in $scope.lines[lineTypes[type]]) {
+	  		if (!$scope.activePlayers[player] || $scope.lines[lineTypes[type]][player].playerNumber !== $scope.activePlayers[player].playerNumber) {
+	  			selectedLine = false;
 	  			break;
 	  		}
 	  	}
 
-	  	return selectedLineup;
+	  	return selectedLine;
 	  };
 
 
@@ -727,10 +734,17 @@ angular.module('HockeyApp')
 	  	//TODO: Have game summary modal come up
 	  };
 
+	  $scope.showGameEvents = function () {
+	  	console.info($scope.gameEvents);
+	  };
+
 	  //  DEBUGGING  //
 
 	  $scope.showGameData = function () {
-	  	console.info($scope.gameEvents);
+	  	console.info(gameAPI.getUser().stats.games[gameData.game]);
+	  };
+	  $scope.showPlayerData = function() {
+	  	console.info(gameAPI.getUser().stats.players);
 	  };
 
 	  $scope.showMilliseconds = function () {

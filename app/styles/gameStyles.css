@@ -104,19 +104,22 @@ div.history
 	outline: 0 none;
 }
 
-/** Lineup and Player pool styles **/
+/** line and Player pool styles **/
 .pool
 {
-	max-height: 250px;
-	margin-right: 0;
-	margin-left: 0;
-	border-width: 1px;
+	max-height: 375px;
+	width: 100%;
 	border-bottom-right-radius: 4px;
 	border-bottom-left-radius: 4px;
 	padding: 42px 40px 14px 40px;
 	border: 1px solid #E1E1E8;
 	overflow-y: scroll;
 	overflow-x: hidden;
+}
+
+.container-pool 
+{
+	width: 100%;
 }
 
 /* Button Styles */
@@ -128,8 +131,8 @@ div.history
 }
 
 
-/* Lineup styles */
-.game-lineup-template
+/* line styles */
+.game-line-template
 {
 	opacity: 0.25;
 
@@ -140,7 +143,7 @@ div.history
 	transition: opacity 0.25s ease-in;
 }
 
-.game-lineup-template .lineup
+.game-line-template .line
 {
 	height: 90px;
 	width: 90px;
@@ -162,14 +165,14 @@ div.history
 	overflow: hidden;
 }
 
-.game-lineup-template .lineup-title
+.game-line-template .line-title
 {
 	/* Centering the title */
 	position: absolute;
 	top: 50%;
 	left: 50%;
-	margin-top: 25%;
-	margin-bottom: 25%;
+	margin-top: 50%;
+	margin-bottom: 50%;
 	margin-right: -50%;
 	transform: translate(-50%,-50%);
 
@@ -177,7 +180,7 @@ div.history
 	font-size: 18pt;
 }
 
-.game-lineup-template.mouseover 
+.game-line-template.mouseover 
 {
 	visibility: visible;
 	opacity: 1;

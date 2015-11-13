@@ -1,0 +1,19 @@
+<div class="modal-header">
+	<a class="btn btn-danger" ng-class="{slideLeft: validLine}" ng-click="$dismiss('cancel')"><span class="glyphicon glyphicon-remove"></span></a>
+	<a class="btn btn-success btn-save" ng-show="validLine" ng-click="saveNew()"><i class="glyphicon glyphicon-ok"></i></a>
+	<h3 class="modal-title">Create a New {{}} Line</h3>
+	<h4>{{ pages[currentPage] }}</h4>
+</div>
+
+<div class="modal-body">
+	<line-create-menu ng-show="mode === -1"></line-create-menu>
+	<line-create-forward ng-show="mode === 0"></line-create-forward>
+	<line-create-defence ng-show="mode === 1"></line-create-defence>
+
+	<line-create-pool ng-show="mode >= 0"></line-create-pool>
+
+<div class="modal-footer center">
+	<div class="btn-group" role="group">
+		<button ng-repeat="page in pages" ng-class="{active: currentPage === $index}" ng-click="setPage($index)" type="button" class="btn btn-default">{{ page }}</button>
+	</div>
+</div>

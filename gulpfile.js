@@ -30,21 +30,21 @@ var startExpress = function () {
 	server.get('/api/users/:userId', ctrl.userdb.getUser);
 	server.get('/api/login', ctrl.login.login);
 	server.get('/api/players', ctrl.playerdb.getPlayers);		//Depreciated
-	server.get('/api/lineups', ctrl.lineupdb.getLineups);		//Depreciated
+	server.get('/api/lines', ctrl.linedb.getLines);				//Depreciated
 	server.get('/api/gameEvents', ctrl.gamedb.getGameEvents);	//Depreciated
 
 	/* POST METHODS */
 	server.post('/api/users', ctrl.userdb.create);
 	server.post('/api/players', ctrl.playerdb.create);
-	server.post('/api/lineups', ctrl.lineupdb.create);
+	server.post('/api/lines', ctrl.linedb.create);
 	server.post('/api/gameEvents', ctrl.gamedb.saveGameEvents);
 
 	/* PUT METHODS */
-	server.put('/api/lineups', ctrl.lineupdb.modify);
+	server.put('/api/lines', ctrl.linedb.modify);
 
 	/* DELETE METHODS */
 	server.delete('/api/players/:userId/:resourceId', ctrl.playerdb.delete);
-	server.delete('/api/lineups/:userId/:resourceId', ctrl.lineupdb.delete);
+	server.delete('/api/lines/:userId/:resourceId/:lineType', ctrl.linedb.delete);
 	server.delete('/api/gameEvents', ctrl.gamedb.deleteGameEvents);
 
 	/* SERVER */

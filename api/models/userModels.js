@@ -4,7 +4,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var Player = mongoose.model('Player').schema;
-var Lineup = mongoose.model('Lineup').schema;
+var Line = mongoose.model('Line').schema;
 var Game = mongoose.model('Game').schema;
 var GameTotals = mongoose.model('GameTotals').schema;
 
@@ -16,12 +16,15 @@ module.exports = function (mongoose) {
 		team			: 		{ type: String, required: true },
 		googleDrive		: 		{ type: String },
 		players			: 		{ type: [Player] },
-		lineups			: 		{ type: [Lineup] },
+		lines			: 		{
+			offence 	: 			{ type: [Line] },
+			defence 	: 			{ type: [Line] }
+		},
 		gameEvents		: 		{ type: [Game] },
 		stats 			: 		{ 
 			games			: 		{ type: [GameTotals] },
 			players			: 		{ type: [GameTotals] },
-			lineups			: 		{ type: [GameTotals] }
+			lines			: 		{ type: [GameTotals] }
 		}
 	});
 	var models = {

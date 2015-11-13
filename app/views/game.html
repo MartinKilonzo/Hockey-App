@@ -14,17 +14,44 @@
 
 <!-- Player Lineups -->
 
-<div class="container game">
-	<ul class="nav nav-tabs" style="border-bottom: none" ng-init="showLineup = true">
-		<li ng-class="{active: showLineup}" ng-click="showLineup = true"><a href="#">Lineups</a></li>
-		<li ng-class="{active: !showLineup}" ng-click="showLineup = false"><a href="#">Players</a></li>
+<div class="container game container-pool">
+	<ul class="nav nav-tabs" style="border-bottom: none" ng-init="showPlayers = false">
+		<li ng-class="{active: !showPlayers}" ng-click="showPlayers = false"><a href="#">Lineups</a></li>
+		<li ng-class="{active: showPlayers}" ng-click="showPlayers = true"><a href="#">Players</a></li>
 	</ul>
-	<div class="container text-center pool"> <!-- consider using linup in lineups( {{ main.linupsToDisplay }} ) to restrict the number of repeats -->
-		<div ng-if="showLineup" ng-repeat="lineup in lineups">
-			<game-lineup></game-lineup>
+	<div class="container text-center pool"> <!-- consider using linup in lines( {{ main.linupsToDisplay }} ) to restrict the number of repeats -->
+<!-- 		Filter Buttons
+<div class="row game-line-template" ng-class="{'mouseover': hover === $index || lineSelected(line)}" ng-dblclick="swapline(line)" ng-mouseenter="setHover($index)" ng-mouseleave="setHover(undefined)">
+			<button type="button" class="btn btn-danger">F</button>
+			<button type="button" class="btn btn-default">D</button>
+		</div> -->
+
+		<div ng-if="!showPlayers" class="col-xs-7 col-sm-7 col-md-6 col-lg-6">
+			<div class="row" ng-repeat="line in lines.offence">
+				<game-line></game-line>
+			</div>
 		</div>
-		<div ng-if="!showLineup" ng-repeat="player in players">
-			<game-player></game-player>
+		<div ng-if="!showPlayers" class="col-xs-5 col-sm-5 col-md-6 col-lg-6">
+			<div class="row" ng-repeat="line in lines.defence">
+				<game-line></game-line>
+			</div>
 		</div>
+
+		<div ng-if="showPlayers" class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+			<div class="row" ng-repeat="line in lines.offence">
+				<game-line></game-line>
+			</div>	
+		</div>
+		<div ng-if="showPlayers" class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+			<div class="row" ng-repeat="line in lines.defence">
+				<game-line></game-line>
+			</div>
+		</div>
+		<div ng-if="showPlayers" class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+			<div ng-if="showPlayers" ng-repeat="player in players">
+				<game-player></game-player>
+			</div>
+		</div>
+		
 	</div>
 </div>

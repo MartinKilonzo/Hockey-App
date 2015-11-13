@@ -7,7 +7,7 @@ angular.module('HockeyApp')
 
 		var User = $resource('http://localhost:8999/api/users/:userId/:resourceId', {userId: '@userId', resourceId: '@resourceId'}, {fetch: {method: 'GET'}});
 		var Player = $resource('http://localhost:8999/api/players/:userId/:resourceId', {userId: '@userId', resourceId: '@resourceId'}, {sync: {method: 'GET', isArray: true}});
-		var Lineup = $resource('http://localhost:8999/api/lineups/:userId/:resourceId', {userId: '@userId', resourceId: '@resourceId'}, {sync: {method: 'GET', isArray: true}, change: {method: 'PUT'}});
+		var Line = $resource('http://localhost:8999/api/lines/:userId/:resourceId/:type', {userId: '@userId', resourceId: '@resourceId', type: '@type'}, {sync: {method: 'GET', isArray: true}, change: {method: 'PUT'}});
 		var GameEvent = $resource('http://localhost:8999/api/gameEvents/:userId/:resourceId', {userId: '@userId', resourceId: '@resourceId'}, {sync: {method: 'GET', isArray: true}});
 		var Google = $resource('http://localhost:8999/api/login');
 
@@ -15,7 +15,7 @@ angular.module('HockeyApp')
 		var UserData = {
 			_id: undefined,
 			players: undefined, 
-			lineups: undefined
+			lines: undefined
 		};
 
 		//** HELPER METHODS **//
@@ -26,17 +26,22 @@ angular.module('HockeyApp')
 		};
 
 
-		var parseLineup = function (lineup) {
+		var parseLine = function (line) {
 			if (UserData.players) { populatePlayerBucket(UserData.players); }
-			if (lineup) {
-				lineup.lineupTitle		=		lineup.lineupTitle;
-				lineup.leftWing			=		playerBucket[lineup.leftWing];
-				lineup.center			=		playerBucket[lineup.center];
-				lineup.rightWing		=		playerBucket[lineup.rightWing];
-				lineup.defence1			=		playerBucket[lineup.defence1];
-				lineup.defence2			=		playerBucket[lineup.defence2];
+			var players = [];
+			for (var player in line.players) { players.push(playerBucket[line.players[player]]); }
+			if (line) {
+				line.lineTitle		=		line.lineTitle;
+				line.lineType		=		line.lineType;
+				line.players		=		players;
 			}
-			return lineup;
+			return line;
+		};
+
+		var playersToNumbers = function (players) {
+			var newPlayers = [];
+			for (var player in players) { newPlayers.push(players[player].playerNumber); }
+			return newPlayers;
 		};
 
 		var login = function (callback) {
@@ -49,26 +54,33 @@ angular.module('HockeyApp')
 		};
 
 		//** USER METHODS **//
+		var fetchUser = function (user, callback) {
+			var httpUser = new User({ userId: user.team });
+			console.info('http', httpUser);
+			httpUser.$fetch( function (result) {
+				if (result) { 	
+					populatePlayerBucket(result.players);
+					var lineTypes = ['offence', 'defence'];
+					for (var type in lineTypes) {
+						type = lineTypes[type];
+						for (var line in result.lines[type]) { result.lines[type][line] = parseLine(result.lines[type][line]); }
+					}
+					for(var i = 0; i < result.lines.length; i++) { result.lines[i] = parseLine(result.lines[i]); }
+					UserData = result;
+					UserData.stats = new GameStats(UserData.gameEvents, playerBucket);
+					console.info('UserData:', UserData); 
+				} 
+				if (callback) { callback(result); }
+				else { return result; }
+			});
+		};
+
 		var getUser = function (user, callback) {
 			if (UserData._id) {
 				if (callback) { callback(UserData); }
 				else { return UserData; }
 			}
-			else {
-				var httpUser = new User({ userId: user.team });
-				console.info('http', httpUser);
-				httpUser.$fetch( function (result) {
-					if (result) { 	
-						populatePlayerBucket(result.players);
-						for(var i = 0; i < result.lineups.length; i++) { result.lineups[i] = parseLineup(result.lineups[i]); }
-							UserData = result;
-							UserData.stats = new GameStats(UserData.gameEvents, playerBucket);
-						console.info('UserData:', UserData); 
-					} 
-					if (callback) { callback(result); }
-					else { return result; }
-				});
-			}
+			else { fetchUser(user, callback); }
 		};
 
 		var setUser = function (user, callback) {
@@ -132,65 +144,67 @@ angular.module('HockeyApp')
 		};
 
 		//** LINEUP METHODS **//
-		var getLineups = function (callback) {
-			if (UserData.lineups) {
-				console.info('UserData.lineups:', UserData.lineups);
-				if (callback) { callback(UserData.lineups); }
-				else { return UserData.lineups; }
+		var getLines = function (callback) {
+			if (UserData.lines) {
+				console.info('UserData.lines:', UserData.lines);
+				if (callback) { callback(UserData.lines); }
+				else { return UserData.lines; }
 			}
-			else { console.error('Lineups not found!', UserData); }
+			else { console.error('Lines not found!', UserData); }
 		};
 
-		var addLineup = function (lineup, callback) {
-			var httpLineup = new Lineup();
-			httpLineup.user 		= 	UserData._id;
-			httpLineup.leftWing		=	lineup.leftWing.playerNumber;
-			httpLineup.center		=	lineup.center.playerNumber;
-			httpLineup.rightWing	=	lineup.rightWing.playerNumber;
-			httpLineup.defence1		=	lineup.defence1.playerNumber;
-			httpLineup.defence2		=	lineup.defence2.playerNumber;
-			httpLineup.lineupTitle  =	lineup.lineupTitle;
-			console.info('httpLineup:', httpLineup);
-			httpLineup.$save( function (result) {
+		var addLine = function (line, callback) {
+			var lineTypes = ['offence', 'defence'];
+			var type = lineTypes[line.lineType];
+			var httpLine = new Line();
+			console.debug(line);
+			httpLine.user 		= 	UserData._id;
+			httpLine.lineTitle 	=	line.lineTitle;
+			httpLine.lineType 	=	line.lineType;
+			httpLine.players	= 	playersToNumbers(line.players);
+			console.info('httpLine:', httpLine);
+			httpLine.$save( function (result) {
 				if (result) { 
-					var lineup = parseLineup(result.lineups[result.lineups.length - 1]);
-					console.info(lineup);
+					var lineTypes = ['offence', 'defence'];
+					line = parseLine(result.lines[type][result.lines[type].length - 1]);
+					console.info(line);
 					console.info('Added:', result);
-					if (callback) { callback(lineup); }
-					else { return lineup; }
+					if (callback) { callback(line); }
+					else { return line; }
 				} 
 			});
 		};
 
-		//TODO: Use index instead of passing in lineups
-		var modifyLineup = function (index, newLineup, callback) {
-			var httpLineup = new Lineup();
-			httpLineup.user 		= 	UserData._id;
-			httpLineup.oldLineup	=	UserData.lineups[index]._id;
-			httpLineup.leftWing		=	newLineup.leftWing.playerNumber;
-			httpLineup.center		=	newLineup.center.playerNumber;
-			httpLineup.rightWing	=	newLineup.rightWing.playerNumber;
-			httpLineup.defence1		=	newLineup.defence1.playerNumber;
-			httpLineup.defence2		=	newLineup.defence2.playerNumber;
-			httpLineup.lineupTitle	=	newLineup.lineupTitle;
-			$log.debug('httpLineup:', httpLineup);
-			httpLineup.$change( function (result) {
-				if (result) { 
-					var lineup = parseLineup(result.lineups[index]);
-					console.info('Changed:', lineup);
-					if (callback) { callback(lineup); }
-					else { return lineup; }
+		//TODO: Use index instead of passing in lines
+		var modifyLine = function (index, newLine, callback) {
+			var lineTypes = ['offence', 'defence'];
+			var type = lineTypes[newLine.lineType];
+			var httpLine = new Line();
+			httpLine.user 		= 	UserData._id;
+			httpLine.oldLine	=	UserData.lines[type][index]._id;
+			httpLine.lineTitle 	=	newLine.lineTitle;
+			httpLine.lineType 	=	newLine.lineType;
+			httpLine.players	= 	playersToNumbers(newLine.players);
+			$log.debug('httpLine:', httpLine);
+			httpLine.$change( function (result) {
+				if (result) {
+					var line = parseLine(result.lines[type][index]);
+					console.info('Changed:', line);
+					if (callback) { callback(line); }
+					else { return line; }
 				} 
 			});
 		};
 
-		var removeLineup = function (lineup, callback) {
-			var httpLineup = new Lineup({ 	userId: 	UserData._id,
-				resourceId: lineup._id });
-			httpLineup.$delete( function (result) {
+		var removeLine = function (line, callback) {
+			var httpLine = new Line({ 	userId: 	UserData._id,
+										resourceId: line._id ,
+										type: 	line.lineType
+									});
+			httpLine.$delete( function (result) {
 				if (result) { console.info('Removed:', result); }
-				if (callback) { callback(lineup._id); }
-				else { return lineup._id; }
+				if (callback) { callback(line); }
+				else { return line; }
 			});
 		};
 
@@ -207,27 +221,40 @@ angular.module('HockeyApp')
 
 		var addGameEvents = function (gameInfo, callback) {
 			var httpGameEvents = new GameEvent();
-			httpGameEvents.user 			= 	UserData._id;
-			httpGameEvents.game 			= 	gameInfo.game;
-			httpGameEvents.opponent 		= 	gameInfo.opponent;
-			httpGameEvents.home				=	gameInfo.home;
-			httpGameEvents.location			=	gameInfo.location;
-			httpGameEvents.startTime		=	gameInfo.startTime;
-			httpGameEvents.endTime			=	gameInfo.endTime;
-			httpGameEvents.period			= 	gameInfo.period;
-			httpGameEvents.timeOn 			= 	gameInfo.gameEvents.timeOn;
-			httpGameEvents.timeOff 			= 	gameInfo.gameEvents.timeOff;
-			httpGameEvents.zoneStarts 		= 	gameInfo.gameEvents.zoneStarts;
-			httpGameEvents.shotsOn 			= 	gameInfo.gameEvents.shotsOn;
-			httpGameEvents.shotsAgainst 	= 	gameInfo.gameEvents.shotsAgainst;
-			httpGameEvents.teamGoals 		= 	gameInfo.gameEvents.teamGoals;
-			httpGameEvents.opponentGoals 	= 	gameInfo.gameEvents.opponentGoals;
-			$log.info('httpGameEvents:', httpGameEvents);
+			httpGameEvents.user 			= 		UserData._id;
+			httpGameEvents.game 			= 		gameInfo.game;
+			httpGameEvents.opponent 		= 		gameInfo.opponent;
+			httpGameEvents.home				=		gameInfo.home;
+			httpGameEvents.location			=		gameInfo.location;
+			httpGameEvents.startTime		=		gameInfo.startTime;
+			httpGameEvents.endTime			=		gameInfo.endTime;
+			httpGameEvents.period			= 		gameInfo.period;
+			httpGameEvents.timeOn 			= 		gameInfo.gameEvents.timeOn;
+			httpGameEvents.timeOff 			= 		gameInfo.gameEvents.timeOff;
+			httpGameEvents.zoneStarts 		= 		gameInfo.gameEvents.zoneStarts;
+			httpGameEvents.shotsOn 			= 		gameInfo.gameEvents.shotsOn;
+			httpGameEvents.shotAttempts 	= 		gameInfo.gameEvents.shotAttempts;
+			httpGameEvents.teamGoals 		= 		gameInfo.gameEvents.teamGoals;
+			httpGameEvents.opponentGoals 	= 		gameInfo.gameEvents.opponentGoals;
+			//$log.info('httpGameEvents:', httpGameEvents);
 			httpGameEvents.$save( function (result) {
 				if (result) {
 					console.info('Added:', result);
-					if (callback) { callback(result._id); }
+					if (callback) { callback(result); }
 					else { return result._id; }
+				}
+			});
+		};
+
+		var syncGameEvents = function (gameInfo, callback) {
+			addGameEvents(gameInfo, function (result) {
+				if (result) {
+					populatePlayerBucket(result.players);
+					for(var i = 0; i < result.lines.length; i++) { result.lines[i] = parseLine(result.lines[i]); }
+					UserData = result;
+					UserData.stats = new GameStats(UserData.gameEvents, playerBucket);
+					if (callback) { callback(UserData._id); }
+					else { return UserData._id; }
 				}
 			});
 		};
@@ -239,8 +266,8 @@ angular.module('HockeyApp')
 			players: function () {
 				return UserData.players;
 			},
-			lineups: function () {
-				return UserData.lineups;
+			lines: function () {
+				return UserData.lines;
 			},
 			bucket: function () {
 				return playerBucket;
@@ -248,17 +275,18 @@ angular.module('HockeyApp')
 			login: login,
 			getUser: getUser,
 			getPlayers: getPlayers,
-			getLineups: getLineups,
+			getLines: getLines,
 			getGameEvents: getGameEvents,
 			setUser: setUser,
 			savePlayer: addPlayer,
-			saveLineup: addLineup,
+			saveLine: addLine,
 			saveGameEvents: addGameEvents,
+			syncGameEvents: syncGameEvents,
 			modifyUser: modifyUser,
-			modifyLineup: modifyLineup,
+			modifyLine: modifyLine,
 			removeUser: removeUser,
 			deletePlayer: removePlayer,
-			deleteLineup: removeLineup,
-			parseLineup: parseLineup
+			deleteLine: removeLine,
+			parseLine: parseLine
 		};
 	}]);

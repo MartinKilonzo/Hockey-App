@@ -1,0 +1,22 @@
+<div class="container-fluid">
+	<h4 class="text-center">{{ newTitle }}</h4>
+
+	<div class="col-xs-2 col-xs-offset-3 noselect">
+		<div class="player-line-new" ng-class="{'position-selected': currentPage === 0, 'error': newLine[0].playerStatus === false}" ng-click="setPage(0)">
+			<p class="placeholder" ng-show="!newLine[0]">LW</p>
+			<p ng-show="newLine[0]">#{{ newLine[0].playerNumber }}</p>
+		</div>
+	</div>
+	<div class="col-xs-2 noselect">
+		<div class="player-line-new" ng-class="{'position-selected': currentPage === 1, 'error': newLine[1].playerStatus === false}" ng-click="setPage(1)">
+			<p class="placeholder" ng-show="!newLine[1]">C</p>
+			<p ng-show="newLine[1]">#{{ newLine[1].playerNumber }}</p>
+		</div>
+	</div>
+	<div class="col-xs-2 noselect">
+		<div class="player-line-new" ng-class="{'position-selected': currentPage === 2, 'error': newLine[2].playerStatus === false}" ng-click="setPage(2)">
+			<p class="placeholder" ng-show="!newLine[2]">RW</p>
+			<p ng-show="newLine[2]">#{{ newLine[2].playerNumber }}</p>
+		</div>
+	</div>
+</div>

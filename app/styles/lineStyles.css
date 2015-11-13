@@ -1,3 +1,23 @@
+.line-menu
+{
+	height: 100%;
+	width: 100%;
+	line-height: 86px;
+	margin-top: 2px;
+	margin-left: 6px;
+	margin-right: 6px;
+	margin-bottom: 12px;
+
+	text-align: center;
+	color: white;
+	font-weight: bold;
+	font-size: 20pt;
+
+	border-radius: 10px;
+
+	overflow: hidden;
+}
+
 /* WIP style for player pool in Linup */
 .player-pool
 {
@@ -6,8 +26,8 @@
 	overflow-x: hidden;
 }
 
-/* Style for player in lineups */
-.player-lineup
+/* Style for player in lines */
+.player-line
 {
 	height: 90px;
 	width: 90px;
@@ -29,33 +49,33 @@
 	overflow: hidden;
 }
 
-/* Lineup specific styles */
-.lineup
+/* Line specific styles */
+.line
 {
 	width: 100%;
 	margin-top: 2px;
 }
 
-.lineup-title
+.line-title
 {
 	margin-top: 6px;
 }
 
-.lineup-template .btn-danger
+.line-template .btn-danger
 {
 	margin-top: 10px;
 	margin-bottom: 4px;
 	margin-left: 10px;
 }
 
-.lineup-template .btn-primary
+.line-template .btn-primary
 {
 	margin-top: 4px;
 	margin-bottom: 10px;
 	margin-left: 10px;
 }
 
-.player-lineup.error 
+.player-line.error 
 {
 	background-color: #BF2B30;
 	border-color: #7F1C20;
@@ -64,8 +84,8 @@
 }
 
 
-/* Styles for lineup tools */
-.lineup-tools
+/* Styles for line tools */
+.line-tools
 {
 	opacity: 0;
 
@@ -76,13 +96,13 @@
 	transition: opacity 0.20s ease-in;
 }
 
-.lineup-tools.mouseover
+.line-tools.mouseover
 {
 	visibility: visible;
 	opacity: 1;
 }
 
-/** Create lineup modal styles **/
+/** Create line modal styles **/
 /* Styles for the cancel button */
 .modal .modal-header .btn 
 {
@@ -129,7 +149,7 @@
 	margin-top: -15px;
 }
 
-.player-lineup-new
+.player-line-new
 {
 	position: relative;
 	width: 100%;
@@ -161,8 +181,8 @@
 	outline: 0 none;
 }
 
-/* Styles for players added to the new lineup */
-.player-lineup-new p
+/* Styles for players added to the new line */
+.player-line-new p
 {
 	position: absolute;
 	top: 50%;
@@ -171,7 +191,7 @@
 	transform: translate(-50%,-50%);
 }
 
-.player-lineup-new.error
+.player-line-new.error
 {
 	background-color: #BF2B30;
 	border-color: #7F1C20;

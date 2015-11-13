@@ -138,6 +138,8 @@ angular.module('HockeyApp')
 			hours: hours, 
 			time: gameTime,
 			formatTime: formatTime,
-			startTime: startTime
+			startTime: function () {
+				return startTime;
+			}
 		};
 	}]);

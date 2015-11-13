@@ -1,0 +1,8 @@
+<div class="row game-line-template" ng-class="{'mouseover': hover === $index && hoverType === line.lineType || lineSelected($index, line.lineType)}" ng-mouseenter="setHover($index, line.lineType)" ng-mouseleave="setHover(undefined, undefined)">
+	<div class="col-xs-3 col-sm-3 col-md-3 col-lg-2">
+		<h4 class="line-title">{{ line.lineTitle }}</h4>
+	</div>
+	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-2 line noselect" data-toggle="tooltip" data=placement="top" title="{{player.firstName}} {{player.lastName}}" ng-click="swapLine(line)" ng-repeat="player in line.players" tooltip>
+		#{{ player.playerNumber }}
+	</div>
+</div>

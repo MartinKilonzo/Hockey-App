@@ -1,0 +1,48 @@
+<div class="container-fluid">
+	
+	<!-- Header -->
+	<div class="container row">
+		<!-- Lines -->
+		<div class="col-xs-9 col-sm-9 col-md-9 col-lg-10">
+			<div class="row">
+				<h1>Lines</h1>
+			</div>
+			<!-- Tools -->
+			<div class="row">
+				<!-- Lines -->
+				<div class="col-lg-1-offset-0">
+					<h2 ng-click="createNewLine()"><button type="button" class="btn btn-success" >Add New Line</button></h2>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<!-- Lines -->
+		<div class="col-xs-9 col-sm-9 col-md-9 col-lg-10">
+
+			<!-- Lines -->
+			<div class="container row">
+				<!-- Offensive -->
+				<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+					<h2>Offensive Lines</h2>
+					<div class="row line" ng-repeat="line in lines.offence">
+						<line-template></line-template>
+					</div>
+				</div>
+				<!-- Defensive -->
+				<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+					<h2>Defensive Lines</h2>
+					<div class="row line" ng-repeat="line in lines.defence">
+						<line-template></line-template>
+					</div>
+				</div>
+			</div>
+
+		</div>
+		<!-- Player Statistics and Pool -->
+		<div class="col-xs-3 col-sm-3 col-md-3 col-lg-2">
+			<h2>Top Players</h2>
+			-SIMPLE PLAYER STATISTICS-
+		</div>
+	</div>

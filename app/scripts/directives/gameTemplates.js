@@ -44,10 +44,10 @@ angular.module('HockeyApp')
 		};
 	})
 
-	.directive('gameLineup', function () {
+	.directive('gameLine', function () {
 		return {
 			restrict: 'E',
-			templateUrl: 'views/partials/game/game-lineup.html'
+			templateUrl: 'views/partials/game/game-line.html'
 		};
 	})
 
